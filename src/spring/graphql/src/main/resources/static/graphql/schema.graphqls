@@ -14,7 +14,7 @@ type Query {
     translate(q: String!, idx: Int): Translated!
     parse(captions: String!): ParseResponse!
 
-    allContents(pr: PaginationInput!): [Content!]!
+    allContents(category: Int!, pr: PaginationInput!): [Content!]!
 }
 
 type Mutation {
@@ -25,6 +25,7 @@ type Mutation {
     deleteCategory(id: Int!): Int!
 
     createContent(input: ContentInput!): NoResponse!
+    deleteContent(id: Int!): NoResponse!
 }
 
 type SubScription { }
@@ -69,6 +70,9 @@ type Content {
     category: [CategoryFilteredByContent]
     title: String!
     ref: String!
+    registerer: User!
+    words: [Paragraph!]!
+    sentences: [Paragraph!]!
 }
 
 type CategoryFilteredByContent {
@@ -105,7 +109,7 @@ input ContentInput {
 input PaginationInput {
     page: Int!
     renderItem: Int!
-    sort: String!
+    sort: String
 }
 
 scalar Long

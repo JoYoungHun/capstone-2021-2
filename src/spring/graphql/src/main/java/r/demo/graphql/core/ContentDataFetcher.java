@@ -1,9 +1,12 @@
 package r.demo.graphql.core;
 
 import graphql.schema.DataFetcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import r.demo.graphql.annotation.Gql;
 import r.demo.graphql.annotation.GqlDataFetcher;
@@ -21,10 +24,7 @@ import r.demo.graphql.domain.word.WordRepo;
 import r.demo.graphql.response.DefaultResponse;
 import r.demo.graphql.types.Paragraph;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Gql
 @Service
@@ -88,20 +88,57 @@ public class ContentDataFetcher {
 
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> allContents() {
-        return environment -> contentRepo.findAll();
+        return environment -> {
+            long categoryKey = Long.parseLong(environment.getArgument("category").toString());
+            final LinkedHashMap<String, Object> req = environment.getArgument("pr");
+            int page = Integer.parseInt(req.get("page").toString()),
+                    renderItem = Integer.parseInt(req.get("renderItem").toString());
+
+            try {
+                Category category;
+                if (categoryKey != -1) {
+                    category = categoryRepo.findById(categoryKey).orElseThrow(IllegalArgumentException::new);
+                    return contentRepo.findAllByCategory(category, PageRequest.of(page - 1, renderItem));
+                } else {
+                    return contentRepo.findAll(PageRequest.of(page - 1, renderItem));
+                }
+            } catch (RuntimeException e) {
+                return Collections.emptyList();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Collections.emptyList();
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.MUTATION)
+    public DataFetcher<?> deleteContent() {
+        return environment -> {
+            long contentKey = Long.parseLong(environment.getArgument("id").toString());
+            try {
+                if (this.deleteContentDetails(contentKey))
+                    throw new RuntimeException();
+                else return new DefaultResponse(200);
+            } catch (RuntimeException e) {
+                return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            }
+        };
     }
 
     public boolean deleteContentDetails(long contentKey) {
         try {
             Content content = contentRepo.findById(contentKey).orElseThrow(IndexOutOfBoundsException::new);
-            if (!wordRepo.disconnectWithParent(content) || !sentenceRepo.disconnectWithParent(content))
-                throw new IndexOutOfBoundsException();
+            contentRepo.updateSQLMode();
 
+            wordRepo.disconnectWithParent(content);
+            sentenceRepo.disconnectWithParent(content);
+            // after delete child rows
             contentRepo.delete(content);
-            return true;
-        } catch (RuntimeException e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return true;
         }
     }
 }

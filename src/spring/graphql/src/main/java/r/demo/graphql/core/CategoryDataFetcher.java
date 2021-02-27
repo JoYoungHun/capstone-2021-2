@@ -87,7 +87,7 @@ public class CategoryDataFetcher {
                 Set<Content> contents = category.getContent();
                 // call del function from other service
                 for (Content content : contents) {
-                    if (!contentDataFetcher.deleteContentDetails(content.getId()))
+                    if (contentDataFetcher.deleteContentDetails(content.getId()))
                         throw new RuntimeException();
                 }
                 categoryRepo.delete(category);
