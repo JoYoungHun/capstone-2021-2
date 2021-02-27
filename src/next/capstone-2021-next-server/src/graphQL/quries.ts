@@ -100,3 +100,36 @@ export const GET_PARSE = gql`
         }
     }
 `
+
+export const GET_CONTENTS = gql`
+    query allContents($category: Int!, $pr: PaginationInput!) {
+        allContents(category: $category, pr: $pr) {
+            id
+            title
+            ref
+            registerer {
+                id
+                name
+            }
+            category {
+                id
+                name
+            }
+            words {
+                id
+            }
+            sentences {
+                id
+            }
+        }
+    }
+`
+
+export const DELETE_REMOVE_CONTENT = gql`
+    mutation deleteContent($id: Int!) {
+        deleteContent(id: $id) {
+            status
+            message
+        }
+    }
+`
