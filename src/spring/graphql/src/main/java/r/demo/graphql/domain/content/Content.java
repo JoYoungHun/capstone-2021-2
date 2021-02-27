@@ -55,14 +55,14 @@ public class Content {
     private final Set<Category> category = new HashSet<>();
 
     @OneToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = { CascadeType.PERSIST },
             orphanRemoval = true,
             mappedBy = "content")
     private Set<Word> words;
 
     @OneToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = { CascadeType.PERSIST },
             orphanRemoval = true,
             mappedBy = "content")
