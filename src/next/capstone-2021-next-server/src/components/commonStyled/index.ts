@@ -25,3 +25,22 @@ export const TabTitle = styled.span`
     font-size: ${props => props.fontSize ? props.fontSize : "12pt"};
     font-family: sans-serif;
 `
+
+export const SignatureBtn = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #FFE94A 0% 0% no-repeat padding-box;
+    boxShadow: 0px 0px 3px solid #000;
+    width: ${props => props.width};
+    height: ${props => props.height};
+    border: 0;
+    border-radius: 4pt;
+`
+
+export const HoverEvtDiv = styled.div`
+    cursor: pointer;
+    &: hover {
+        background-color: ${props => props.bgColor ? props.bgColor : '#FFE94A'}
+    }   
+`

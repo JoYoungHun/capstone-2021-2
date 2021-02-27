@@ -2,8 +2,8 @@ import React from 'react';
 import { Divider } from "@material-ui/core";
 import styled from 'styled-components';
 import { SudoNavigation } from "../../src/components";
-import { CategoryManagement } from "../../src/container";
-import {NextRouter, useRouter} from "next/router";
+import { CategoryManagement, ContentMangement } from "../../src/container";
+import { NextRouter, useRouter } from "next/router";
 
 const TabTitle = styled.span`
     font-family: sans-serif;
@@ -29,10 +29,11 @@ const Sudo = () => {
             <div style={{ width: 'calc(100% - 200pt)', marginTop: '100pt', paddingLeft: '16pt', paddingRight: '16pt' }}>
                 {
                     (current === "0" || current === undefined) &&
-                        <div style={{ width: '100%', height: 'calc(100vh - 100pt)', backgroundColor: 'green'}}>
+                        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
                             <TabTitle>
                                 컨텐츠 관리
                             </TabTitle>
+                            <ContentMangement />
                         </div>
                 }
                 {

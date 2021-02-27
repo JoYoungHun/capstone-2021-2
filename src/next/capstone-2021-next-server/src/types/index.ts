@@ -29,12 +29,6 @@ export type Category = {
     name: string,
 }
 
-export type CategoryWithCont = {
-    id: number,
-    name: string,
-    contents: Content[]
-}
-
 export type Content = {
     id: number,
     category: Category[],
@@ -51,4 +45,20 @@ export type ContFrame = {
     ref: string,
     title: string,
     captions: string,
+}
+
+export type ContentDetails = {
+    id: number,
+    title: string,
+    ref: string,
+    words: Paragraph[],
+    sentences: Paragraph[],
+    registerer: User,
+    category: Category[],
+}
+
+export type Paginate = {
+    page: number,
+    renderItem: number,
+    sort?: string,
 }
