@@ -41,11 +41,14 @@
 
 ### 4. 사용법
 
-소스코드제출시 설치법이나 사용법을 작성하세요.
-
 ### 5. 기타
 
-추가적인 내용은 자유롭게 작성하세요.
+- 백엔드
+  - 스프링 백엔드 빌드 파일 생성 시 해당 .jar([stanford core nlp](https://stanfordnlp.github.io/CoreNLP/))를 다운로드 받은 후, 
+
+  - root directory/libs/ 위치에 저장시킨 뒤 ./gradlew bootjar 수행
+
+  - 이외 build -> execute 과정은 Dockerfile 참조([Dockerfile](https://github.com/kookmin-sw/capstone-2021-2/blob/master/src/spring/graphql/Dockerfile))
 
 
 ## Markdown을 사용하여 내용꾸미기
