@@ -1,0 +1,45 @@
+spring:
+  data:
+    jdbc:
+      repositories:
+        enabled: false
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        ddl-auto: none
+    open-in-view: off
+
+graphql:
+  playground:
+    mapping: /playground
+    endpoint: /graphql
+    subscriptionEndpoint: /subscriptions
+#    staticPath.base: my-playground-resources-folder
+    pageTitle: Playground
+    cdn:
+      enabled: false
+      version: latest
+#    settings:ts
+#      editor.cursorShape: line
+#      editor.fontFamily: "'Source Code Pro', 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace"
+#      editor.fontSize: 14
+#      editor.reuseHeaders: true
+#      editor.theme: dark
+#      general.betaUpdates: false
+#      prettier.printWidth: 80
+#      prettier.tabWidth: 2
+#      prettier.useTabs: false
+#      request.credentials: omit
+#      schema.polling.enable: true
+#      schema.polling.endpointFilter: "*localhost*"
+#      schema.polling.interval: 2000
+#      schema.disableComments: true
+#      tracing.hideTracingResponse: true
+
+jwt:
+  secret: DOVE
+project:
+  name: capstone2021-305109

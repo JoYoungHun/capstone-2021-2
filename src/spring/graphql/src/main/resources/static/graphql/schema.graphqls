@@ -1,0 +1,111 @@
+schema {
+    query: Query
+    mutation: Mutation
+    subscription: SubScription
+}
+
+type Query {
+    allUsers: [User]
+    user: User
+    login(id: String!, password: String!): Token
+
+    categories: [Category!]
+
+    translate(q: String!, idx: Int): Translated!
+    parse(captions: String!): ParseResponse!
+
+    allContents(pr: PaginationInput!): [Content!]!
+}
+
+type Mutation {
+    sign(id: String!, password: String!, name: String!): Int
+
+    createCategory(title: String!): Int!
+    updateCategory(id: Int!, title: String!): Int!
+    deleteCategory(id: Int!): Int!
+
+    createContent(input: ContentInput!): NoResponse!
+}
+
+type SubScription { }
+
+type User {
+    id: Long!
+    email: String!
+    name: String!
+    authority: String
+}
+
+# Response Type
+type Token {
+    status: Int!
+    token: String
+}
+
+type NoResponse {
+    status: Int!
+    message: String
+}
+
+type ParseResponse {
+    sentences: [Paragraph!]!
+    words: [Paragraph!]!
+}
+
+type Category {
+    id: Long!
+    name: String!
+    content: [ContentFilteredByCategory]
+}
+
+type ContentFilteredByCategory {
+    id: Long!
+    title: String!
+    ref: String!
+}
+
+type Content {
+    id: Long!
+    category: [CategoryFilteredByContent]
+    title: String!
+    ref: String!
+}
+
+type CategoryFilteredByContent {
+    id: Long!
+    name: String!
+}
+
+type Translated {
+    translated: [String!]!
+    idx: Int!
+}
+
+input ParagraphIn {
+    eng: String!
+    kor: String!
+    __typename: String
+}
+
+type Paragraph {
+    id: Int
+    eng: String!
+    kor: String!
+}
+
+input ContentInput {
+    title: String!
+    ref: String!
+    captions: String!
+    categories: [Int!]!
+    words: [ParagraphIn!]!
+    sentences: [ParagraphIn!]!
+}
+
+input PaginationInput {
+    page: Int!
+    renderItem: Int!
+    sort: String!
+}
+
+scalar Long

@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "graphql.spqr.gui.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable graphQL api documentation gui."
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "json web token's secret key value."
+    },
+    {
+      "name": "project.name",
+      "type": "java.lang.String",
+      "description": "google cloud platform project name."
+    }
+  ]
+}
