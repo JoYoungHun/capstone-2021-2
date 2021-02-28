@@ -120,7 +120,6 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
     }});
     return (
         <React.Fragment>
-            { console.log(categories)}
             <div style={{ width: '100%' }}>
                 <div style={{ width: '500pt', marginBottom: '12pt' }}>
                     <div style={{ marginBottom: '8pt' }}>

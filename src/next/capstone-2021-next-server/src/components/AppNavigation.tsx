@@ -41,7 +41,6 @@ const AppNavigation: React.FunctionComponent<Props> = React.memo(({ }) => {
             let tabIdx: number = Number(router.query?.tb);
             if (isNaN(tabIdx)) tabIdx = 0;
 
-            console.log('tab', tabIdx)
             dispatch(modifyAppTabs(tabIdx));
         }
 
