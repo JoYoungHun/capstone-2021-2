@@ -28,12 +28,12 @@ const Sudo = () => {
             <Divider orientation={'vertical'} flexItem />
             <div style={{ width: 'calc(100% - 200pt)', marginTop: '100pt', paddingLeft: '16pt', paddingRight: '16pt' }}>
                 {
-                    (current === "0" || current === undefined) &&
+                    current === "0" &&
                         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
                             <TabTitle>
                                 컨텐츠 관리
                             </TabTitle>
-                            <ContentManagement preventSSR={true} />
+                            <ContentManagement preventSSR={current !== "0"} />
                         </div>
                 }
                 {

@@ -47,7 +47,7 @@ const UserAccordion = React.memo(({ authority }: Props) => {
                 </StyledMenuItem>
                 {
                     (authority && authority === 'ROLE_ADMIN') &&
-                        <StyledMenuItem onClick={() => router.push('/sudo').then()}>
+                        <StyledMenuItem onClick={() => router.push('/sudo?tb=0').then()}>
                             <ListItemIcon>
                                 <SupervisorAccountRounded fontSize="small" />
                             </ListItemIcon>
