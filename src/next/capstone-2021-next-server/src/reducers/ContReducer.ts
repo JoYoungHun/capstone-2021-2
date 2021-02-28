@@ -23,14 +23,15 @@ const initialState: ContentState = {
         ref: '',
         title: '',
         captions: '',
+        categories: []
     },
     words: [],
     sentences: []
 }
 
-export const storeFrame = ({ title, ref, captions }: ContFrame) => ({
+export const storeFrame = ({ title, ref, captions, categories }: ContFrame) => ({
     type: STORE_FRAME,
-    payload: { frame: { title, ref, captions } }
+    payload: { frame: { title, ref, captions, categories} }
 });
 
 export const storeWord = ( words: Paragraph[] ) => ({
@@ -76,6 +77,7 @@ const ContReducer = (state: ContentState = initialState, { type, payload }: Cont
                     ref: '',
                     title: '',
                     captions: '',
+                    categories: []
                 },
                 words: [],
                 sentences: []

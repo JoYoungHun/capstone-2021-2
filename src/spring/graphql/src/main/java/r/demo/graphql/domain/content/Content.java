@@ -3,6 +3,7 @@ package r.demo.graphql.domain.content;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import r.demo.graphql.domain.category.Category;
@@ -13,6 +14,7 @@ import r.demo.graphql.domain.word.Word;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -52,7 +54,7 @@ public class Content {
     @JoinTable(name = "category_contents",
             joinColumns = @JoinColumn(name = "contents_idx", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "category_idx", referencedColumnName = "id"))
-    private final Set<Category> category = new HashSet<>();
+    private Set<Category> category = new HashSet<>();
 
     @OneToMany(
             fetch = FetchType.EAGER,
@@ -75,5 +77,14 @@ public class Content {
         this.captions = captions;
         this.registerer = user;
         this.category.addAll(categories);
+    }
+
+    public void addCategory(@NonNull Category category) {
+        if (this.category.stream().noneMatch(ctg -> ctg.getId() == category.getId()))
+            this.category.add(category);
+    }
+
+    public void filterCategory(@NonNull Category filter) {
+        this.category = this.category.stream().filter(ctg -> ctg.getId() != filter.getId()).collect(Collectors.toSet());
     }
 }

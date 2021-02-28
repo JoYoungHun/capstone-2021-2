@@ -21,6 +21,20 @@ export const GET_USER_DETAIL = gql`
     }
 `
 
+export const GET_CATEGORY = gql`
+    query category($id: Int!) {
+        category(id: $id) {
+            id
+            name
+            content {
+                id
+                title
+                ref
+            }
+        }
+    }
+`
+
 export const GET_CATEGORIES = gql`
     query categories {
         categories {
@@ -102,25 +116,28 @@ export const GET_PARSE = gql`
 `
 
 export const GET_CONTENTS = gql`
-    query allContents($category: Int!, $pr: PaginationInput!) {
-        allContents(category: $category, pr: $pr) {
-            id
-            title
-            ref
-            registerer {
+    query allContents($category: Int!, $pr: PaginationInput!, $option: Int) {
+        allContents(category: $category, pr: $pr, option: $option) {
+            contents {
                 id
-                name
+                title
+                ref
+                registerer {
+                    id
+                    name
+                }
+                category {
+                    id
+                    name
+                }
+                words {
+                    id
+                }
+                sentences {
+                    id
+                }
             }
-            category {
-                id
-                name
-            }
-            words {
-                id
-            }
-            sentences {
-                id
-            }
+            totalElements
         }
     }
 `
@@ -128,6 +145,24 @@ export const GET_CONTENTS = gql`
 export const DELETE_REMOVE_CONTENT = gql`
     mutation deleteContent($id: Int!) {
         deleteContent(id: $id) {
+            status
+            message
+        }
+    }
+`
+
+export const PUT_UPDATE_CONTENTS_IN_CATEGORY = gql`
+    mutation saveContentsToCategory($category: Int!, $id: [Int!]!) {
+        saveContentsToCategory(category: $category, id: $id) {
+            status
+            message
+        }
+    }  
+`
+
+export const DELETE_REMOVE_CONTENT_IN_CATEGORY = gql`
+    mutation deleteContentsInCategory($category: Int!, $id: Int!) {
+        deleteContentsInCategory(category: $category, id: $id) {
             status
             message
         }

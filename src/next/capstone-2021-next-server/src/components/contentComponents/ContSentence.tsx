@@ -29,7 +29,7 @@ const ContSentence: React.FunctionComponent<Props> = () => {
             const filteredWords = content.words.filter((word: Paragraph) => word.eng !== '' && word.kor !== '');
             const filteredSentences = content.sentences.filter((sentence: Paragraph) => sentence.eng !== '' && sentence.kor !== '');
 
-            create({ variables: { input: { ...content.frame, categories: [1], words: filteredWords, sentences: filteredSentences } }})
+            create({ variables: { input: { ...content.frame, words: filteredWords, sentences: filteredSentences } }})
                 .then( async () => {
                     await new Promise((resolve) => {
                         dispatch(initializeContent())

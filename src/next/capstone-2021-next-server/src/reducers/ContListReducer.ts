@@ -9,12 +9,14 @@ type ContentListProps = {
     renderItems: number,
     sort?: string,
     items: ContentDetails[]
+    totalElements: number,
 }
 
 const initialState : ContentListProps = {
     page: 1,
     renderItems: 10,
-    items: []
+    items: [],
+    totalElements: 0,
 }
 
 export const storeContentList = ( payload: ContentListProps ) => ({

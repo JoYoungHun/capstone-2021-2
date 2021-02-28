@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider } from "@material-ui/core";
 import styled from 'styled-components';
 import { SudoNavigation } from "../../src/components";
-import { CategoryManagement, ContentMangement } from "../../src/container";
+import { CategoryManagement, ContentManagement } from "../../src/container";
 import { NextRouter, useRouter } from "next/router";
 
 const TabTitle = styled.span`
@@ -33,12 +33,12 @@ const Sudo = () => {
                             <TabTitle>
                                 컨텐츠 관리
                             </TabTitle>
-                            <ContentMangement />
+                            <ContentManagement preventSSR={true} />
                         </div>
                 }
                 {
                     current === "1" &&
-                        <div style={{ width: '100%', height: 'calc(100vh - 100pt)', backgroundColor: 'skyblue'}}>
+                        <div style={{ width: '100%', backgroundColor: 'skyblue'}}>
                             <TabTitle>
                                 사용자 관리
                             </TabTitle>
@@ -46,7 +46,7 @@ const Sudo = () => {
                 }
                 {
                     current === "2" &&
-                    <div style={{ width: '100%', height: 'calc(100vh - 100pt)', display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
                         <TabTitle>
                             카테고리 관리
                         </TabTitle>

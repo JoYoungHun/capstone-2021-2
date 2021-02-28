@@ -18,7 +18,6 @@ type Props = {
 
 const D_ContentModal: React.FunctionComponent<Props> = ({ hidden, context, reRenderContentList, close }) => {
     const [ deleteContent, { }] = useMutation(DELETE_REMOVE_CONTENT, { onCompleted: async (data) => {
-        console.log('data', data, reRenderContentList)
             if (data.deleteContent.status === 200 && reRenderContentList) {
                 close();
                 reRenderContentList();

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ContentDetails } from "../../types";
-import {RootState} from "../../modules";
-import {Divider, TablePagination} from '@material-ui/core';
-import ContCard from "../../components/ContCard";
-import {D_ContentModal} from "../../components/modals";
+import { RootState } from "../../modules";
+import { Divider, TablePagination } from '@material-ui/core';
+import { ContCard } from "../../components";
+import { D_ContentModal } from "../../components/modals";
 
 type Props = {
     page: number
@@ -23,7 +23,7 @@ type ModalProps = {
 }
 
 const CrudContentContainer: React.FunctionComponent<Props> = ({ page, renderItem, onMovePage, onModifyRenderItems, reRenderContentList }) => {
-    const { items } = useSelector((state: RootState) => state.ContListReducer);
+    const { items, totalElements } = useSelector((state: RootState) => state.ContListReducer);
     const [ modalState, setModalState ] = React.useState<ModalProps>({
         selected: undefined,
         hidden: true,
@@ -53,9 +53,9 @@ const CrudContentContainer: React.FunctionComponent<Props> = ({ page, renderItem
             </div>
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <TablePagination
-                    style={{ width: '200pt' }}
+                    style={{ width: '400pt' }}
                     component={"div"}
-                    count={items.length}
+                    count={totalElements}
                     page={page - 1}
                     onChangePage={(_, e) => onMovePage(e)}
                     rowsPerPage={renderItem}

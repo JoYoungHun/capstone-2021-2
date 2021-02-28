@@ -1,20 +1,20 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {CategoryTabs, Error, Loading} from "../components";
-import {modifyCategories} from "../reducers/CategoryReducer";
-import {RootState} from "../modules";
-import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
-import {DELETE_REMOVE_CONTENT, GET_CATEGORIES, GET_CONTENTS} from "../graphQL/quries";
+import { CategoryTabs, Error, Loading } from "../components";
+import { modifyCategories } from "../reducers/CategoryReducer";
+import { RootState } from "../modules";
+import { useLazyQuery, useQuery} from "@apollo/client";
+import { GET_CATEGORIES, GET_CONTENTS } from "../graphQL/quries";
 import Notiflix from 'notiflix';
-import {storeContentList} from "../reducers/ContListReducer";
+import { storeContentList } from "../reducers/ContListReducer";
 import { Paginate } from "../types";
-import CrudContentContainer from "./belongings/CrudContentContainer";
+import { CrudContentContainer } from "./belongings";
 
 type Props = {
-
+    preventSSR: boolean
 }
 
-const ContentManagementContainer: React.FunctionComponent<Props> = () => {
+const ContentManagementContainer: React.FunctionComponent<Props> = ({ preventSSR }) => {
     const dispatch = useDispatch();
     const { categories } = useSelector((state: RootState) => state.CategoryReducer);
     const listStates = useSelector((state: RootState) => state.ContListReducer);
@@ -39,7 +39,7 @@ const ContentManagementContainer: React.FunctionComponent<Props> = () => {
     }
 
     React.useEffect(() => {
-        if (categories) {
+        if (categories && !preventSSR) {
             Notiflix.Loading.Hourglass('Fetching contents...');
             allContents({ variables: { category: currentIdx === 0 ? -1 : categories[currentIdx - 1].id, pr: { ...paginate } } })
         }
@@ -48,7 +48,7 @@ const ContentManagementContainer: React.FunctionComponent<Props> = () => {
     const [ allContents, { refetch }] = useLazyQuery(GET_CONTENTS, { onCompleted: async (data) => {
         if (data.allContents) {
             await new Promise((resolve) => {
-                dispatch(storeContentList({ ...listStates, items: data.allContents }))
+                dispatch(storeContentList({ ...listStates, items: data.allContents.contents, totalElements: data.allContents.totalElements }))
                 resolve(true);
             }).then(() => Notiflix.Loading.Remove(500));
         }}, fetchPolicy: 'network-only' })
@@ -59,7 +59,10 @@ const ContentManagementContainer: React.FunctionComponent<Props> = () => {
             .then(async (response) => {
                 if (response.data.allContents) {
                     await new Promise((resolve) => {
-                        dispatch(storeContentList({...listStates, items: response.data.allContents}))
+                        dispatch(storeContentList({
+                            ...listStates,
+                            items: response.data.allContents.contents,
+                            totalElements: response.data.allContents.totalElements }))
                         resolve(true);
                     }).then(() => Notiflix.Loading.Remove(500));
                 }})
@@ -73,7 +76,8 @@ const ContentManagementContainer: React.FunctionComponent<Props> = () => {
     return (
         <React.Fragment>
             <CategoryTabs categories={categories} currentIdx={currentIdx} modifyTab={modifyTab} />
-            <CrudContentContainer page={paginate.page} renderItem={paginate.renderItem} onMovePage={onMovePage} onModifyRenderItems={onModifyRenderItems}
+            <CrudContentContainer page={paginate.page} renderItem={paginate.renderItem}
+                                  onMovePage={onMovePage} onModifyRenderItems={onModifyRenderItems}
                                   reRenderContentList={reRenderContentList} />
         </React.Fragment>
     )

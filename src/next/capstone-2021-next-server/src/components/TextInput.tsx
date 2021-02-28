@@ -15,15 +15,16 @@ type InputProps = {
     onChangeValue: (changed: string) => void
     placeholder?: string
     onBlur?: () => void
+    readonly?: boolean
 }
 
 const TextInput: React.FunctionComponent<InputProps> = ({ type, width, height, value, onChangeValue,
-                                                            placeholder, onBlur }) => {
+                                                            placeholder, onBlur, readonly }) => {
     return (
         <Div>
             <input type={type ? type : ''} style={{ width, height, border: '1px solid gray', borderRadius: '2pt', paddingLeft: '12pt' }}
                    value={value} onChange={(e) => onChangeValue(e.target.value)} placeholder={placeholder ? placeholder : ''}
-                   onBlur={onBlur ? onBlur : () => { }}
+                   onBlur={onBlur ? onBlur : () => { }} readOnly={readonly ? readonly : false}
             />
         </Div>
     );
