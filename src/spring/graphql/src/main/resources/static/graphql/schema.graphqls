@@ -10,11 +10,12 @@ type Query {
     login(id: String!, password: String!): Token
 
     categories: [Category!]
+    category(id: Int!): Category
 
     translate(q: String!, idx: Int): Translated!
     parse(captions: String!): ParseResponse!
 
-    allContents(category: Int!, pr: PaginationInput!): [Content!]!
+    allContents(category: Int!, pr: PaginationInput!, option: Int): PaginatedContentResponse!
 }
 
 type Mutation {
@@ -26,6 +27,8 @@ type Mutation {
 
     createContent(input: ContentInput!): NoResponse!
     deleteContent(id: Int!): NoResponse!
+    saveContentsToCategory(category: Int!, id: [Int!]!): NoResponse!
+    deleteContentsInCategory(category: Int!, id: Int!): NoResponse!
 }
 
 type SubScription { }
@@ -73,6 +76,11 @@ type Content {
     registerer: User!
     words: [Paragraph!]!
     sentences: [Paragraph!]!
+}
+
+type PaginatedContentResponse {
+    contents: [Content!]!
+    totalElements: Int!
 }
 
 type CategoryFilteredByContent {

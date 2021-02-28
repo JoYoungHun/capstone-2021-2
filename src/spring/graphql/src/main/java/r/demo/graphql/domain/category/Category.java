@@ -46,4 +46,9 @@ public class Category {
     public void setName(@NonNull String name) {
         this.name = name;
     }
+
+    public void setContent(@NonNull Set<Content> contents) {
+        this.content.clear();
+        this.content.addAll(contents);
+    }
 }

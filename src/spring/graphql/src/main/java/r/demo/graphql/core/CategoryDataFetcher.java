@@ -33,6 +33,18 @@ public class CategoryDataFetcher {
         return environment -> categoryRepo.findAll();
     }
 
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> category() {
+        return environment -> {
+            long categoryKey = Long.parseLong(environment.getArgument("id").toString());
+            try {
+                return categoryRepo.findById(categoryKey).orElseThrow(IllegalArgumentException::new);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        };
+    }
+
     @GqlDataFetcher(type = GqlType.MUTATION)
     public DataFetcher<?> createCategory() {
         return environment -> {
