@@ -44,7 +44,7 @@ const CU_CategoryModal = ({ hidden, close, create, option }: Props) => {
     }
 
     const CALLBACK_CATEGORY_API = async () => {
-        if (create) create(title);
+        if (create) { create(title); setTitle(''); }
         else await CALL_UPDATE_CATEGORY_API().then(() => Notiflix.Loading.Remove(300));
         close();
     }

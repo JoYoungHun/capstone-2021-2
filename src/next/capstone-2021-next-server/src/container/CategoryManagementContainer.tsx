@@ -6,7 +6,8 @@ import Notiflix from 'notiflix';
 import { Loading, Error, CategoryTabs } from '../components';
 import { RootState } from "../modules";
 import { CrudCategoriesContainer } from "./belongings";
-import {modifyCategories, storeRefetchApi} from "../reducers/CategoryReducer";
+import {modifyCategories, selectCategory, storeRefetchApi} from "../reducers/CategoryReducer";
+import {PutContIntoCtgContainer} from "./index";
 
 type Props = {
 }
@@ -45,8 +46,16 @@ const CategoryManagementContainer = ({  }: Props) => {
         }
     }
 
-    const modifyTab = (modify: number) => {
-        if (modify >= 0 && modify <= categories.length && currentIdx !== modify) setCurrentIdx(modify);
+    const modifyTab = async (modify: number) => {
+        if (modify >= 0 && modify <= categories.length && currentIdx !== modify) {
+            await new Promise((resolve) => {
+                if (modify !== 0) {
+                    dispatch(selectCategory(categories[modify - 1]));
+                }
+
+                resolve(true);
+            }).then(() => setCurrentIdx(modify));
+        }
     }
 
     return (
@@ -59,11 +68,8 @@ const CategoryManagementContainer = ({  }: Props) => {
             }
             {
                 (currentIdx >= 1 && categories.length > 0) &&
-                    <div>
-                        CATEGORY DETAILS
-                    </div>
+                    <PutContIntoCtgContainer />
             }
-
         </React.Fragment>
     )
 }

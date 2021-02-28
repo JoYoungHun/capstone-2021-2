@@ -67,7 +67,7 @@ const CrudCategoriesContainer = ({ create }: Props) => {
                                     <TableCell component="th" scope="row">
                                         {row.name}
                                     </TableCell>
-                                    <TableCell align="right">{30}</TableCell>
+                                    <TableCell align="right">{row.content.length}</TableCell>
                                     <TableCell align="right" style={{ display: 'flex', flexDirection: 'row-reverse' }}>
                                         { Btn({ label: '수정', background: '#FFE94A',
                                             onClick: () => { dispatch(selectCategory(row)); setHidden({ ...hidden, hideUpdateModal: false}); } }) }

@@ -27,6 +27,11 @@ export type SignUpType = {
 export type Category = {
     id: number,
     name: string,
+    content: {
+        id: number,
+        title: string,
+        ref: string,
+    }[]
 }
 
 export type Content = {
@@ -45,6 +50,7 @@ export type ContFrame = {
     ref: string,
     title: string,
     captions: string,
+    categories: number[]
 }
 
 export type ContentDetails = {
