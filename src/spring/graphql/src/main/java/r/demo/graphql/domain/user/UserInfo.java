@@ -53,4 +53,8 @@ public class UserInfo {
         this.authority = "ROLE_USER";
         this.profile = file;
     }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
 }

@@ -57,7 +57,7 @@ const CrudContentContainer: React.FunctionComponent<Props> = ({ page, renderItem
                     component={"div"}
                     count={totalElements}
                     page={page - 1}
-                    onChangePage={(_, e) => onMovePage(e)}
+                    onChangePage={(_, e) => onMovePage(e + 1)}
                     rowsPerPage={renderItem}
                     onChangeRowsPerPage={(e) => onModifyRenderItems(parseInt(e.target.value))}
                 />

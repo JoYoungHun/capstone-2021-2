@@ -87,4 +87,8 @@ public class Content {
     public void filterCategory(@NonNull Category filter) {
         this.category = this.category.stream().filter(ctg -> ctg.getId() != filter.getId()).collect(Collectors.toSet());
     }
+
+    public void setRegisterer(@NonNull UserInfo user) {
+        this.registerer = user;
+    }
 }

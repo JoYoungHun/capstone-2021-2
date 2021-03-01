@@ -55,12 +55,15 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
     })
     let { pageProps, hidden, selected } = hiddenViewState;
 
-    const [ allContents, { data, loading }] = useLazyQuery(GET_CONTENTS, {
-        variables: { category: selectedCategory.id, pr: { ...pageProps }, option: 1 }, fetchPolicy: 'network-only' })
+    React.useEffect(() => {
+        allContents({ variables: { pr: { ...pageProps }, option: 1, category: selectedCategory.id }})
+    }, [ pageProps ])
+
+    const [ allContents, { data, loading }] = useLazyQuery(GET_CONTENTS, { fetchPolicy: 'network-only' })
 
     const toggleHiddenDiv = async () => {
         if (hidden) {
-            await allContents();
+            await allContents( { variables: { category: selectedCategory.id, pr: { ...pageProps }, option: 1 }});
         }
         setHiddenViewState({ ...hiddenViewState, hidden: !hidden });
     }
@@ -198,7 +201,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                                                             color="primary"
                                                                         />
                                                                     }
-                                                                    label="Primary"
+                                                                    label=""
                                                                 />
                                                                 <SimpleContCard details={cont} />
                                                                 { index > 0 && index % 3 === 0 && <br />}
@@ -213,7 +216,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                                         count={data.allContents.totalElements ? data.allContents.totalElements : 0}
                                                         page={pageProps.page - 1}
                                                         onChangePage={(_, e) => {
-                                                            setHiddenViewState({ ...hiddenViewState, pageProps: { ...pageProps, page: e }})}}
+                                                            setHiddenViewState({ ...hiddenViewState, pageProps: { ...pageProps, page: e + 1 }})}}
                                                         rowsPerPage={pageProps.renderItem}
                                                         onChangeRowsPerPage={(e) => {
                                                             setHiddenViewState({ ...hiddenViewState,
