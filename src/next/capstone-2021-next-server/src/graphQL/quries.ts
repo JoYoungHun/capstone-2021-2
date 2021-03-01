@@ -1,11 +1,16 @@
 import { gql } from "@apollo/client";
 
 export const GET_USERS = gql`
-    query allUsers {
-        allUsers {
-            id
-            email
-            name
+    query allUsers($pr: PaginationInput!, $authority: String) {
+        allUsers(pr: $pr, authority: $authority) {
+            users {
+                id
+                name
+                email
+                authority
+                created
+            }
+            totalElements
         }
     }  
 `;
@@ -167,4 +172,22 @@ export const DELETE_REMOVE_CONTENT_IN_CATEGORY = gql`
             message
         }
     }
+`
+
+export const PUT_UPDATE_USER_AUTHORITY = gql`
+    mutation updateUserAuthority($id: Long!, $authority: String!) {
+        updateUserAuthority(id: $id, authority: $authority) {
+            status
+            message
+        }
+    }
+`
+
+export const DELETE_REMOVE_USER = gql`
+    mutation deleteUser($id: Long!) {
+        deleteUser(id: $id) {
+            status
+            message
+        }
+    }   
 `

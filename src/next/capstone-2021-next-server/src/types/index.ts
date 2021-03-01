@@ -4,6 +4,7 @@ export type User = {
     name: string
     profile?: string
     authority: string
+    created?: string
 }
 
 export type City = {
