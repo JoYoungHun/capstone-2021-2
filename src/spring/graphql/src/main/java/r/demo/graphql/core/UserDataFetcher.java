@@ -15,6 +15,7 @@ import r.demo.graphql.annotation.GqlType;
 import r.demo.graphql.config.JwtTokenProvider;
 import r.demo.graphql.domain.content.Content;
 import r.demo.graphql.domain.content.ContentRepo;
+import r.demo.graphql.domain.files.FileInfoRepo;
 import r.demo.graphql.domain.user.UserInfo;
 import r.demo.graphql.domain.user.UserInfoRepo;
 import r.demo.graphql.response.DefaultResponse;
@@ -30,14 +31,17 @@ import java.util.List;
 public class UserDataFetcher {
     private final PasswordEncoder encoder;
     private final UserInfoRepo userRepo;
+    private final FileInfoRepo fileRepo;
     private final ContentRepo contentRepo;
     private final JwtTokenProvider jwtTokenProvider;
     private final List<String> authorities = Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY");
 
-    public UserDataFetcher(PasswordEncoder encoder, UserInfoRepo userRepo, ContentRepo contentRepo,
+    public UserDataFetcher(PasswordEncoder encoder,
+                           UserInfoRepo userRepo, FileInfoRepo fileRepo, ContentRepo contentRepo,
                            @Lazy JwtTokenProvider jwtTokenProvider) {
         this.encoder = encoder;
         this.userRepo = userRepo;
+        this.fileRepo = fileRepo;
         this.contentRepo = contentRepo;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -66,6 +70,21 @@ public class UserDataFetcher {
                 lhm.put("totalElements", 0L);
             }
             return lhm;
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> myInfo() {
+        return environment -> {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            try {
+                return userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+            } catch (IllegalArgumentException e) {
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         };
     }
 
@@ -110,7 +129,7 @@ public class UserDataFetcher {
                 String id = environment.getArgument("id"),
                         password = environment.getArgument("password"),
                         name = environment.getArgument("name");
-                if (userRepo.existsByEmail(id)) throw new RuntimeException();
+                if ("anonymousUser".equals(id) || userRepo.existsByEmail(id)) throw new RuntimeException();
                 else {
                     userRepo.save(UserInfo.builder()
                             .email(id).password(encoder.encode(password)).name(name).build());
@@ -170,6 +189,34 @@ public class UserDataFetcher {
             } catch (IllegalArgumentException e) {
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (Exception e) {
+                return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.MUTATION)
+    public DataFetcher<?> updateUserInfo() {
+        return environment -> {
+            LinkedHashMap<String, Object> req = environment.getArgument("input");
+            long id = (long) req.get("id");
+            String password = req.get("password") != null ? req.get("password").toString() : null,
+                    name = req.get("name").toString();
+            Integer fileId = req.get("profile") != null ? Integer.parseInt(req.get("profile").toString()) : null;
+            try {
+                UserInfo user = userRepo.findById(id).orElseThrow(IllegalArgumentException::new);
+                if (!name.equals(user.getName()))
+                    user.setName(name);
+                if (password != null)
+                    user.setPassword(encoder.encode(password));
+                if (fileId != null)
+                    user.setProfile(fileRepo.findById((long) fileId).orElseThrow(IllegalArgumentException::new));
+                userRepo.save(user);
+                return new DefaultResponse(HttpStatus.OK.value());
+            } catch (RuntimeException e) {
+                return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
             }
         };

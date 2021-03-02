@@ -3,6 +3,7 @@ package r.demo.graphql.domain.user;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import r.demo.graphql.domain.files.FileInfo;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(schema = "demo", name = "user")
@@ -52,9 +54,5 @@ public class UserInfo {
         this.name = name;
         this.authority = "ROLE_USER";
         this.profile = file;
-    }
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
     }
 }

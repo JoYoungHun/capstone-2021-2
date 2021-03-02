@@ -2,12 +2,11 @@ import React from 'react';
 import { NextPage } from "next";
 import { useMutation } from "@apollo/client";
 import { NextRouter, useRouter } from "next/router";
-import Notiflix from 'notiflix';
+import { Button, CircularProgress, TextField } from "@material-ui/core";
 import { SignUpType } from "../../src/types";
 import { POST_SIGN } from "../../src/graphQL/quries";
-import { CircularProgress } from "@material-ui/core";
-import TextInput from "../../src/components/TextInput";
-import GradientBtn from "../../src/components/GradientBtn";
+import Cookies from 'js-cookie';
+import Notiflix from 'notiflix';
 
 type Props = {
 
@@ -45,36 +44,32 @@ const Sign: NextPage<Props> = ({  }) => {
 
     return (
         <div style={{ width: '100%', height: '100vh', overflow: 'scroll', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-            <div style={{ width: '323pt', border: 0, borderRadius: '30pt', height: '500pt',
-                display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '12pt' }}>
-                    <label style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '21pt', color: '#000', width: '150pt' }}>
-                        Id
-                    </label>
-                    <TextInput value={email} onChangeValue={(val) => setSign({ ...sign, email: val })} width={'150pt'} height={'40pt'} />
+            <div style={{ width: '260pt', border: 0, borderRadius: '30pt', height: '500pt',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '12pt' }}>
+                    <TextField label={'Email'} value={email} style={{ width: '100%' }}
+                               onChange={(e) => setSign({ ...sign, email: e.target.value })}/>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '12pt' }}>
-                    <label style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '21pt', color: '#000', width: '150pt' }}>
-                        Password
-                    </label>
-                    <TextInput type={'password'} value={password} onChangeValue={(val) => setSign({ ...sign, password: val })} width={'150pt'} height={'40pt'} />
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '12pt' }}>
+                    <TextField label={'Password'} value={password} style={{ width: '100%' }} type={'password'}
+                               onChange={(e) => setSign({ ...sign, password: e.target.value })}/>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '12pt' }}>
-                    <label style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '21pt', color: '#000', width: '150pt' }} placeholder={'이름을 입력해주세요.'}>
-                        Name
-                    </label>
-                    <TextInput value={name} onChangeValue={(val) => setSign({ ...sign, name: val })} width={'150pt'} height={'40pt'} />
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '12pt' }}>
+                    <TextField label={'Name'} value={name} style={{ width: '100%' }}
+                               onChange={(e) => setSign({ ...sign, name: e.target.value })}/>
                 </div>
-                <GradientBtn props={{ fromColor: '#A4C639', toColor: '#e3eaa7', other: { width: '100%', height: '50pt' } }}
-                             onClick={() => CALL_SIGN_API()}>
+                <Button onClick={() => CALL_SIGN_API()}
+                        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '200pt',
+                            backgroundColor: Cookies.get('dove-dark-mode') === 'true' ? '#b2c2bf' : '#1976d2', marginTop: '16pt' }}>
                     { loading ?
                         <CircularProgress />
                         :
-                        <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '14pt' }}>
+                        <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '14pt',
+                            color: Cookies.get('dove-dark-mode') === 'true' ? '#000' : '#FFF' }}>
                             회원가입
                         </span>
                     }
-                </GradientBtn>
+                </Button>
             </div>
         </div>
     )

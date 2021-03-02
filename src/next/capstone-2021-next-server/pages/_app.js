@@ -15,15 +15,19 @@ import { Provider } from 'react-redux';
 import reducer from "../src/modules";
 import Cookies from 'js-cookie';
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import ThemeToggleBtn from "../src/components/ThemeToggleBtn";
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware()))
 
 const App = ({ Component, pageProps, apollo }) => {
     const [ toggle, setToggle ] = React.useState(Cookies.get('dove-dark-mode'));
-    const toggleTheme = () => {
+    const toggleTheme = async () => {
         const toggled = !toggle;
-        setToggle(toggled)
-        Cookies.set('dove-dark-mode', toggled);
+        await new Promise((resolve) => {
+            Cookies.set('dove-dark-mode', toggled);
+            resolve(true);
+        }).then(() => setToggle(toggled))
     }
 
     return (
@@ -35,11 +39,7 @@ const App = ({ Component, pageProps, apollo }) => {
                 </Head>
                 <MaterialUiThemeProvider theme={theme}>
                     <StyledThemeProvider theme={toggle ? darkTheme : lightTheme}>
-                        <button style={{ position: 'absolute', left: '10pt', top: '10pt', zIndex: 10, cursor: 'pointer',
-                            width: '60pt', height: '20pt', border: '0px solid #000', borderRadius: '12pt', backgroundColor: !toggle ? 'gray' : '#FFF' }}
-                            onClick={() => toggleTheme()}>
-                            <Image src={!toggle ? "/crescentBg.png" : "/sun-icon.jpg"} width={'20pt'} height={'20pt'} />
-                        </button>
+                        <ThemeToggleBtn toggle={toggle} modifyTheme={toggleTheme} />
                         <GlobalStyles />
                         <Component {...pageProps} />
                     </StyledThemeProvider>

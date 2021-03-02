@@ -36,7 +36,7 @@ const D_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close })
 
     return (
         <Modal open={!hidden} style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            <div style={{ width: '400pt', background: '#FFF 0% 0% no-repeat padding-box', height: '200pt', padding: '8pt',
+            <div style={{ width: '400pt', background: '#FFF 0% 0% no-repeat padding-box', height: '120pt', padding: '8pt',
                 display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <p style={{ color: '#000', fontSize: '11pt', fontWeight: 'bold' }}>
@@ -49,16 +49,10 @@ const D_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close })
                         {`사용자 ${details.name}을(를) 정말로 삭제하시겠습니까?`}
                     </span>
                 </div>
-                <div style={{ width: '100%', height: '80pt', display: 'flex' }}>
-                    <Button style={{ width: '50%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'gray' }}
-                            onClick={() => close()}>
-                        <span style={{ color: '#F2F2F2', fontWeight: 'bold', fontSize: '15pt' }}>
-                            취소
-                        </span>
-                    </Button>
-                    <Button style={{ width: '50%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFE94A' }}
+                <div style={{ width: '100%', height: '30pt', display: 'flex' }}>
+                    <Button style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'red' }}
                             onClick={() => onDeleteUserInfo()}>
-                        <span style={{ color: '#000', fontWeight: 'bold', fontSize: '15pt' }}>
+                        <span style={{ color: '#FFF', fontWeight: 'bold', fontSize: '15pt' }}>
                             삭제
                         </span>
                     </Button>

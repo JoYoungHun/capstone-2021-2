@@ -15,6 +15,22 @@ export const GET_USERS = gql`
     }  
 `;
 
+export const GET_MY_DETAIL = gql`
+    query myInfo {
+        myInfo{
+            id
+            email
+            name
+            authority
+            created
+            profile {
+                id
+                url
+            }
+        }
+    }
+`
+
 export const GET_USER_DETAIL = gql`
     query user {
         user {
@@ -186,6 +202,15 @@ export const PUT_UPDATE_USER_AUTHORITY = gql`
 export const DELETE_REMOVE_USER = gql`
     mutation deleteUser($id: Long!) {
         deleteUser(id: $id) {
+            status
+            message
+        }
+    }   
+`
+
+export const PUT_UPDATE_USER_INFO = gql`
+    mutation updateUserInfo($input: UpdateUserInput!) {
+        updateUserInfo(input: $input) {
             status
             message
         }

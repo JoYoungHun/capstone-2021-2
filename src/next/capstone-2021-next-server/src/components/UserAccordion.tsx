@@ -18,7 +18,8 @@ const UserAccordion = React.memo(({ authority }: Props) => {
 
     return (
         <div>
-            <AccountCircleRounded style={{ cursor: 'pointer', fontSize: '50pt' }} color={Cookies.get('dove-dark-mode') === 'true' ? 'primary' : 'disabled'}
+            <AccountCircleRounded style={{ cursor: 'pointer', fontSize: '50pt', marginRight: '10pt' }}
+                                  color={Cookies.get('dove-dark-mode') === 'true' ? 'primary' : 'disabled'}
                                   onClick={(e) => setAnchorEl(e.currentTarget)} />
             <StyledMenu
                 id="customized-menu"
@@ -27,13 +28,13 @@ const UserAccordion = React.memo(({ authority }: Props) => {
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
             >
-                <StyledMenuItem>
+                <StyledMenuItem onClick={() => router.push('/mypage').then()}>
                     <ListItemIcon>
                         <FaceRounded fontSize="small" />
                     </ListItemIcon>
                     <ListItemText primary="My page" />
                 </StyledMenuItem>
-                <StyledMenuItem onClick={() => { window.open('https://github.com/rhyme884/capstone2021-front'); setAnchorEl(null); }}>
+                <StyledMenuItem onClick={() => { window.open('https://github.com/kookmin-sw/capstone-2021-2'); setAnchorEl(null); }}>
                     <ListItemIcon>
                         <GitHub fontSize="small" />
                     </ListItemIcon>

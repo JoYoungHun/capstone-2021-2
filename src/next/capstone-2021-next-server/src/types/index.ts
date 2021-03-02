@@ -2,15 +2,12 @@ export type User = {
     id: number
     email: string
     name: string
-    profile?: string
+    profile?: {
+        id: number,
+        url: string,
+    }
     authority: string
     created?: string
-}
-
-export type City = {
-    id: number
-    name: string
-    population: number
 }
 
 export type LoginType = {

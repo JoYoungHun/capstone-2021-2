@@ -44,6 +44,11 @@ dependencies {
     // https://mvnrepository.com/artifact/edu.stanford.nlp/stanford-corenlp
     implementation group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.2.0'
 
+    // AWS
+    implementation platform('software.amazon.awssdk:bom:2.5.29')
+    implementation 'software.amazon.awssdk:s3'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.470'
+
     // google translate libs
     implementation platform('com.google.cloud:libraries-bom:16.4.0')
     compile 'com.google.cloud:google-cloud-translate'
