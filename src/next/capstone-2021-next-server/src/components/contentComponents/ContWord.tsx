@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLazyQuery } from "@apollo/client";
-import { AddRounded } from "@material-ui/icons";
+import {AddRounded, DescriptionRounded, PublishRounded, SettingsRounded} from "@material-ui/icons";
 import { GET_TRANSLATE } from "../../graphQL/quries";
 import { storeWord } from "../../reducers/ContReducer";
 import { RootState } from "../../modules";
@@ -9,16 +9,25 @@ import { YellowBtn } from "./commons";
 import { Paragraph } from "../../types";
 import WordComponent from "./WordComponent";
 import Notiflix from 'notiflix';
+import {HoverEvtDiv} from "../commonStyled";
+import {SERVER_ADDRESS} from "../../env";
+import Cookies from 'js-cookie';
+import Axios, {AxiosResponse} from 'axios';
+import { getWordUploadExcelFormat } from "../../../utils/func";
+import {NextRouter, useRouter} from "next/router";
 
 type Props = {
     modifyTab: (modified: number) => void
 }
 
 const ContWord: React.FunctionComponent<Props> = ({ modifyTab }) => {
+    const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const content = useSelector((state: RootState) => state.ContReducer);
     let { words } = content;
+    const [ hiddenExcelOptions, setHiddenExcelOptions ] = React.useState<boolean>(true);
 
+    const excelFile = useRef<any>();
     const onRouteToSentenceTab = () => {
         if (words.length === 0) {
             Notiflix.Report.Failure('단어를 한 세트 이상 입력해주세요.', 'Please fill out word fields more than 1 set.', 'OK! I will check.');
@@ -63,6 +72,34 @@ const ContWord: React.FunctionComponent<Props> = ({ modifyTab }) => {
         }
     }
 
+    const uploadWordsAsExcel = async (e: File) => {
+        const token = Cookies.get('dove-token')
+        if (token) {
+            Notiflix.Loading.Dots('Parsing excel...')
+            let form = new FormData();
+            form.append('excel', e)
+            await Axios.post(`${SERVER_ADDRESS}/file/excel/upload`, form, {
+                headers: { Authorization: token }
+            })
+                .then((res: AxiosResponse | false) => {
+                    if (!res || res.status === 500) {
+                        Notiflix.Notify.Failure('Network Error')
+                    } else if (res && res.status === 200 && res.data && res.data.status === 200 && res.data.paragraphs) {
+                        dispatch(storeWord([ ...res.data.paragraphs ]))
+                        Notiflix.Notify.Success('Successfully parsed.')
+                    } else if (res && res.status === 401) {
+                        Notiflix.Notify.Failure('인증 기한이 만료됐습니다.\n로그인 페이지로 이동합니다.')
+                        router.push('/login').then()
+                    } else if (res && res.status === 406) {
+                        Notiflix.Notify.Failure('접근 권한이 없습니다.');
+                        router.back()
+                    } else {
+                        Notiflix.Report.Failure('잘못된 요청 형식입니다.')
+                    }
+                })
+        }
+    }
+
     const [ translate, {  }] = useLazyQuery(GET_TRANSLATE, { onCompleted: data => {
         let temporary: Paragraph[] = [ ...words ];
         temporary[data.translate.idx].kor = data.translate.translated[0];
@@ -72,6 +109,36 @@ const ContWord: React.FunctionComponent<Props> = ({ modifyTab }) => {
     return (
         <React.Fragment>
             <div style={{ width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                             onClick={() => setHiddenExcelOptions(!hiddenExcelOptions)}>
+                            <span style={{ fontFamily: 'Helvetica Neue, Regular', fontSize: '18px', color: '#707070' }}>엑셀 설정</span>
+                            <SettingsRounded style={{ marginLeft: '11px', fontSize: '24pt' }} />
+                        </div>
+                        {
+                            !hiddenExcelOptions &&
+                            <div style={{ background: '#FFF 0% 0% no-repeat padding-box', display: 'flex', flexDirection: 'column', alignItems: 'flex-end',
+                                border: 0, borderRadius: '5pt', boxShadow: '0px 3px 6px #00000029', paddingLeft: '12pt', paddingBottom: '8pt' }}>
+                                <HoverEvtDiv style={{ width: '100%', display: 'flex',
+                                    justifyContent: 'flex-end', alignItems: 'center', marginTop: '6px', cursor: 'pointer' }}
+                                             onClick={() => getWordUploadExcelFormat()}>
+                                    <span style={{ fontFamily: 'Helvetica Neue, Regular', fontSize: '18px', color: '#707070' }}>엑셀 양식 다운로드</span>
+                                    <DescriptionRounded style={{ marginLeft: '11px', fontSize: '24pt', color: '#000' }} />
+                                </HoverEvtDiv>
+                                <HoverEvtDiv style={{ width: '100%', display: 'flex',
+                                    justifyContent: 'flex-end', alignItems: 'center', marginTop: '6px', cursor: 'pointer' }}
+                                             onClick={() => excelFile && excelFile.current.click()}>
+                                    <span style={{ fontFamily: 'Helvetica Neue, Regular', fontSize: '18px', color: '#707070' }}>엑셀 파일로 한번에 올리기</span>
+                                    <PublishRounded style={{ marginLeft: '11px', fontSize: '24pt', color: '#000' }} />
+                                    <input hidden ref={excelFile} type={'file'} onChange={(e) =>
+                                        e.target.files && e.target.files.length > 0 && uploadWordsAsExcel(e.target.files[0])
+                                            .then(() => Notiflix.Loading.Remove(500))} />
+                                </HoverEvtDiv>
+                            </div>
+                        }
+                    </div>
+                </div>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
