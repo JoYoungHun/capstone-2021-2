@@ -6,6 +6,7 @@ schema {
 
 type Query {
     allUsers(pr: PaginationInput!, authority: String): PaginatedUserResponse!
+    myInfo: User
     user: User
     login(id: String!, password: String!): Token
 
@@ -22,6 +23,7 @@ type Mutation {
     sign(id: String!, password: String!, name: String!): Int
     updateUserAuthority(id: Long!, authority: String!): NoResponse!
     deleteUser(id: Long!): NoResponse!
+    updateUserInfo(input: UpdateUserInput!): NoResponse!
 
     createCategory(title: String!): Int!
     updateCategory(id: Int!, title: String!): Int!
@@ -41,6 +43,7 @@ type User {
     name: String!
     authority: String
     created: String
+    profile: Profile
 }
 
 # Response Type
@@ -118,6 +121,13 @@ input PaginationInput {
     sort: String
 }
 
+input UpdateUserInput {
+    id: Long!
+    password: String
+    name: String!
+    profile: Int
+}
+
 type PaginatedContentResponse {
     contents: [Content!]!
     totalElements: Int!
@@ -126,6 +136,11 @@ type PaginatedContentResponse {
 type PaginatedUserResponse {
     users: [User!]!
     totalElements: Int!
+}
+
+type Profile {
+    id: Long!
+    url: String!
 }
 
 scalar Long
