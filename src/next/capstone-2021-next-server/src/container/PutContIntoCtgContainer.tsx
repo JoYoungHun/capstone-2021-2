@@ -59,6 +59,10 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
         allContents({ variables: { pr: { ...pageProps }, option: 1, category: selectedCategory.id }})
     }, [ pageProps ])
 
+    React.useEffect(() => {
+        setHiddenViewState({ pageProps: { ...pageProps, page: 1 }, hidden: true, selected: [] })
+    }, [ selectedCategory ])
+
     const [ allContents, { data, loading }] = useLazyQuery(GET_CONTENTS, { fetchPolicy: 'network-only' })
 
     const toggleHiddenDiv = async () => {
