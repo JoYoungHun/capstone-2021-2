@@ -80,7 +80,8 @@ const AppNavigation: React.FunctionComponent<Props> = React.memo(({ }) => {
                                 <UserAccordion authority={data?.user.authority} />
                             </React.Fragment>
                             :
-                            <Button style={{ width: '70pt', height: '40pt', background: '#FFE94A 0% 0% no-repeat padding-box', borderRadius: '10pt', border: 0, cursor: 'pointer' }}
+                            <Button style={{ width: '70pt', height: '40pt', background: '#FFE94A 0% 0% no-repeat padding-box'
+                                , borderRadius: '10pt', border: 0, cursor: 'pointer', marginRight: '10pt' }}
                                     onClick={() => router.push('/login').then()}>
                                         <span style={{ fontSize: '12pt', fontWeight: 'bold' }}>
                                             Login
