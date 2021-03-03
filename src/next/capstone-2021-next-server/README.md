@@ -13,3 +13,7 @@
 # Versions
 * Node v14.2.0
 * yarn 1.21.1
+
+# Notification
+    Functions may not work properly in some Explorers
+    IE, Safari, Opera not supported. (even using polyfill, can't support these browsers)
