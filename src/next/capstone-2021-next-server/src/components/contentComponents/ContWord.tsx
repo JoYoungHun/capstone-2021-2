@@ -122,13 +122,15 @@ const ContWord: React.FunctionComponent<Props> = ({ modifyTab }) => {
                                 border: 0, borderRadius: '5pt', boxShadow: '0px 3px 6px #00000029', paddingLeft: '12pt', paddingBottom: '8pt' }}>
                                 <HoverEvtDiv style={{ width: '100%', display: 'flex',
                                     justifyContent: 'flex-end', alignItems: 'center', marginTop: '6px', cursor: 'pointer' }}
-                                             onClick={() => getWordUploadExcelFormat()}>
+                                             onClick={() => getWordUploadExcelFormat()}
+                                             borderColor={Cookies.get('dove-dark-mode') ? '#FFF' : undefined}>
                                     <span style={{ fontFamily: 'Helvetica Neue, Regular', fontSize: '18px', color: '#707070' }}>엑셀 양식 다운로드</span>
                                     <DescriptionRounded style={{ marginLeft: '11px', fontSize: '24pt', color: '#000' }} />
                                 </HoverEvtDiv>
                                 <HoverEvtDiv style={{ width: '100%', display: 'flex',
                                     justifyContent: 'flex-end', alignItems: 'center', marginTop: '6px', cursor: 'pointer' }}
-                                             onClick={() => excelFile && excelFile.current.click()}>
+                                             onClick={() => excelFile && excelFile.current.click()}
+                                             borderColor={Cookies.get('dove-dark-mode') ? '#FFF' : undefined}>
                                     <span style={{ fontFamily: 'Helvetica Neue, Regular', fontSize: '18px', color: '#707070' }}>엑셀 파일로 한번에 올리기</span>
                                     <PublishRounded style={{ marginLeft: '11px', fontSize: '24pt', color: '#000' }} />
                                     <input hidden ref={excelFile} type={'file'} onChange={(e) =>
