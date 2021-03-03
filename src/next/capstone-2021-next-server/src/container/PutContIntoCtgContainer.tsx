@@ -179,7 +179,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                     </span>
                                 </Button>
                             </div>
-                            <div style={{ width: '100%', height: '500pt', overflowY: 'scroll', background: '#FFF 0% 0% no-repeat padding-box', boxShadow: '0p 3px 6px #00000029',
+                            <div style={{ width: '100%', height: '500pt', overflowY: 'scroll', boxShadow: '0p 3px 6px #00000029',
                                 border: '0.25px solid #00000029', borderRadius: '6pt', marginTop: '8pt' }}>
                                 {
                                     loading &&
@@ -188,7 +188,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                 {
                                     data && data.allContents && data.allContents.contents.length > 0 &&
                                         <div style={{ width: '100%', padding: '8pt' }}>
-                                            <span style={{ fontSize: '9pt', fontWeight: 'lighter', color: '#000' }}>
+                                            <span style={{ fontSize: '9pt', fontWeight: 'lighter' }}>
                                                 새로운 컨텐츠를 카테고리에 추가해보세요.
                                             </span>
                                             <div style={{ paddingLeft: '8pt' }}>

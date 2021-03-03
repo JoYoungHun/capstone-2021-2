@@ -41,6 +41,6 @@ export const SignatureBtn = styled.div`
 export const HoverEvtDiv = styled.div`
     cursor: pointer;
     &: hover {
-        background-color: ${props => props.bgColor ? props.bgColor : '#FFE94A'}
+        border: 2px solid ${props => props.borderColor ? props.borderColor : "#00000029"};
     }   
 `

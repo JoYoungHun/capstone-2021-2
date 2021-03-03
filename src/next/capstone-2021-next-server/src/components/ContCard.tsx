@@ -84,13 +84,15 @@ const ContCard: React.FunctionComponent<Props> = ({ details, openDeleteModal }) 
                         <div style={{ width: '100pt', height: '100pt', display: 'flex', flexDirection: 'column',
                             justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif' }}>
                             <HoverEvtDiv style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '30pt' }}
-                                         onClick={() => openDeleteModal(details.id, details.title)}>
+                                         onClick={() => openDeleteModal(details.id, details.title)}
+                                         borderColor={Cookies.get('dove-dark-mode') ? '#FFF' : undefined}>
                                 <span style={{ fontWeight: 'bold' }}>
                                     컨텐츠 삭제하기
                                 </span>
                             </HoverEvtDiv>
                             <br />
-                            <HoverEvtDiv style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '30pt' }}>
+                            <HoverEvtDiv style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '30pt' }}
+                                         borderColor={Cookies.get('dove-dark-mode') ? '#FFF' : undefined}>
                                 <span style={{ fontWeight: 'bold' }}>
                                     컨텐츠로 이동
                                 </span>
