@@ -35,7 +35,10 @@ const ContentManagementContainer: React.FunctionComponent<Props> = ({ preventSSR
     const [ currentIdx, setCurrentIdx ] = React.useState<number>(0);
 
     const modifyTab = (modify: number) => {
-        if (modify >= 0 && modify <= categories.length && currentIdx !== modify) setCurrentIdx(modify);
+        if (modify >= 0 && modify <= categories.length && currentIdx !== modify) {
+            setCurrentIdx(modify);
+            setPaginate({ ...paginate, page: 1 })
+        };
     }
 
     React.useEffect(() => {

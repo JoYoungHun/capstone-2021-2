@@ -6,6 +6,7 @@ export { default as SudoNavigation } from './SudoNavigation';
 export { default as CategoryTabs } from './CategoryTabs';
 export { default as ContCard } from './ContCard';
 export { default as SimpleContCard } from './SimpleContCard';
+export { default as PreviewHeader } from './PreviewHeader';
 
 export { default as ContFramework } from './contentComponents/ContFramework';
 export { default as ContSentence } from './contentComponents/ContSentence';

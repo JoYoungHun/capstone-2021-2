@@ -67,6 +67,11 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
         }
     });
 
+    const onRouteToPreview = (id: number) => {
+        Notiflix.Loading.Dots('Routing...');
+        return router.push(`/preview?ct=${id}`);
+    }
+
     const { refetch } = useQuery(GET_CONTENTS, { variables: { category: -1, pr: { page: currentPage.current, renderItem } },
         onCompleted: response => {
         if (response.allContents) {
@@ -95,7 +100,7 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
                 border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
                 {
                     scrollViewState.contents.map((cont: ContentDetails) => (
-                        <SimpleContCard key={cont.id + Math.random()} details={cont} />
+                        <SimpleContCard key={cont.id + Math.random()} details={cont} onClick={() => onRouteToPreview(cont.id).then(() => Notiflix.Loading.Remove(500))}/>
                     ))
                 }
                 {

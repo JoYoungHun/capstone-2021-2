@@ -131,6 +131,7 @@ export const GET_PARSE = gql`
             words {
                 eng
                 kor
+                pos
             }
         }
     }
@@ -215,4 +216,31 @@ export const PUT_UPDATE_USER_INFO = gql`
             message
         }
     }   
+`
+
+export const GET_CONTENT_SUMMARY = gql`
+    query summary($content: Long!, $level: Int!, $page: Int!) {
+        summary(content: $content, level: $level, page: $page) {
+            shells {
+                originalText
+                translatedKor
+                tokens {
+                    eng
+                    kor
+                    pos
+                    highlight
+                }
+            }
+        }
+    }
+`
+
+export const GET_CONTENT = gql`
+    query content($id: Long!) {
+        content {
+            id
+            title
+            ref
+        }
+    }
 `
