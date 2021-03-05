@@ -7,12 +7,14 @@ import ellipsis from 'text-ellipsis';
 
 type Props = {
     details: ContentDetails
+    onClick?: () => Promise<any>
 }
 
-const SimpleContCard: React.FunctionComponent<Props> = ({ details }) => {
+const SimpleContCard: React.FunctionComponent<Props> = ({ details, onClick }) => {
     return (
         <HoverEvtDiv style={{ paddingLeft: '2pt', display: 'flex', alignItems: 'center', width: '320pt', height: '140pt', borderRadius: '12pt', marginRight: '18pt' }}
-                     borderColor={Cookies.get('dove-dark-mode') ? '#FFF' : '#000'}>
+                     borderColor={Cookies.get('dove-dark-mode') ? '#FFF' : '#000'}
+                     onClick={() => onClick && onClick()}>
             <img src={`http://img.youtube.com/vi/${parseYoutube(details.ref)}/0.jpg`}
                  style={{ objectFit: 'cover' }}
                  width={'260pt'} height={'147pt'} alt={details.title} />

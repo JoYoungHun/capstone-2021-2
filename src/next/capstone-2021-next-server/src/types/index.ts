@@ -41,7 +41,8 @@ export type Content = {
 export type Paragraph = {
     id?: number
     eng: string,
-    kor: string
+    kor: string,
+    pos?: string,
 }
 
 export type ContFrame = {
@@ -65,4 +66,17 @@ export type Paginate = {
     page: number,
     renderItem: number,
     sort?: string,
+}
+
+export type SummaryShell = {
+    originalText: string,
+    translatedKor: string,
+    tokens: SummaryToken[]
+}
+
+export type SummaryToken = {
+    eng: string,
+    kor: string,
+    pos: string,
+    highlight: boolean
 }
