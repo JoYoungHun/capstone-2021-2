@@ -46,6 +46,7 @@ export type Paragraph = {
 }
 
 export type ContFrame = {
+    id?: number,
     ref: string,
     title: string,
     captions: string,
@@ -79,4 +80,16 @@ export type SummaryToken = {
     kor: string,
     pos: string,
     highlight: boolean
+}
+
+export type Solved = {
+    id: number,
+    eng: string,
+    tried: number,
+    passed: boolean
+}
+
+export type IndexProps = {
+    currentIdx: number,
+    tried: number,
 }

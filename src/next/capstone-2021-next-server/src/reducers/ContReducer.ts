@@ -13,6 +13,7 @@ type ContActions = ReturnType<typeof storeFrame>
     | ReturnType<typeof storeContent>;
 
 type ContentState = {
+    id?: number
     frame: ContFrame
     words: Paragraph[],
     sentences: Paragraph[]
@@ -29,9 +30,9 @@ const initialState: ContentState = {
     sentences: []
 }
 
-export const storeFrame = ({ title, ref, captions, categories }: ContFrame) => ({
+export const storeFrame = ({ title, ref, captions, categories, id }: ContFrame) => ({
     type: STORE_FRAME,
-    payload: { frame: { title, ref, captions, categories} }
+    payload: { frame: { title, ref, captions, categories, id } }
 });
 
 export const storeWord = ( words: Paragraph[] ) => ({

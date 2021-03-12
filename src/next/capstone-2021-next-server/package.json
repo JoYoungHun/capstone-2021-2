@@ -29,6 +29,7 @@
     "react-youtube": "^7.13.1",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
+    "speak-tts": "^2.0.8",
     "styled-components": "^5.2.1",
     "subscriptions-transport-ws": "^0.9.18",
     "text-ellipsis": "^1.0.3"

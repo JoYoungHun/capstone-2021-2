@@ -1,0 +1,112 @@
+import React from 'react';
+import { NextRouter, useRouter } from "next/router";
+import { useSelector, useDispatch } from 'react-redux';
+import { useQuery } from "@apollo/client";
+import { GET_CHOICES } from "../../../graphQL/quries";
+import { RootState } from "../../../modules";
+import { IndexProps, Paragraph } from "../../../types";
+import { storePassedProblem } from "../../../reducers/ProbReducer";
+import { speakProps } from "../../../../utils/propTypes";
+import Choose from "../Choose";
+import Notiflix from 'notiflix';
+import Speech from 'speak-tts';
+import {VolumeUp} from "@material-ui/icons";
+
+type Props = {
+
+}
+
+const ObjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
+    const router: NextRouter = useRouter();
+    const dispatch = useDispatch();
+    const sentences = useSelector((state: RootState) => state.ProbReducer);
+    let { problems } = sentences;
+
+    const [ indexes, setIndexes ] = React.useState<IndexProps>({
+        currentIdx: 0,
+        tried: 0,
+    })
+    let { currentIdx, tried } = indexes;
+
+    const onChooseAnswer = async (choose: Paragraph) => {
+        const currentTry: number = tried + 1;
+        const problem: Paragraph = problems[currentIdx];
+        if ((problem.id === choose.id) || (problem.id !== choose.id && currentTry === 3)) {
+            if (problem.id === choose.id) Notiflix.Notify.Success('Correct!');
+            else Notiflix.Notify.Failure('Failed... NexT!');
+
+            if (currentIdx < problems.length - 1) {
+                dispatch(storePassedProblem([ ...sentences.passed, { id: problem.id, eng: problem.eng, passed: currentTry !== 3, tried: currentTry }]))
+                await new Promise((resolve) => {
+                    refetch({ option: 1, except: problems[currentIdx + 1].id })
+                    resolve(true);
+                }).then(() => setIndexes({ currentIdx: currentIdx + 1, tried: 0 }))
+            } else {
+                // TODO: prevent currentIdx + 1 > length
+                Notiflix.Confirm.Show(
+                    'Test Completed!',
+                    'I want to leave it to my report!',
+                    'Yes',
+                    'No',
+                    () => Notiflix.Report.Success('준비중입니다...'),
+                    () => router.back(),
+                )
+            }
+        } else {
+            Notiflix.Notify.Failure('Failed...');
+            setIndexes({ ...indexes, tried: tried + 1 });
+        }
+    }
+
+    const speech = new Speech();
+    speech.init({
+        'volume': 1,
+        'lang': 'en-US',
+        'rate': 1,
+        'pitch': 1,
+        'voice': 'Google US English Male',
+        'splitSentences': true,
+    });
+
+    const { data, loading, refetch } = useQuery(GET_CHOICES, { variables: { option: 1, except: problems[0].id }})
+    return (
+        <div style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
+            <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <span style={{ fontFamily: 'sans-serif', fontSize: '32pt', fontWeight: 'bold' }}>
+                    { problems[currentIdx].kor }
+                </span>
+                <br />
+                <span>
+                    {`도전횟수 ${tried + 1}`}
+                </span>
+                <br />
+                <VolumeUp fontSize={'large'} style={{ color: '#FFE94A', cursor: 'pointer' }}
+                          onClick={() => speech.speak({
+                              ...speakProps,
+                              text: problems[currentIdx].eng,
+                          }).then()} />
+            </div>
+            <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center' }}>
+                {
+                    loading || !data ?
+                        <span>
+                            Fetching choices....
+                        </span>
+                        :
+                        <React.Fragment>
+                            <div style={{ width: '100%', height: '100pt', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Choose text={data.choices.problems[0].eng} onClick={() => onChooseAnswer(data.choices.problems[0])} />
+                                <Choose text={data.choices.problems[1].eng} onClick={() => onChooseAnswer(data.choices.problems[1])} />
+                            </div>
+                            <div style={{ width: '100%', height: '100pt', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '12pt' }}>
+                                <Choose text={data.choices.problems[2].eng} onClick={() => onChooseAnswer(data.choices.problems[2])} />
+                                <Choose text={data.choices.problems[3].eng} onClick={() => onChooseAnswer(data.choices.problems[3])} />
+                            </div>
+                        </React.Fragment>
+                }
+            </div>
+        </div>
+    )
+}
+
+export default ObjectiveSentence;
