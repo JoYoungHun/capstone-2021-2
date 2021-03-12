@@ -231,16 +231,56 @@ export const GET_CONTENT_SUMMARY = gql`
                     highlight
                 }
             }
+            totalPages
         }
     }
 `
 
 export const GET_CONTENT = gql`
     query content($id: Long!) {
-        content {
+        content(id: $id) {
             id
             title
             ref
+        }
+    }
+`
+
+export const GET_WORDS = gql`
+    query allWords($id: Long!) {
+        allWords(id: $id) {
+            status
+            problems {
+                id
+                eng
+                kor
+            }
+        }
+    }
+`
+
+export const GET_SENTENCES = gql`
+    query allSentences($id: Long!) {
+        allSentences(id: $id) {
+            status
+            problems {
+                id
+                eng
+                kor
+            }
+        }
+    }
+`
+
+export const GET_CHOICES = gql`
+    query choices($option: Int!, $except: Long!) {
+        choices(option: $option, except: $except) {
+            status
+            problems {
+                id
+                eng
+                kor
+            }
         }
     }
 `

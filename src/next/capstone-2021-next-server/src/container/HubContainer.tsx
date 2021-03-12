@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import { NextRouter, useRouter } from "next/router";
 import { ApolloQueryResult, useQuery } from "@apollo/client";
 import { useDispatch } from 'react-redux';
@@ -10,6 +10,7 @@ import { Loading, SimpleContCard } from "../components";
 import { ContentDetails } from "../types";
 import useIntersectionObserver from "../hooks/useIntersectionObserver";
 import Notiflix from 'notiflix';
+import {storeFrame} from "../reducers/ContReducer";
 
 type Props = {
 
@@ -35,12 +36,11 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
 
     // instance variable
     const renderItem: number = 4;
-    const currentPage: React.MutableRefObject<number> = useRef(1);
-    const totalPage: React.MutableRefObject<number> = useRef(0);
-    const rootRef = useRef<HTMLDivElement | undefined>(undefined);
-    const targetRef = useRef<HTMLDivElement | undefined>(undefined);
+    const currentPage: React.MutableRefObject<number> = React.useRef(1);
+    const totalPage: React.MutableRefObject<number> = React.useRef(0);
+    const rootRef = React.useRef<HTMLDivElement | undefined>(undefined);
+    const targetRef = React.useRef<HTMLDivElement | undefined>(undefined);
 
-    // const [ page, setPage ] = React.useState<number>(1);
     useIntersectionObserver({
         root: rootRef.current,
         target: targetRef.current,
@@ -68,7 +68,7 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
     });
 
     const onRouteToPreview = (id: number) => {
-        Notiflix.Loading.Dots('Routing...');
+        dispatch(storeFrame({ title: '', ref: '', captions: '', categories: [], id }))
         return router.push(`/preview?ct=${id}`);
     }
 
@@ -100,7 +100,7 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
                 border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
                 {
                     scrollViewState.contents.map((cont: ContentDetails) => (
-                        <SimpleContCard key={cont.id + Math.random()} details={cont} onClick={() => onRouteToPreview(cont.id).then(() => Notiflix.Loading.Remove(500))}/>
+                        <SimpleContCard key={cont.id + Math.random()} details={cont} onClick={() => onRouteToPreview(cont.id).then(() => { })}/>
                     ))
                 }
                 {

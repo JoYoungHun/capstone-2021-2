@@ -1,8 +1,11 @@
 package r.demo.graphql.core;
 
+import edu.stanford.nlp.ling.CoreLabel;
 import graphql.schema.DataFetcher;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,27 +24,39 @@ import r.demo.graphql.domain.user.UserInfoRepo;
 import r.demo.graphql.domain.word.Word;
 import r.demo.graphql.domain.word.WordRepo;
 import r.demo.graphql.response.DefaultResponse;
+import r.demo.graphql.response.ProblemResponse;
+import r.demo.graphql.response.SummaryResponse;
 import r.demo.graphql.types.Paragraph;
+import r.demo.graphql.types.Problem;
+import r.demo.graphql.types.SummaryShell;
+import r.demo.graphql.types.SummaryToken;
+import r.demo.graphql.utils.StanfordLemmatizer;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Gql
 @Service
 public class ContentDataFetcher {
+    private final StanfordLemmatizer lemmatizer;
     private final UserInfoRepo userRepo;
     private final ContentRepo contentRepo;
     private final WordRepo wordRepo;
     private final SentenceRepo sentenceRepo;
     private final CategoryRepo categoryRepo;
+    private final List<String> validPos;
 
-    public ContentDataFetcher(UserInfoRepo userRepo, ContentRepo contentRepo,
+    public ContentDataFetcher(@Lazy StanfordLemmatizer lemmatizer,
+                              UserInfoRepo userRepo, ContentRepo contentRepo,
                               WordRepo wordRepo, SentenceRepo sentenceRepo, CategoryRepo categoryRepo) {
+        this.lemmatizer = lemmatizer;
         this.userRepo = userRepo;
         this.contentRepo = contentRepo;
         this.wordRepo = wordRepo;
         this.sentenceRepo = sentenceRepo;
         this.categoryRepo = categoryRepo;
+        this.validPos = Arrays.asList("v.", "a.", "ad.", "n.");
     }
 
     @GqlDataFetcher(type = GqlType.MUTATION)
@@ -68,7 +83,9 @@ public class ContentDataFetcher {
                 Content content = contentRepo.save(Content.builder().title(title).ref(ref).captions(captions).categories(categories).user(registerer).build());
                 for (int i = 0; i < words.size(); i++) {
                     Paragraph word = new Paragraph(words.get(i));
-                    wordRepo.save(Word.builder().content(content).eng(word.getEng()).kor(word.getKor()).sequence(i).build());
+                    CoreLabel label = lemmatizer.getCoreLabel(word.getEng());
+                    wordRepo.save(Word.builder().content(content).eng(word.getEng()).kor(word.getKor())
+                            .pos(label.tag()).lemma(label.lemma()).sequence(i).build());
                 }
                 for (int i = 0; i < sentences.size(); i++) {
                     Paragraph sentence = new Paragraph(sentences.get(i));
@@ -120,6 +137,21 @@ public class ContentDataFetcher {
                 lhm.put("totalElements", 0);
             }
             return lhm;
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> content() {
+        return environment -> {
+            long contentKey = environment.getArgument("id");
+            try {
+                return contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+            } catch (IllegalArgumentException e) {
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         };
     }
 
@@ -181,6 +213,124 @@ public class ContentDataFetcher {
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (RuntimeException e) {
                 return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> summary() {
+        return environment -> {
+            long contentKey = environment.getArgument("content");
+            int level = environment.getArgument("level"),
+                    page = environment.getArgument("page");
+            try {
+                Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+                // persist
+                Page<Sentence> sentences = sentenceRepo.findAllByContent(content, PageRequest.of(page - 1, 8, Sort.Direction.ASC, "sequence"));
+                List<SummaryShell> shells = new ArrayList<>();
+                for (Sentence sentence : sentences) {
+                    StringBuilder sb = new StringBuilder();
+                    int hidden = 0, len = sentence.getEng().split(" ").length;
+                    final int needToHideElements = (int) Math.floor(len * (level == 0 ? 0 : level == 1 ? 0.3 : 0.7));
+                    List<SummaryToken> tokens = new ArrayList<>();
+                    List<CoreLabel> labels = lemmatizer.getPartOfSpeechAboutSentence(sentence.getEng());
+                    for (CoreLabel label : labels) {
+                        int labelLen = label.originalText().length();
+                        Optional<Word> word = wordRepo.findByContentAndLemma(content, label.lemma());
+                        String translatedKorean = "";
+                        boolean highlight = false;
+                        if (word.isPresent()) {
+                            translatedKorean = word.get().getKor();
+                            highlight = true;
+                        }
+                        SummaryToken token = SummaryToken.builder().eng(label.originalText()).kor(translatedKorean).highlight(highlight)
+                                .pos(lemmatizer.partOfSpeech(word.map(Word::getPos).orElse(label.tag()))).build();
+
+                        // hide algorithm
+                        int rand = (int) (Math.random() * 10);
+                        if (rand > 0.7 && hidden < needToHideElements && validPos.contains(token.getPos())) {
+                            sb.append(Stream.generate(() -> "_").limit(Math.min(3, labelLen)).collect(Collectors.joining()));
+                            hidden++;
+                        } else sb.append(label.originalText());
+                        sb.append(" ");
+                        tokens.add(token);
+                    }
+                    shells.add(SummaryShell.builder().originalText(sb.toString()).translatedKor(sentence.getKor()).tokens(tokens).build());
+                }
+
+                return new SummaryResponse(shells, sentences.getTotalPages());
+            } catch (IllegalArgumentException e) {
+                return new SummaryResponse(Collections.emptyList(), 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new SummaryResponse(Collections.emptyList(), 0);
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> choices() {
+        return environment -> {
+            long except = environment.getArgument("except");
+            int option = environment.getArgument("option");
+            try {
+                List<Problem> problems;
+                switch (option) {
+                    case 0:
+                        Word word = wordRepo.findById(except).orElseThrow(IllegalArgumentException::new);
+                        List<Word> words = wordRepo.getRandWords(except, word.getEng());
+                        words.add(word);
+                        Collections.shuffle(words);
+                        problems = words.stream().map(Problem::new).collect(Collectors.toList());
+                        break;
+                    case 1:
+                        Sentence sentence = sentenceRepo.findById(except).orElseThrow(IllegalArgumentException::new);
+                        List<Sentence> sentences = sentenceRepo.getRandSentences(except, sentence.getEng());
+                        sentences.add(sentence);
+                        Collections.shuffle(sentences);
+                        problems = sentences.stream().map(Problem::new).collect(Collectors.toList());
+                        break;
+                    default: throw new IllegalArgumentException();
+                }
+
+                return new ProblemResponse(HttpStatus.OK.value(), problems);
+            } catch (IllegalArgumentException e) {
+                return new ProblemResponse(HttpStatus.NOT_FOUND.value());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ProblemResponse(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> allWords() {
+        return environment -> {
+            long contentKey = environment.getArgument("id");
+            try {
+                Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+                return new ProblemResponse(HttpStatus.OK.value(), wordRepo.getAllWordsByRandOrdered(content).stream().map(Problem::new).collect(Collectors.toList()));
+            } catch (IllegalArgumentException e) {
+                return new ProblemResponse(HttpStatus.NOT_FOUND.value());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ProblemResponse(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> allSentences() {
+        return environment -> {
+            long contentKey = environment.getArgument("id");
+            try {
+                Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+                return new ProblemResponse(HttpStatus.OK.value(), sentenceRepo.getAllSentencesByRandOrdered(content).stream().map(Problem::new).collect(Collectors.toList()));
+            } catch (IllegalArgumentException e) {
+                return new ProblemResponse(HttpStatus.NOT_FOUND.value());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ProblemResponse(HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         };
     }

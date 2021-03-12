@@ -1,6 +1,5 @@
 package r.demo.graphql.core;
 
-import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import graphql.schema.DataFetcher;
 import org.springframework.context.annotation.Lazy;
@@ -30,10 +29,10 @@ public class Parser {
             String captions = environment.getArgument("captions");
             try {
                 CoreDocument coreDocument = lemmatizer.parse(captions);
-                List<Paragraph> sentences = coreDocument.sentences().stream().map(coreSentence -> new Paragraph(coreSentence.text(), "")).collect(Collectors.toList()),
+                List<Paragraph> sentences = coreDocument.sentences().stream().map(coreSentence -> new Paragraph(coreSentence.text(), "", null)).collect(Collectors.toList()),
                         words = coreDocument.tokens().stream()
                                 .filter(token -> token.tag().matches("^[A-Z]+$"))
-                                .map(token -> new Paragraph(token.originalText(), "")).collect(Collectors.toList());
+                                .map(token -> new Paragraph(token.lemma().toLowerCase(), "", token.tag())).collect(Collectors.toList());
 
                 return ParseResponse.builder().sentences(sentences).words(words).build();
             } catch (Exception e) {

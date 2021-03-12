@@ -17,6 +17,12 @@ type Query {
     parse(captions: String!): ParseResponse!
 
     allContents(category: Int!, pr: PaginationInput!, option: Int): PaginatedContentResponse!
+    content(id: Long!): Content
+    summary(content: Long!, level: Int!, page: Int!): SummaryResponse!
+
+    choices(option: Int!, except: Long!): ProblemReponse
+    allWords(id: Long!): ProblemReponse
+    allSentences(id: Long!): ProblemReponse
 }
 
 type Mutation {
@@ -97,6 +103,7 @@ type Translated {
 input ParagraphIn {
     eng: String!
     kor: String!
+    pos: String
     __typename: String
 }
 
@@ -104,6 +111,7 @@ type Paragraph {
     id: Int
     eng: String!
     kor: String!
+    pos: String
 }
 
 input ContentInput {
@@ -141,6 +149,35 @@ type PaginatedUserResponse {
 type Profile {
     id: Long!
     url: String!
+}
+
+type SummaryResponse {
+    shells: [SummaryShell!]!
+    totalPages: Int!
+}
+
+type SummaryShell {
+    originalText: String!
+    translatedKor: String!
+    tokens: [SummaryToken!]!
+}
+
+type SummaryToken {
+    eng: String!
+    kor: String!
+    pos: String!
+    highlight: Boolean!
+}
+
+type ProblemReponse {
+    status: Int!
+    problems: [Problem!]!
+}
+
+type Problem {
+    id: Long!
+    eng: String!
+    kor: String!
 }
 
 scalar Long
