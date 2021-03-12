@@ -12,9 +12,16 @@ import java.util.Optional;
 
 @Repository
 public interface WordRepo extends JpaRepository<Word, Long> {
+    Optional<Word> findByContentAndLemma(Content content, String lemma);
     List<Word> findAllByContentOrderBySequence(Content content);
     @Query(value = "select * from word w where w.eng = ?1 order by w.modified desc limit 1", nativeQuery = true)
     Optional<Word> findLatestKorMeaning(String eng);
+
+    @Query(value = "select * from word w where w.id != ?1 and w.eng != ?2 and w.lemma != ?2 order by rand() limit 3", nativeQuery = true)
+    List<Word> getRandWords(long id, String eng);
+
+    @Query(value = "select * from word w where w.content = ?1 order by rand()", nativeQuery = true)
+    List<Word> getAllWordsByRandOrdered(Content content);
 
     @Transactional
     @Modifying

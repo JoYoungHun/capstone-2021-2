@@ -1,5 +1,6 @@
 package r.demo.graphql.utils;
 
+import edu.stanford.nlp.ling.CoreLabel;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -7,6 +8,7 @@ import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -39,13 +41,15 @@ public class FileService {
     private final S3Client s3Client;
     private final ContentRepo contentRepo;
     private final WordRepo wordRepo;
+    private final StanfordLemmatizer lemmatizer;
 
     public FileService(FileInfoRepo fileRepo, S3Client s3Client,
-                       ContentRepo contentRepo, WordRepo wordRepo) {
+                       ContentRepo contentRepo, WordRepo wordRepo, @Lazy StanfordLemmatizer lemmatizer) {
         this.fileRepo = fileRepo;
         this.s3Client = s3Client;
         this.contentRepo = contentRepo;
         this.wordRepo = wordRepo;
+        this.lemmatizer = lemmatizer;
     }
 
     @Transactional(rollbackFor = { Exception.class })
@@ -163,8 +167,10 @@ public class FileService {
                     String eng = row.getCell(0).getStringCellValue(),
                             kor = row.getCell(1).getStringCellValue();
 
-                    if (eng != null && !"".equals(eng) && kor != null && !"".equals(kor))
-                        nodes.add(new Paragraph(eng, kor));
+                    if (eng != null && !"".equals(eng) && kor != null && !"".equals(kor)) {
+                        CoreLabel label = lemmatizer.getCoreLabel(eng);
+                        nodes.add(new Paragraph(label.lemma(), kor, label.tag()));
+                    }
                 }
 
                 return new ExcelResponse(200, nodes);

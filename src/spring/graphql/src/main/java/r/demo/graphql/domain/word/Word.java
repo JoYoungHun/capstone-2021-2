@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import r.demo.graphql.domain.content.Content;
 
 import javax.persistence.*;
@@ -29,6 +30,12 @@ public class Word {
     @Column(name = "kor", columnDefinition = "TEXT", nullable = false)
     private String kor;
 
+    @Column(name = "pos", length = 10)
+    private String pos;
+
+    @Column(name = "lemma", columnDefinition = "TEXT", nullable = false)
+    private String lemma;
+
     @Column(name = "sequence", columnDefinition = "SMALLINT", nullable = false)
     private int sequence;
 
@@ -43,10 +50,12 @@ public class Word {
     private java.util.Date modified;
 
     @Builder
-    public Word(@NonNull Content content, @NonNull String eng, @NonNull String kor, int sequence) {
+    public Word(@NonNull Content content, @NonNull String eng, @NonNull String kor, @Nullable String pos, @NonNull String lemma, int sequence) {
         this.content = content;
         this.eng = eng;
         this.kor = kor;
+        this.pos = pos;
+        this.lemma = lemma;
         this.sequence = sequence;
     }
 }
