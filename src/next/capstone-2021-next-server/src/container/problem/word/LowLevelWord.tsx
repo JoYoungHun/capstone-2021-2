@@ -31,7 +31,9 @@ const LowLevelWord: React.FunctionComponent<Props> = ({ }) => {
             else Notiflix.Notify.Failure('Failed... NexT!');
 
             if (currentIdx < problems.length - 1) {
-                dispatch(storePassedProblem([ ...words.passed, { id: problem.id, eng: problem.eng, passed: currentTry !== 3, tried: currentTry }]))
+                dispatch(storePassedProblem([ ...words.passed, {
+                    id: problem.id, eng: problem.eng,
+                    passed: problem.id === choose.id, tried: currentTry }]))
                 await new Promise((resolve) => {
                     refetch({ option: 0, except: problems[currentIdx + 1].id })
                     resolve(true);
@@ -55,20 +57,23 @@ const LowLevelWord: React.FunctionComponent<Props> = ({ }) => {
 
     let { level, problems } = words;
     React.useEffect(() => {
-        if (problems.length === 0)
+        if (!problems || problems.length === 0) {
             router.back();
-    }, [])
-    const { data, loading, refetch } = useQuery(GET_CHOICES, { variables: { option: 0, except: problems[0].id }, fetchPolicy: 'network-only' })
+            Notiflix.Notify.Failure('잘못된 접근 방식입니다. 이전 페이지로 이동합니다.');
+        }
+    }, [ problems ])
+
+    const { data, loading, refetch } = useQuery(GET_CHOICES, { variables: { option: 0, except: problems.length > 0 && problems[0].id ? problems[0].id : -1 }})
     return (
         <div style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
             <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: '32pt', fontWeight: 'bold' }}>
                     {
-                        level === 0 &&
+                        level === 0 && problems.length > 0 &&
                         problems[currentIdx].eng
                     }
                     {
-                        level === 1 &&
+                        level === 1 && problems.length > 0 &&
                         problems[currentIdx].kor
                     }
                 </span>
