@@ -33,7 +33,7 @@ const SentenceChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, clos
                 await getSentences();
                 setTimeout(() => resolve(true), 1000);
             }).then(() => {
-                dispatch(storeLevel(selected));
+                dispatch(storeLevel(contentKey, selected));
                 setTimeout(() => { router.push('/problem/sentence'); Notiflix.Loading.Remove(500); }, 1000);
             })
         }

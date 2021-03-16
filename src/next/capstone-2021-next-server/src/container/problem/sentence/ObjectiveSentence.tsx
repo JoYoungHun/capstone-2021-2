@@ -1,8 +1,8 @@
 import React from 'react';
 import { NextRouter, useRouter } from "next/router";
 import { useSelector, useDispatch } from 'react-redux';
-import { useQuery } from "@apollo/client";
-import { GET_CHOICES } from "../../../graphQL/quries";
+import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
+import {GET_CHOICES, POST_REWRITE_REPORT} from "../../../graphQL/quries";
 import { RootState } from "../../../modules";
 import { IndexProps, Paragraph } from "../../../types";
 import { storePassedProblem } from "../../../reducers/ProbReducer";
@@ -19,7 +19,7 @@ const ObjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
     const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const sentences = useSelector((state: RootState) => state.ProbReducer);
-    let { problems } = sentences;
+    let { id, problems, passed } = sentences;
 
     const [ indexes, setIndexes ] = React.useState<IndexProps>({
         currentIdx: 0,
@@ -48,7 +48,7 @@ const ObjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
                     'I want to leave it to my report!',
                     'Yes',
                     'No',
-                    () => Notiflix.Report.Success('준비중입니다...'),
+                    () => onClickRewriteReport(),
                     () => router.back(),
                 )
             }
@@ -57,6 +57,18 @@ const ObjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
             setIndexes({ ...indexes, tried: tried + 1 });
         }
     }
+
+    const onClickRewriteReport = async () => {
+        Notiflix.Loading.Hourglass('Rewrite report...');
+        return rewrite({variables: { input: { level: 3, solved: passed, content: id }}});
+    }
+
+    const [ rewrite ] = useMutation(POST_REWRITE_REPORT, { onCompleted: data => {
+            if (data && data.rewrite && data.rewrite.status === 200) {
+                router.back();
+                Notiflix.Loading.Remove(1000);
+            }
+        }});
 
     React.useEffect(() => {
         if (!problems || problems.length === 0) {
