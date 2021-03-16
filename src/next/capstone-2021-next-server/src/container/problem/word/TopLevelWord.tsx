@@ -2,14 +2,13 @@ import React from 'react';
 import { NextRouter, useRouter } from "next/router";
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, OutlinedInput } from "@material-ui/core";
-import { VolumeUp } from "@material-ui/icons";
 import { RootState } from "../../../modules";
 import { IndexProps, Paragraph } from "../../../types";
 import { storePassedProblem } from "../../../reducers/ProbReducer";
-import { speakProps } from "../../../../utils/propTypes";
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
-import Speech from 'speak-tts';
+import dynamic from "next/dynamic";
+const TextToSpeech = dynamic(() => import('../TextToSpeech'), { ssr: false });
 
 type Props = {
 
@@ -36,7 +35,8 @@ const TopLevelWord: React.FunctionComponent<Props> =({ }) => {
             else Notiflix.Notify.Failure('Failed... NexT!');
 
             if (currentIdx < problems.length - 1) {
-                dispatch(storePassedProblem([ ...words.passed, { id: problem.id, eng: problem.eng, passed: currentTry !== 3, tried: currentTry }]))
+                dispatch(storePassedProblem([ ...words.passed, { id: problem.id, eng: problem.eng,
+                    passed: problem.eng === answer, tried: currentTry }]))
                 setIndexes({ currentIdx: currentIdx + 1, tried: 0 })
                 setAnswer('');
             } else {
@@ -56,32 +56,25 @@ const TopLevelWord: React.FunctionComponent<Props> =({ }) => {
         }
     }
 
-    const speech = new Speech();
-    speech.init({
-        'volume': 1,
-        'lang': 'en-US',
-        'rate': 1,
-        'pitch': 1,
-        'voice': 'Google US English Male',
-        'splitSentences': true,
-    });
+    React.useEffect(() => {
+        if (!problems || problems.length === 0) {
+            router.back();
+            Notiflix.Notify.Failure('잘못된 접근 방식입니다. 이전 페이지로 이동합니다.');
+        }
+    }, [ problems ])
 
     return (
         <div style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
             <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: '32pt', fontWeight: 'bold' }}>
-                    { problems[currentIdx].kor }
+                    { problems.length > 0 ? problems[currentIdx].kor : '-' }
                 </span>
                 <br />
                 <span>
                     {`도전횟수 ${tried + 1}`}
                 </span>
                 <br />
-                <VolumeUp fontSize={'large'} style={{ color: '#FFE94A', cursor: 'pointer' }}
-                          onClick={() => speech.speak({
-                              ...speakProps,
-                              text: problems[currentIdx].eng,
-                          }).then()} />
+                <TextToSpeech text={problems.length > 0 ? problems[currentIdx].eng : 'error occurred. please push the back button.'} />
             </div>
             <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', height: '60pt', alignItems: 'center' }}>

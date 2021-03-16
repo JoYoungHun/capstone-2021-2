@@ -18,8 +18,8 @@ const Histories: React.FunctionComponent<Props> = ({ }) => {
     return (
         <div ref={scrollView}
              style={{ width: '200pt', height: '400pt', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', overflowY: 'scroll',
-                 background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(218, 215, 229, 1) 20%, rgba(0, 0, 0, 0) 100%)',
-            border: 0, borderRadius: '12pt' }}>
+                 background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(218, 215, 229, 1) 20%, rgba(0, 0, 0, 0) 100%)', border: 0, borderRadius: '12pt',
+                 paddingLeft: '8pt', paddingRight: '8pt' }}>
             {
                 passed && passed.map((pass: Solved) => [
                     <div key={pass.id} style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
