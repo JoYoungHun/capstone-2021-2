@@ -8,6 +8,8 @@ import { storePassedProblem } from "../../../reducers/ProbReducer";
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
 import dynamic from "next/dynamic";
+import {useMutation} from "@apollo/client";
+import {POST_REWRITE_REPORT} from "../../../graphQL/quries";
 const TextToSpeech = dynamic(() => import('../TextToSpeech'), { ssr: false });
 
 type Props = {
@@ -18,7 +20,7 @@ const TopLevelWord: React.FunctionComponent<Props> =({ }) => {
     const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const words = useSelector((state: RootState) => state.ProbReducer);
-    let { problems } = words;
+    let { id, problems, passed } = words;
 
     const [ indexes, setIndexes ] = React.useState<IndexProps>({
         currentIdx: 0,
@@ -46,7 +48,7 @@ const TopLevelWord: React.FunctionComponent<Props> =({ }) => {
                     'I want to leave it to my report!',
                     'Yes',
                     'No',
-                    () => Notiflix.Report.Success('준비중입니다...'),
+                    () => onClickRewriteReport(),
                     () => router.back()
                 )
             }
@@ -62,6 +64,18 @@ const TopLevelWord: React.FunctionComponent<Props> =({ }) => {
             Notiflix.Notify.Failure('잘못된 접근 방식입니다. 이전 페이지로 이동합니다.');
         }
     }, [ problems ])
+
+    const onClickRewriteReport = async () => {
+        Notiflix.Loading.Hourglass('Rewrite report...');
+        return rewrite({variables: { input: { level: 2, solved: passed, content: id }}});
+    }
+
+    const [ rewrite ] = useMutation(POST_REWRITE_REPORT, { onCompleted: data => {
+            if (data && data.rewrite && data.rewrite.status === 200) {
+                router.back();
+                Notiflix.Loading.Remove(1000);
+            }
+        }});
 
     return (
         <div style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>

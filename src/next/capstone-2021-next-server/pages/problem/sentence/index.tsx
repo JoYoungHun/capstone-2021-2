@@ -6,7 +6,7 @@ import ObjectiveSentence from "../../../src/container/problem/sentence/Objective
 import SubjectiveSentence from "../../../src/container/problem/sentence/SubjectiveSentence";
 
 const SentenceProblem = () => {
-    const { level, problems } = useSelector((state: RootState) => state.ProbReducer);
+    const { level } = useSelector((state: RootState) => state.ProbReducer);
 
     return (
         <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'row' }}>

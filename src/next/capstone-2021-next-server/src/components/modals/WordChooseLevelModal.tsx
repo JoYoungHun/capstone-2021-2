@@ -33,7 +33,7 @@ const WordChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, close, g
                 await getWords();
                 setTimeout(() => resolve(true), 1000);
             }).then(() => {
-                dispatch(storeLevel(selected));
+                dispatch(storeLevel(contentKey, selected));
                 setTimeout(() => { router.push('/problem/word'); Notiflix.Loading.Remove(500); }, 1000);
             })
         }

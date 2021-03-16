@@ -39,6 +39,8 @@ type Mutation {
     deleteContent(id: Int!): NoResponse!
     saveContentsToCategory(category: Int!, id: [Int!]!): NoResponse!
     deleteContentsInCategory(category: Int!, id: Int!): NoResponse!
+
+    rewrite(input: ReportInput!): NoResponse!
 }
 
 type SubScription { }
@@ -100,40 +102,11 @@ type Translated {
     idx: Int!
 }
 
-input ParagraphIn {
-    eng: String!
-    kor: String!
-    pos: String
-    __typename: String
-}
-
 type Paragraph {
     id: Int
     eng: String!
     kor: String!
     pos: String
-}
-
-input ContentInput {
-    title: String!
-    ref: String!
-    captions: String!
-    categories: [Int!]!
-    words: [ParagraphIn!]!
-    sentences: [ParagraphIn!]!
-}
-
-input PaginationInput {
-    page: Int!
-    renderItem: Int!
-    sort: String
-}
-
-input UpdateUserInput {
-    id: Long!
-    password: String
-    name: String!
-    profile: Int
 }
 
 type PaginatedContentResponse {
@@ -178,6 +151,48 @@ type Problem {
     id: Long!
     eng: String!
     kor: String!
+}
+
+input ParagraphIn {
+    eng: String!
+    kor: String!
+    pos: String
+    __typename: String
+}
+
+input ContentInput {
+    title: String!
+    ref: String!
+    captions: String!
+    categories: [Int!]!
+    words: [ParagraphIn!]!
+    sentences: [ParagraphIn!]!
+}
+
+input PaginationInput {
+    page: Int!
+    renderItem: Int!
+    sort: String
+}
+
+input UpdateUserInput {
+    id: Long!
+    password: String
+    name: String!
+    profile: Int
+}
+
+input ProblemInput {
+    id: Long!
+    eng: String!
+    tried: Int!
+    passed: Boolean!
+}
+
+input ReportInput {
+    content: Long!
+    solved: [ProblemInput!]!
+    level: Int!
 }
 
 scalar Long

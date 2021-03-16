@@ -11,6 +11,7 @@ type WordProbActions = ReturnType<typeof storeLevel>
     | ReturnType<typeof initializeProps>;
 
 type WordProblemProps = {
+    id: number | undefined,
     level: number,
     problems: Paragraph[],
     choices: Paragraph[],
@@ -18,6 +19,7 @@ type WordProblemProps = {
 }
 
 const initialState: WordProblemProps = {
+    id: undefined,
     level: 0,
     problems: [],
     choices: [],
@@ -29,9 +31,9 @@ export const initializeProps = () => ({
     payload: undefined
 })
 
-export const storeLevel = ( level: number ) => ({
+export const storeLevel = ( id: number, level: number ) => ({
     type: STORE_LEVEL,
-    payload: level,
+    payload: { id: id, level: level }
 })
 
 export const initializeProblems = ( problems: Paragraph[] ) => ({
@@ -56,7 +58,8 @@ const ProbReducer = (state: WordProblemProps = initialState, { type, payload }: 
         case STORE_LEVEL:
             return {
                 ...state,
-                level: payload,
+                id: payload.id,
+                level: payload.level,
                 passed: [],
             };
         case STORE_PASSED:

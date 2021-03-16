@@ -4,10 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, OutlinedInput } from "@material-ui/core";
 import { RootState } from "../../../modules";
 import {IndexProps, Paragraph} from "../../../types";
+import { storePassedProblem } from "../../../reducers/ProbReducer";
+import { useMutation } from "@apollo/client";
+import { POST_REWRITE_REPORT } from "../../../graphQL/quries";
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
 import dynamic from "next/dynamic";
-import {storePassedProblem} from "../../../reducers/ProbReducer";
 const TextToSpeech = dynamic(() => import('../TextToSpeech'), { ssr: false });
 
 type Props = {
@@ -18,7 +20,7 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
     const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const sentences = useSelector((state: RootState) => state.ProbReducer);
-    let { problems } = sentences;
+    let { id, problems, passed } = sentences;
 
     const [ indexes, setIndexes ] = React.useState<IndexProps>({
         currentIdx: 0,
@@ -48,7 +50,7 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
                     'I want to leave it to my report!',
                     'Yes',
                     'No',
-                    () => Notiflix.Report.Success('준비중입니다...'),
+                    () => onClickRewriteReport(),
                     () => router.back()
                 )
             }
@@ -82,6 +84,18 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
             setHint(filtered);
         }
     }, [ tried ])
+
+    const onClickRewriteReport = async () => {
+        Notiflix.Loading.Hourglass('Rewrite report...');
+        return rewrite({variables: { input: { level: 4, solved: passed, content: id }}});
+    }
+
+    const [ rewrite ] = useMutation(POST_REWRITE_REPORT, { onCompleted: data => {
+            if (data && data.rewrite && data.rewrite.status === 200) {
+                router.back();
+                Notiflix.Loading.Remove(1000);
+            }
+        }});
 
     return (
         <div style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>

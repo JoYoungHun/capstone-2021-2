@@ -284,3 +284,12 @@ export const GET_CHOICES = gql`
         }
     }
 `
+
+export const POST_REWRITE_REPORT = gql`
+    mutation rewrite($input: ReportInput!) {
+        rewrite(input: $input) {
+            status
+            message
+        }
+    }
+`
