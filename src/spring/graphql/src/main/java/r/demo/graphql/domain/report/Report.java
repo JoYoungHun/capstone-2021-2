@@ -64,7 +64,6 @@ public class Report {
     @Column(name = "passSentenceLev2", columnDefinition = "TINYINT")
     private boolean passSentenceLev2 = false;
 
-
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created", nullable = false)
