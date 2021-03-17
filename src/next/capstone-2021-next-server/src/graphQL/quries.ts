@@ -293,3 +293,95 @@ export const POST_REWRITE_REPORT = gql`
         }
     }
 `
+
+export const GET_REPORT = gql`
+    query report($report: Long!) {
+        report(report: $report) {
+            id
+            content {
+                id
+                title
+                ref
+            }
+            user {
+                id
+                name
+            }
+            wordLen
+            sentenceLen
+            correctWordsLev1
+            correctWordsLev2
+            correctWordsLev3
+            correctSentencesLev1
+            correctSentencesLev2
+            passWordLev1
+            passWordLev2
+            passWordLev3
+            passSentenceLev1
+            passSentenceLev2
+        }
+    }
+
+`
+
+export const GET_PIE = gql`
+    query pie($report: Long!, $option: Int!) {
+        pie(report: $report, option: $option) {
+            data {
+                id
+                label
+                value
+                color
+            }
+        }
+    }
+`
+
+export const GET_BAR = gql`
+    query bar($report: Long!) {
+        bar(report: $report) {
+            data {
+                country
+                level1
+                level1Color
+                level2
+                level2Color
+                level3
+                level3Color
+                objective
+                objectiveColor
+                subjective
+                subjectiveColor
+            }
+        }
+    }
+`
+
+export const GET_RADAR = gql`
+    query radar($report: Long!) {
+        radar(report: $report) {
+            data {
+                taste
+                total
+                correct
+            }
+        }
+    }
+`
+
+export const GET_RECENT_REPORT = gql`
+    query recent($pr: PaginationInput!) {
+        recent(pr: $pr) {
+            reports {
+                id
+                content {
+                    id
+                    title
+                }
+                created
+                modified    
+            }
+            totalElements
+        }
+    }   
+`

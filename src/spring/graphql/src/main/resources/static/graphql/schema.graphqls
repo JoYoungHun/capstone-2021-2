@@ -23,6 +23,12 @@ type Query {
     choices(option: Int!, except: Long!): ProblemReponse
     allWords(id: Long!): ProblemReponse
     allSentences(id: Long!): ProblemReponse
+
+    report(report: Long!): Report
+    bar(report: Long!): BarResponse!
+    pie(report: Long!, option: Int!): PieResponse!
+    radar(report: Long!): RadarResponse!
+    recent(pr: PaginationInput!): PaginatedReportResponse!
 }
 
 type Mutation {
@@ -119,6 +125,11 @@ type PaginatedUserResponse {
     totalElements: Int!
 }
 
+type PaginatedReportResponse {
+    reports: [Report!]!
+    totalElements: Int!
+}
+
 type Profile {
     id: Long!
     url: String!
@@ -151,6 +162,72 @@ type Problem {
     id: Long!
     eng: String!
     kor: String!
+}
+
+type BarResponse {
+    status: Int!
+    data: [BarProps!]
+}
+
+type BarProps {
+    country: String!
+    level1: Float!
+    level1Color: String!
+    level2: Float!
+    level2Color: String!
+    level3: Float!
+    level3Color: String!
+    objective: Float!
+    objectiveColor: String!
+    subjective: Float!
+    subjectiveColor: String!
+}
+
+type PieResponse {
+    status: Int!,
+    data: [PieProps!]
+}
+
+type PieProps {
+    id: String!
+    label: String!
+    value: Float!
+    color: String!
+}
+
+type RadarResponse {
+    status: Int!,
+    data: [RadarProps!]
+}
+
+type RadarProps {
+    taste: String!
+    total: Int!,
+    correct: Float!,
+}
+
+type Report {
+    id: Long!,
+    content: ContentFilteredByCategory,
+    user: User!,
+    wordLen: Int!,
+    sentenceLen: Int!,
+    correctWordsLev1: Int!,
+    correctWordsLev2: Int!,
+    correctWordsLev3: Int!,
+    correctSentencesLev1: Int!,
+    correctSentencesLev2: Int!,
+    passWordLev1: Boolean!,
+    passWordLev2: Boolean!,
+    passWordLev3: Boolean!,
+    passSentenceLev1: Boolean!,
+    passSentenceLev2: Boolean!,
+    created: String!,
+    modified: String!
+}
+
+type SolvedResponse {
+
 }
 
 input ParagraphIn {

@@ -18,6 +18,7 @@ import {LevelGuideModal, SentenceChooseLevelModal, WordChooseLevelModal} from ".
 import Notiflix from 'notiflix';
 
 type Props = {
+    ct: number | undefined
 }
 
 type OptionProps = {
@@ -37,7 +38,7 @@ type PreviewContainerModalState = {
     hiddenSentenceModal: boolean,
 }
 
-const PreviewContainer: React.FunctionComponent<Props> = ({ }) => {
+const PreviewContainer: React.FunctionComponent<Props> = ({ ct }) => {
     const router: NextRouter = useRouter();
     const contentDetails = useSelector((state: RootState) => state.ContReducer);
     const [ modals, setModals ] = React.useState<PreviewContainerModalState>({
@@ -103,10 +104,10 @@ const PreviewContainer: React.FunctionComponent<Props> = ({ }) => {
     }
 
     const getCtKey = () => {
-        let contentKey: number | undefined = contentDetails.frame.id;
-        let ct: string | string[] | undefined = router.query?.ct;
-        if (!contentKey && typeof ct === 'string')
-            contentKey = parseInt(ct)
+        let contentKey: number | undefined = contentDetails.frame.id ? contentDetails.frame.id : ct;
+        let query: string | string[] | undefined = router.query?.ct;
+        if (!contentKey && typeof query === 'string')
+            contentKey = parseInt(query)
         return contentKey;
     }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { AppNavigation } from "../src/components";
 import { RootState } from "../src/modules";
-import { Hub, Content} from '../src/container';
+import { Hub, Content, Dashboard } from '../src/container';
 
 type Props = {
 
@@ -20,13 +20,10 @@ const Home = ({ }: Props) => {
                         appNav.value === 0 && <Hub />
                     }
                     {
-                        appNav.value === 1 && <span>Dashboard</span>
+                        appNav.value === 1 && <Dashboard />
                     }
                     {
-                        appNav.value === 2 && <span>Report</span>
-                    }
-                    {
-                        appNav.value === 3 && <Content />
+                        appNav.value === 2 && <Content />
                     }
                 </div>
             </div>

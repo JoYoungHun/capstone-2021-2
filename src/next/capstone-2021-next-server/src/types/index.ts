@@ -93,3 +93,65 @@ export type IndexProps = {
     currentIdx: number,
     tried: number,
 }
+
+export type PiePiece = {
+    id: string,
+    label: string,
+    value: number,
+    color: string,
+}
+
+export type BarPiece = {
+    country: string,
+    level1: number,
+    level1Color: string,
+    level2: number,
+    level2Color: string,
+    level3: number,
+    level3Color: string,
+    objective: number,
+    objectiveColor: string,
+    subjective: number,
+    subjectiveColor: string,
+}
+
+export type RadarPiece = {
+    taste: string,
+    total: number,
+    correct: number
+}
+
+export type ReportDetailsProps = {
+    id: number,
+    content: {
+        id: number,
+        title: string,
+        ref: string
+    },
+    user: {
+        id: number,
+        name: string,
+    },
+    wordLen: number,
+    sentenceLen: number,
+    correctWordsLev1: number,
+    correctWordsLev2: number,
+    correctWordsLev3: number,
+    correctSentencesLev1: number,
+    correctSentencesLev2: number,
+    passWordLev1: number,
+    passWordLev2: number,
+    passWordLev3: number,
+    passSentenceLev1: number,
+    passSentenceLev2: number
+}
+
+export type ReportHeaderProps = {
+    id: number,
+    content: {
+        id: number,
+        title: string,
+    },
+    created?: string,
+    modified?: string,
+}

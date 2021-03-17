@@ -6,3 +6,4 @@ export { default as UserInfoContainer } from './UserInfoContainer';
 export { default as PreviewContainer } from './PreviewContainer';
 export { default as Hub } from './HubContainer';
 export { default as Content } from './ContentContainer';
+export { default as Dashboard } from './DashboardContainer';
