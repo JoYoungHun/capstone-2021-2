@@ -7,11 +7,13 @@ type LoadingProps = {
 
 const Loading: React.FunctionComponent<LoadingProps> = ({ color }) => {
     React.useEffect(() => {
+        /*
         const timer = setTimeout(() => {
             window.location.reload();
         }, 10000)
 
         return () => clearTimeout(timer);
+         */
     }, [])
     return (
         <div style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>

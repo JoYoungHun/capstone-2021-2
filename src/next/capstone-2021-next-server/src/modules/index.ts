@@ -6,10 +6,11 @@ import {
     ContReducer,
     ContListReducer,
     UserListReducer,
-    ProbReducer } from "../reducers";
+    ProbReducer,
+    ReportReducer } from "../reducers";
 
 const reducer = combineReducers({
-    ThemeReducer, CategoryReducer, AppNavReducer, ContReducer, ContListReducer, UserListReducer, ProbReducer
+    ThemeReducer, CategoryReducer, AppNavReducer, ContReducer, ContListReducer, UserListReducer, ProbReducer, ReportReducer
 });
 export default reducer;
 export type RootState = ReturnType<typeof reducer>

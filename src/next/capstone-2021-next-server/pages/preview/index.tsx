@@ -7,7 +7,7 @@ import { useLazyQuery } from "@apollo/client";
 import { GET_CONTENT } from "../../src/graphQL/quries";
 import { storeFrame } from "../../src/reducers/ContReducer";
 
-const Preview = () => {
+const Preview = ({ ct }) => {
     const router: NextRouter = useRouter();
     const dispatch = useDispatch();
 
@@ -26,9 +26,17 @@ const Preview = () => {
     return (
         <div style={{ width: '100%', height: '100%' }}>
             <PreviewHeader goBack={() => router.back()}/>
-            <PreviewContainer />
+            <PreviewContainer ct={ct} />
         </div>
     )
+}
+
+Preview.getInitialProps = ({ query }) => {
+    let { ct } = query;
+    if (typeof ct === 'string')
+        ct = parseInt(ct);
+
+    return { ct };
 }
 
 export default Preview;

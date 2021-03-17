@@ -54,4 +54,13 @@ export const getServerSideProps = async ({ ctx, Component }) => {
     return { props: { ...pageProps } }
 }
 
+export const getInitialProps = async ({ Component, router, ctx }) => {
+    let pageProps = { };
+    if (Component.getInitialProps) {
+        pageProps = await Component.getInitialProps(ctx);
+    }
+
+    return { pageProps };
+}
+
 export default withApolloClient(App);

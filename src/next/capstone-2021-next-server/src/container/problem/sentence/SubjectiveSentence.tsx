@@ -3,7 +3,7 @@ import { NextRouter, useRouter } from "next/router";
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, OutlinedInput } from "@material-ui/core";
 import { RootState } from "../../../modules";
-import {IndexProps, Paragraph} from "../../../types";
+import { IndexProps, Paragraph, Solved } from "../../../types";
 import { storePassedProblem } from "../../../reducers/ProbReducer";
 import { useMutation } from "@apollo/client";
 import { POST_REWRITE_REPORT } from "../../../graphQL/quries";
@@ -33,14 +33,16 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
     const onEnterAnswer = async () => {
         const currentTry: number = tried + 1;
         const problem: Paragraph = problems[currentIdx];
+        let updatedPassed: Solved[] = [];
         let userAnswered: string = answer.toLowerCase(), correctAnswer = problem.eng.toLowerCase();
         if ((correctAnswer === userAnswered) || (correctAnswer !== userAnswered && currentTry === 3)) {
             if (correctAnswer === userAnswered) Notiflix.Notify.Success('Correct!');
             else Notiflix.Notify.Failure('Failed... NexT!');
 
+            updatedPassed = [ ...passed, { id: problem.id, eng: problem.eng,
+                passed: correctAnswer === userAnswered, tried: currentTry }]
             if (currentIdx < problems.length - 1) {
-                dispatch(storePassedProblem([ ...sentences.passed, { id: problem.id, eng: problem.eng,
-                    passed: correctAnswer === userAnswered, tried: currentTry }]))
+                dispatch(storePassedProblem([ ...updatedPassed]))
                 setIndexes({ currentIdx: currentIdx + 1, tried: 0 })
                 setAnswer('');
             } else {
@@ -50,7 +52,7 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
                     'I want to leave it to my report!',
                     'Yes',
                     'No',
-                    () => onClickRewriteReport(),
+                    () => onClickRewriteReport(updatedPassed),
                     () => router.back()
                 )
             }
@@ -85,7 +87,7 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
         }
     }, [ tried ])
 
-    const onClickRewriteReport = async () => {
+    const onClickRewriteReport = async (passed: Solved[]) => {
         Notiflix.Loading.Hourglass('Rewrite report...');
         return rewrite({variables: { input: { level: 4, solved: passed, content: id }}});
     }

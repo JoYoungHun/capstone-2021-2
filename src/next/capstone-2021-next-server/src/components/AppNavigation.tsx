@@ -69,8 +69,7 @@ const AppNavigation: React.FunctionComponent<Props> = React.memo(({ }) => {
                     >
                         <Tab style={{ fontWeight: 'bold' }} label="Hub" {...a11yProps(0)} />
                         <Tab style={{ fontWeight: 'bold' }} label="Dashboard" {...a11yProps(1)} />
-                        <Tab style={{ fontWeight: 'bold' }} label="Report" {...a11yProps(2)} />
-                        <Tab style={{ fontWeight: 'bold' }} label="Content" {...a11yProps(3)} />
+                        <Tab style={{ fontWeight: 'bold' }} label="Content" {...a11yProps(2)} />
                     </Tabs>
                 </div>
                 <div style={{ width: '70pt', display: 'flex', justifyContent: 'flex-end' }}>
