@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useRouter, NextRouter } from "next/router";
 import { GET_MY_DETAIL } from "../graphQL/quries";
 import { Error, Loading, RecentReport } from "../components";
-import { Button } from "@material-ui/core";
+import {Button, Divider} from "@material-ui/core";
 import Cookies from 'js-cookie';
 
 type Props = {
@@ -22,6 +22,7 @@ const DashboardContainer: React.FunctionComponent<Props> = ({ }) => {
             <div style={{ width: '1000pt', height: '100vh' }}>
 
             </div>
+            <Divider variant={"middle"} orientation={"vertical"} />
             <div style={{ width: 'calc(100% - 1000pt)', height: '100vh' }}>
                 <div style={{ width: '100%', cursor: 'pointer', height: '150pt', display: 'flex', justifyContent: 'flex-end' }} onClick={() => router.push('/mypage').then()}>
                     {

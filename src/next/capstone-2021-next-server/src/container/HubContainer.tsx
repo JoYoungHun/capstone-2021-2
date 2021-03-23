@@ -90,7 +90,7 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '8pt' }}>
                 <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box'}}
                         onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
-                            .then(() => router.push('/?tb=3').then()) }}>
+                            .then(() => router.push('/?tb=2').then()) }}>
                     <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt' }}>
                         컨텐츠 만들기
                     </span>

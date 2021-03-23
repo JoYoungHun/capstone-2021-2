@@ -15,6 +15,7 @@ import {
 import { GET_RECENT_REPORT } from "../graphQL/quries";
 import { Paginate, ReportHeaderProps } from "../types";
 import { storeReport } from "../reducers/ReportReducer";
+import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
 
 type Props = {
@@ -72,7 +73,7 @@ const RecentReport: React.FunctionComponent<Props> = ({ }) => {
                 </TableContainer>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <TablePagination
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', color: Cookies.get('dove-dark-mode') === 'true' ? '#FFF' : '#000' }}
                         component={"div"}
                         count={data && data.recent ? data.recent.totalElements : 0}
                         page={pageProps.page - 1}

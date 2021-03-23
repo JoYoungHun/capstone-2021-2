@@ -34,7 +34,7 @@ const App = ({ Component, pageProps, apollo }) => {
         <Provider store={store}>
             <ApolloProvider client={apollo}>
                 <Head>
-                    <title>My App</title>
+                    <title>Hiing</title>
                     <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
                 </Head>
                 <MaterialUiThemeProvider theme={theme}>

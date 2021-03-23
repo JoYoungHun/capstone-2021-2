@@ -4,6 +4,7 @@ import { NextRouter, useRouter } from "next/router";
 import { Button, TextField } from '@material-ui/core'
 import { LoginType } from "../../src/types";
 import LoginBtn from "../../src/components/LoginBtn";
+import Image from 'next/image';
 
 const Login: NextPage = ({ }) => {
     const [ userInfo, setUserInfo ] = React.useState<LoginType>({
@@ -15,6 +16,12 @@ const Login: NextPage = ({ }) => {
     return (
         <div style={{ width: '100%', height: '100vh', overflow: 'scroll', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <div style={{ width: '200pt', display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
+                <Image
+                    src={"/hiing.png"}
+                    alt="Picture of the author"
+                    width={800}
+                    height={500}
+                />
                 <TextField label={'Email'} value={userInfo.email} style={{ width: '100%' }}
                            onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}/>
                 <TextField label={'password'} type={'password'} value={userInfo.password} style={{ width: '100%', marginTop: '8pt' }}
