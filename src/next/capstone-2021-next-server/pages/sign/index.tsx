@@ -7,6 +7,7 @@ import { SignUpType } from "../../src/types";
 import { POST_SIGN } from "../../src/graphQL/quries";
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
+import Image from 'next/image';
 
 type Props = {
 
@@ -45,7 +46,13 @@ const Sign: NextPage<Props> = ({  }) => {
     return (
         <div style={{ width: '100%', height: '100vh', overflow: 'scroll', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <div style={{ width: '260pt', border: 0, borderRadius: '30pt', height: '500pt',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+                <Image
+                    src={"/hiing.png"}
+                    alt="Picture of the author"
+                    width={800}
+                    height={500}
+                />
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '12pt' }}>
                     <TextField label={'Email'} value={email} style={{ width: '100%' }}
                                onChange={(e) => setSign({ ...sign, email: e.target.value })}/>
