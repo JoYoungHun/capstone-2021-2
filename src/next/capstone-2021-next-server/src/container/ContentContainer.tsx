@@ -27,7 +27,7 @@ const ContentContainer: React.FunctionComponent<Props> = ({ }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', paddingLeft: '40pt' }}>
-            <div style={{ display: 'inline', width: '800pt', height: '50pt', overflowX: 'auto', whiteSpace: 'nowrap', marginBottom: '16pt' }}>
+            <div className={"ovf"} style={{ display: 'inline', width: '800pt', height: '50pt', overflowX: 'auto', whiteSpace: 'nowrap', marginBottom: '16pt' }}>
                 {
                     ContentTabs.map((tabProps: ContentTabProps) => (
                             <Tab key={tabProps.key} selected={tabProps.key === currentIdx} width={'250pt'} height={'45pt'}>

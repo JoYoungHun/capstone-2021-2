@@ -100,7 +100,7 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
         }});
 
     return (
-        <div style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
+        <div className={"ovf"} style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
             <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: '32pt', fontWeight: 'bold' }}>
                     { problems.length > 0 ? problems[currentIdx].kor : '-' }
