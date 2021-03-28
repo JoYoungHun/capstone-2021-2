@@ -15,7 +15,7 @@ const Home = ({ }: Props) => {
             <div style={{ display: 'flex', flexDirection: 'column', width: '100%', paddingRight: '16pt' }}>
                 <AppNavigation />
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%',
-                    marginTop: '100pt', paddingTop: '8pt', overflowY: 'scroll' }}>
+                    marginTop: '100pt', paddingTop: '8pt', overflowY: 'auto' }}>
                     {
                         appNav.value === 0 && <Hub />
                     }
