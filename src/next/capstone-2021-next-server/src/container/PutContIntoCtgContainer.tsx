@@ -179,7 +179,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                     </span>
                                 </Button>
                             </div>
-                            <div style={{ width: '100%', height: '500pt', overflowY: 'scroll', boxShadow: '0p 3px 6px #00000029',
+                            <div style={{ width: '100%', height: '500pt', overflowY: 'auto', boxShadow: '0p 3px 6px #00000029',
                                 border: '0.25px solid #00000029', borderRadius: '6pt', marginTop: '8pt' }}>
                                 {
                                     loading &&

@@ -11,7 +11,7 @@ type Props = {
 
 const CategoryTabs = ({ categories, tabs, currentIdx, modifyTab }: Props) => {
     return (
-        <div style={{ display: 'inline', width: '800pt', height: '50pt', overflowX: 'scroll', whiteSpace: 'nowrap', marginBottom: '16pt' }}>
+        <div style={{ display: 'inline', width: '800pt', height: '50pt', overflowX: 'auto', whiteSpace: 'nowrap', marginBottom: '16pt' }}>
             <Tab selected={currentIdx === 0} onClick={() => modifyTab(0)}>
                 <TabTitleShell>
                     <TabTitle>
