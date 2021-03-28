@@ -175,7 +175,7 @@ const PreviewContainer: React.FunctionComponent<Props> = ({ ct }) => {
                         </div>
                         <div ref={rootRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'column',
                             height: '550pt', width: '100%', color: '#FFF', fontWeight: 'bold', minHeight: '550pt',
-                            paddingTop: '12pt', paddingLeft: '8pt', paddingRight: '8pt', paddingBottom: '12pt', overflow: 'scroll' }}>
+                            paddingTop: '12pt', paddingLeft: '8pt', paddingRight: '8pt', paddingBottom: '12pt', overflow: 'auto' }}>
                             {
                                 summaryView.shells.map((shell: SummaryShell, index: number) => (
                                         <div key={`shell-${index}`} style={{ width: '100%' }}>
