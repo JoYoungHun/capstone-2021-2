@@ -16,7 +16,7 @@ const Histories: React.FunctionComponent<Props> = ({ }) => {
     }, [ passed ])
 
     return (
-        <div ref={scrollView}
+        <div className={"ovf"} ref={scrollView}
              style={{ width: '200pt', height: '400pt', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', overflowY: 'auto',
                  background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(218, 215, 229, 1) 20%, rgba(0, 0, 0, 0) 100%)', border: 0, borderRadius: '12pt',
                  paddingLeft: '8pt', paddingRight: '8pt' }}>

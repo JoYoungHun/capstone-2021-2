@@ -126,7 +126,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                             등록된 컨텐츠
                         </span>
                     </div>
-                    <div style={{ border: 0, boxShadow: '0px 3px 6px #0000029', width: '700pt', height: '200pt', overflow: 'auto', marginTop: '8pt' }}>
+                    <div className={"ovf"} style={{ border: 0, boxShadow: '0px 3px 6px #0000029', width: '700pt', height: '200pt', overflow: 'auto', marginTop: '8pt' }}>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} size="small" aria-label="a dense table">
                                 <TableHead>
@@ -179,7 +179,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                     </span>
                                 </Button>
                             </div>
-                            <div style={{ width: '100%', height: '500pt', overflowY: 'auto', boxShadow: '0p 3px 6px #00000029',
+                            <div className={"ovf"} style={{ width: '100%', height: '500pt', overflowY: 'auto', boxShadow: '0p 3px 6px #00000029',
                                 border: '0.25px solid #00000029', borderRadius: '6pt', marginTop: '8pt' }}>
                                 {
                                     loading &&

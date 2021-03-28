@@ -43,7 +43,7 @@ const RecentReport: React.FunctionComponent<Props> = ({ }) => {
 
     const { data, loading, error } = useQuery(GET_RECENT_REPORT, { variables: { pr: { page, renderItem } }})
     return (
-        <div style={{ border: 0, boxShadow: '0px 3px 6px #0000029', width: '100%', height: '300pt', overflow: 'auto', marginTop: '8pt' }}>
+        <div className={"ovf"} style={{ border: 0, boxShadow: '0px 3px 6px #0000029', width: '100%', height: '300pt', overflow: 'auto', marginTop: '8pt' }}>
             <span style={{ fontWeight: 'bold', fontSize: '14pt', fontFamily: 'sans-serif' }}>
                 나의 최근 리포트
             </span>

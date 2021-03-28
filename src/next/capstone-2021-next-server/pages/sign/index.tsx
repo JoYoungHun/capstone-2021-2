@@ -44,7 +44,8 @@ const Sign: NextPage<Props> = ({  }) => {
     }, [ data ])
 
     return (
-        <div style={{ width: '100%', height: '100vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+        <div className={"ovf"}
+             style={{ width: '100%', height: '100vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <div style={{ width: '260pt', border: 0, borderRadius: '30pt', height: '500pt',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
                 <Image

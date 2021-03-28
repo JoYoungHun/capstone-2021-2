@@ -10,7 +10,7 @@ import LanguageMenu from "../components/LanguageMenu";
 import { GET_CONTENT_SUMMARY } from "../graphQL/quries";
 import { NextRouter, useRouter } from "next/router";
 import {ContentDetails, SummaryShell} from "../types";
-import { Divider } from "@material-ui/core";
+import {Button, Divider} from "@material-ui/core";
 import { RootState } from "../modules";
 import useIntersectionObserver from "../hooks/useIntersectionObserver";
 import Loader from "react-loader-spinner";
@@ -173,7 +173,8 @@ const PreviewContainer: React.FunctionComponent<Props> = ({ ct }) => {
                                 요약
                             </span>
                         </div>
-                        <div ref={rootRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'column',
+                        <div className={"ovf"} ref={rootRef}
+                             style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'column',
                             height: '550pt', width: '100%', color: '#FFF', fontWeight: 'bold', minHeight: '550pt',
                             paddingTop: '12pt', paddingLeft: '8pt', paddingRight: '8pt', paddingBottom: '12pt', overflow: 'auto' }}>
                             {

@@ -9,6 +9,7 @@ import { storePassedProblem } from "../../../reducers/ProbReducer";
 import Choose from "../Choose";
 import Notiflix from 'notiflix';
 import dynamic from "next/dynamic";
+import {Button} from "@material-ui/core";
 const TextToSpeech = dynamic(() => import('../TextToSpeech'), { ssr: false })
 
 type Props = {
@@ -81,7 +82,7 @@ const ObjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
 
     const { data, loading, refetch } = useQuery(GET_CHOICES, { variables: { option: 1, except: problems.length > 0 && problems[0].id ? problems[0].id : -1 }})
     return (
-        <div style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
+        <div className={"ovf"} style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
             <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: '32pt', fontWeight: 'bold' }}>
                     { problems.length > 0 ? problems[currentIdx].kor : '-' }
