@@ -126,7 +126,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                             등록된 컨텐츠
                         </span>
                     </div>
-                    <div style={{ border: 0, boxShadow: '0px 3px 6px #0000029', width: '700pt', height: '200pt', overflow: 'scroll', marginTop: '8pt' }}>
+                    <div style={{ border: 0, boxShadow: '0px 3px 6px #0000029', width: '700pt', height: '200pt', overflow: 'auto', marginTop: '8pt' }}>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} size="small" aria-label="a dense table">
                                 <TableHead>

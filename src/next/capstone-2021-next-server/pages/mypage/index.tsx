@@ -69,7 +69,7 @@ const MyPage = ({ }) => {
         <React.Fragment>
             <ArrowBackRounded style={{ position: 'absolute', top: '35pt', left: '35pt', cursor: 'pointer' }} fontSize={'large'}
                 onClick={() => router.back()} />
-            <div style={{ width: '100%', height: '100vh', overflow: 'scroll', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ width: '100%', height: '100vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <div style={{ width: '260pt', height: '500pt', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                      onClick={() => profileRef && profileRef.current.click()}>
                     {

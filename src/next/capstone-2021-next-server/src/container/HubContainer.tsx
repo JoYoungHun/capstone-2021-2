@@ -96,7 +96,7 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
                     </span>
                 </Button>
             </div>
-            <div ref={rootRef} style={{ paddingLeft: '16pt', height: '530pt', display: 'flex', flexWrap: 'wrap', overflow: 'scroll',
+            <div ref={rootRef} style={{ paddingLeft: '16pt', height: '530pt', display: 'flex', flexWrap: 'wrap', overflow: 'auto',
                 border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
                 {
                     scrollViewState.contents.map((cont: ContentDetails) => (
