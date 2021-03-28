@@ -56,7 +56,7 @@ public class ContentDataFetcher {
         this.wordRepo = wordRepo;
         this.sentenceRepo = sentenceRepo;
         this.categoryRepo = categoryRepo;
-        this.validPos = Arrays.asList("v.", "a.", "ad.", "n.");
+        this.validPos = Arrays.asList("v.", "conj.", "ad.", "n.");
     }
 
     @GqlDataFetcher(type = GqlType.MUTATION)
@@ -84,8 +84,11 @@ public class ContentDataFetcher {
                 for (int i = 0; i < words.size(); i++) {
                     Paragraph word = new Paragraph(words.get(i));
                     CoreLabel label = lemmatizer.getCoreLabel(word.getEng());
-                    wordRepo.save(Word.builder().content(content).eng(word.getEng()).kor(word.getKor())
-                            .pos(label.tag()).lemma(label.lemma()).sequence(i).build());
+                    // save if pos valid.
+                    if (validPos.contains(lemmatizer.partOfSpeech(label.lemma())))
+                        wordRepo.save(Word.builder().content(content).eng(word.getEng()).kor(word.getKor())
+                                .pos(label.tag()).lemma(label.lemma()).sequence(i).build());
+
                 }
                 for (int i = 0; i < sentences.size(); i++) {
                     Paragraph sentence = new Paragraph(sentences.get(i));
