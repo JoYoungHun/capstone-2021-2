@@ -11,6 +11,8 @@ import { ContentDetails } from "../types";
 import useIntersectionObserver from "../hooks/useIntersectionObserver";
 import Notiflix from 'notiflix';
 import {storeFrame} from "../reducers/ContReducer";
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 type Props = {
 
@@ -86,38 +88,41 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
         }}, fetchPolicy: "network-only" })
 
     return (
-        <div style={{ width: '100%' }}>
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '8pt' }}>
-                <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box'}}
-                        onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
-                            .then(() => router.push('/?tb=2').then()) }}>
-                    <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt' }}>
-                        컨텐츠 만들기
-                    </span>
-                </Button>
+        <PerfectScrollbar>
+            <div style={{ width: '100%' }}>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '8pt' }}>
+                    <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box'}}
+                            onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
+                                .then(() => router.push('/?tb=2').then()) }}>
+                        <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt' }}>
+                            컨텐츠 만들기
+                        </span>
+                    </Button>
+                </div>
+                <div className={"ovf"} ref={rootRef} style={{ paddingLeft: '16pt', height: '530pt', border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
+                    <PerfectScrollbar style={{ display: 'flex', flexWrap: 'wrap', overflow: 'auto' }}>
+                        {
+                            scrollViewState.contents.map((cont: ContentDetails) => (
+                                <SimpleContCard key={cont.id + Math.random()} details={cont} onClick={() => onRouteToPreview(cont.id).then(() => { })}/>
+                            ))
+                        }
+                        {
+                            scrollViewState.hasMore &&
+                                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                                    <ArrowDownwardRounded />
+                                    <span>
+                                        Scroll Down
+                                    </span>
+                                </div>
+                        }
+                        {
+                            scrollViewState.loading && <Loading />
+                        }
+                        <div ref={targetRef} />
+                    </PerfectScrollbar>
+                </div>
             </div>
-            <div className={"ovf"} ref={rootRef} style={{ paddingLeft: '16pt', height: '530pt', display: 'flex', flexWrap: 'wrap', overflow: 'auto',
-                border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
-                {
-                    scrollViewState.contents.map((cont: ContentDetails) => (
-                        <SimpleContCard key={cont.id + Math.random()} details={cont} onClick={() => onRouteToPreview(cont.id).then(() => { })}/>
-                    ))
-                }
-                {
-                    scrollViewState.hasMore &&
-                        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                            <ArrowDownwardRounded />
-                            <span>
-                                Scroll Down
-                            </span>
-                        </div>
-                }
-                {
-                    scrollViewState.loading && <Loading />
-                }
-                <div ref={targetRef} />
-            </div>
-        </div>
+        </PerfectScrollbar>
     )
 }
 
