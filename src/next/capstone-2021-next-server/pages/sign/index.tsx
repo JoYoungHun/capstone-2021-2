@@ -21,7 +21,7 @@ const Sign: NextPage<Props> = ({  }) => {
         name: ''
     })
 
-    const [ register, { loading, data }] = useMutation(POST_SIGN);
+    const [ register, { loading }] = useMutation(POST_SIGN);
     let { email, password, name } = sign;
 
     const CALL_SIGN_API = async () => {
@@ -30,23 +30,21 @@ const Sign: NextPage<Props> = ({  }) => {
             return;
         } else {
             await register({ variables: { id: email, password, name }})
+                .then((res: ApolloQueryResult<any>) => {
+                    if (res && res.data && res.data.sign.status === 200) {
+                        router.push('/login').then();
+                        Notiflix.Notify.Success('Successfully signed up!')
+                    } else if (res && (res.data.sign.status === 400 || res.data.sign.status === 406 || res.data.sign.status === 500)) {
+                        Notiflix.Report.Failure('회원가입에 실패했습니다.', '아이디 / 비밀번호를 확인해주세요.', 'OK!');
+                        return;
+                    } else routeHttpStatus(router, res.data.sign.status, res.data.sign.message);
+                })
         }
     }
-
     const router: NextRouter = useRouter();
-    React.useEffect(() => {
-        if (data && (data.sign.status === 400 || data.sign.status === 406 || data.sign.status === 500)) {
-            Notiflix.Report.Failure('회원가입에 실패했습니다.');
-            return;
-        } else if (data && data.sign.status === 200) {
-            router.push('/login').then();
-            Notiflix.Notify.Success('Successfully signed up!')
-        } else routeHttpStatus(router, data.sign.status, data.sign.message);
-    }, [ data ])
-
     return (
         <div className={"ovf"}
-             style={{ width: '100%', height: '100vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+             style={{ width: '100%', height: '80vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <div style={{ width: '260pt', border: 0, borderRadius: '30pt', height: '500pt',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
                 <Image

@@ -16,7 +16,7 @@ const Loading: React.FunctionComponent<LoadingProps> = ({ color }) => {
          */
     }, [])
     return (
-        <div style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+        <div style={{ width: '100%', height: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <Loader
                 type="Puff"
                 color={color ? color : "#00BFFF"}

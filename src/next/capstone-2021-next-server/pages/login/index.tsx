@@ -15,7 +15,7 @@ const Login: NextPage = ({ }) => {
     const router: NextRouter = useRouter();
     return (
         <div className={"ovf"}
-             style={{ width: '100%', height: '100vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+             style={{ width: '100%', height: '80vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <div style={{ width: '200pt', display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
                 <Image
                     src={"/hiing.png"}

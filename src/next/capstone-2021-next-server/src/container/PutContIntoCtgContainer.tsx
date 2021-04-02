@@ -24,9 +24,10 @@ import { ContentDetails, Paginate } from "../types";
 import { Loading, SimpleContCard } from "../components";
 import { selectCategory } from "../reducers/CategoryReducer";
 import Notiflix from 'notiflix';
-import {routeHttpStatus} from "../../utils/func";
-import {NextRouter} from "next/dist/client/router";
-import {useRouter} from "next/router";
+import { routeHttpStatus } from "../../utils/func";
+import { NextRouter, useRouter } from "next/router";
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 type Props = {
 
@@ -185,6 +186,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                             </div>
                             <div className={"ovf"} style={{ width: '100%', height: '500pt', overflowY: 'auto', boxShadow: '0p 3px 6px #00000029',
                                 border: '0.25px solid #00000029', borderRadius: '6pt', marginTop: '8pt' }}>
+                                <PerfectScrollbar>
                                 {
                                     loading &&
                                         <Loading />
@@ -233,7 +235,8 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                }
+                                    }
+                                </PerfectScrollbar>
                             </div>
                         </React.Fragment>
                 }
