@@ -7,6 +7,7 @@ import { Button, Modal, Slide } from "@material-ui/core";
 import { GET_SENTENCES } from "../../graphQL/quries";
 import { initializeProblems, storeLevel } from "../../reducers/ProbReducer";
 import Notiflix from 'notiflix';
+import {routeHttpStatus} from "../../../utils/func";
 
 type Props = {
     hidden: boolean,
@@ -43,9 +44,7 @@ const SentenceChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, clos
         onCompleted: data => {
             if (data.allSentences && data.allSentences.status === 200) {
                 dispatch(initializeProblems(data.allSentences.problems))
-            } else {
-                router.push('/').then(() => { });
-            }
+            } else routeHttpStatus(router, data.allSentences.status, data.allSentences.message);
         }})
 
     return (

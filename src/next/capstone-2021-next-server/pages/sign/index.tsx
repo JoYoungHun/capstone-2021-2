@@ -1,6 +1,6 @@
 import React from 'react';
 import { NextPage } from "next";
-import { useMutation } from "@apollo/client";
+import {ApolloQueryResult, useMutation} from "@apollo/client";
 import { NextRouter, useRouter } from "next/router";
 import { Button, CircularProgress, TextField } from "@material-ui/core";
 import { SignUpType } from "../../src/types";
@@ -8,6 +8,7 @@ import { POST_SIGN } from "../../src/graphQL/quries";
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
 import Image from 'next/image';
+import {routeHttpStatus} from "../../utils/func";
 
 type Props = {
 
@@ -34,13 +35,13 @@ const Sign: NextPage<Props> = ({  }) => {
 
     const router: NextRouter = useRouter();
     React.useEffect(() => {
-        if (data && data.sign !== 200) {
+        if (data && (data.sign.status === 400 || data.sign.status === 406 || data.sign.status === 500)) {
             Notiflix.Report.Failure('회원가입에 실패했습니다.');
             return;
-        } else if (data && data.sign === 200) {
+        } else if (data && data.sign.status === 200) {
             router.push('/login').then();
             Notiflix.Notify.Success('Successfully signed up!')
-        }
+        } else routeHttpStatus(router, data.sign.status, data.sign.message);
     }, [ data ])
 
     return (

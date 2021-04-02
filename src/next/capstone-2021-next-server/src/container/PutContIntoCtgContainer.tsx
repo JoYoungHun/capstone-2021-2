@@ -24,6 +24,9 @@ import { ContentDetails, Paginate } from "../types";
 import { Loading, SimpleContCard } from "../components";
 import { selectCategory } from "../reducers/CategoryReducer";
 import Notiflix from 'notiflix';
+import {routeHttpStatus} from "../../utils/func";
+import {NextRouter} from "next/dist/client/router";
+import {useRouter} from "next/router";
 
 type Props = {
 
@@ -43,6 +46,7 @@ const useStyles = makeStyles({
 
 const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
     const classes = useStyles();
+    const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const { selectedCategory } = useSelector((state: RootState) => state.CategoryReducer);
     const [ hiddenViewState, setHiddenViewState ] = React.useState<PaginateProps>({
@@ -100,13 +104,13 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                     category({ variables: { id: selectedCategory.id }})
                     resolve(true);
                 }).then(() => setHiddenViewState({ pageProps: { ...pageProps, page: 1 }, hidden: true, selected: [] }))
-            }
+            } else routeHttpStatus(router, response.saveContentsToCategory.status, response.saveContentsToCategory.message);
         }});
 
     const [ deleteContentsInCategory, { } ] = useMutation(DELETE_REMOVE_CONTENT_IN_CATEGORY, { onCompleted: async (response) => {
             if (response.deleteContentsInCategory && response.deleteContentsInCategory.status === 200) {
                 category({ variables: { id: selectedCategory.id }})
-            }
+            } else routeHttpStatus(router, response.deleteContentsInCategory.status, response.deleteContentsInCategory.message);
         }})
 
     const [ category, { } ] = useLazyQuery(GET_CATEGORY, { onCompleted: response => {

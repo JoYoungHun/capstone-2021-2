@@ -10,6 +10,7 @@ import { POST_REWRITE_REPORT } from "../../../graphQL/quries";
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
 import dynamic from "next/dynamic";
+import {routeHttpStatus} from "../../../../utils/func";
 const TextToSpeech = dynamic(() => import('../TextToSpeech'), { ssr: false });
 
 type Props = {
@@ -96,7 +97,7 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
             if (data && data.rewrite && data.rewrite.status === 200) {
                 router.back();
                 Notiflix.Loading.Remove(1000);
-            }
+            } else routeHttpStatus(router, data.rewrite.status, data.rewrite.message);
         }});
 
     return (

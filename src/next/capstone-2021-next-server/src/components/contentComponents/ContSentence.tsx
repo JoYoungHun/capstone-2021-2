@@ -10,6 +10,7 @@ import { Paragraph } from "../../types";
 import { YellowBtn } from "./commons";
 import SentenceComponent from "./SentenceComponent";
 import Notiflix from 'notiflix';
+import {routeHttpStatus} from "../../../utils/func";
 
 type Props = {
 
@@ -30,14 +31,16 @@ const ContSentence: React.FunctionComponent<Props> = () => {
             const filteredSentences = content.sentences.filter((sentence: Paragraph) => sentence.eng !== '' && sentence.kor !== '');
 
             create({ variables: { input: { ...content.frame, words: filteredWords, sentences: filteredSentences } }})
-                .then( async () => {
-                    await new Promise((resolve) => {
-                        dispatch(initializeContent())
-                        resolve(true)
-                    }).then(() => {
-                        Notiflix.Loading.Remove(1000);
-                        router.push('/?tb=0').then();
-                    })
+                .then( async (res) => {
+                    if (res && res.data && res.data.createContent.status === 200) {
+                        await new Promise((resolve) => {
+                            dispatch(initializeContent())
+                            resolve(true)
+                        }).then(() => {
+                            Notiflix.Loading.Remove(1000);
+                            router.push('/?tb=0').then();
+                        })
+                    } else routeHttpStatus(router, res.data.createContent.status, res.data.createContent.message);
                 });
         }
     }

@@ -7,6 +7,7 @@ import { useLazyQuery } from "@apollo/client";
 import { GET_WORDS } from "../../graphQL/quries";
 import { initializeProblems, storeLevel } from "../../reducers/ProbReducer";
 import Notiflix from 'notiflix'
+import {routeHttpStatus} from "../../../utils/func";
 
 type Props = {
     hidden: boolean,
@@ -43,9 +44,7 @@ const WordChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, close, g
         onCompleted: data => {
             if (data.allWords && data.allWords.status === 200) {
                 dispatch(initializeProblems(data.allWords.problems))
-            } else {
-                router.push('/').then(() => { });
-            }
+            } else routeHttpStatus(router, data.allWords.status, data.allWords.message);
         }})
 
     return (
