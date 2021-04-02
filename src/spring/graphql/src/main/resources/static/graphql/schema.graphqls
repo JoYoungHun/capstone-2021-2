@@ -32,14 +32,14 @@ type Query {
 }
 
 type Mutation {
-    sign(id: String!, password: String!, name: String!): Int
+    sign(id: String!, password: String!, name: String!): NoResponse!
     updateUserAuthority(id: Long!, authority: String!): NoResponse!
     deleteUser(id: Long!): NoResponse!
     updateUserInfo(input: UpdateUserInput!): NoResponse!
 
-    createCategory(title: String!): Int!
-    updateCategory(id: Int!, title: String!): Int!
-    deleteCategory(id: Int!): Int!
+    createCategory(title: String!): NoResponse!
+    updateCategory(id: Int!, title: String!): NoResponse!
+    deleteCategory(id: Int!): NoResponse!
 
     createContent(input: ContentInput!): NoResponse!
     deleteContent(id: Int!): NoResponse!

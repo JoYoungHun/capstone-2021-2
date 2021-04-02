@@ -24,6 +24,7 @@ import r.demo.graphql.response.RadarResponse;
 import r.demo.graphql.types.BarDataType;
 import r.demo.graphql.types.PieDataType;
 import r.demo.graphql.types.RadarDataType;
+import r.demo.graphql.utils.InternalFilterChains;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,11 +33,14 @@ import java.util.*;
 @Gql
 @Service
 public class ReportDataFetcher {
+    private final InternalFilterChains chains;
     private final ReportRepo reportRepo;
     private final ContentRepo contentRepo;
     private final UserInfoRepo userRepo;
 
-    public ReportDataFetcher(ReportRepo reportRepo, ContentRepo contentRepo, UserInfoRepo userRepo) {
+    public ReportDataFetcher(InternalFilterChains chains,
+                             ReportRepo reportRepo, ContentRepo contentRepo, UserInfoRepo userRepo) {
+        this.chains = chains;
         this.reportRepo = reportRepo;
         this.contentRepo = contentRepo;
         this.userRepo = userRepo;
@@ -46,52 +50,56 @@ public class ReportDataFetcher {
     @SuppressWarnings("unchecked")
     public DataFetcher<?> rewrite() {
         return environment -> {
-            LinkedHashMap<String, Object> input = environment.getArgument("input");
-            long contentKey = Long.parseLong(input.get("content").toString());
-            int level = Integer.parseInt(input.get("level").toString());
-            List<LinkedHashMap<String, Object>> solved = (List<LinkedHashMap<String, Object>>) input.get("solved");
             try {
-                Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
-                String email = SecurityContextHolder.getContext().getAuthentication().getName();
-                UserInfo user = userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
-                int wordLen = content.getWords().size(), sentenceLen = content.getSentences().size();
-                int passed = (int) solved.stream().filter(prob -> Boolean.parseBoolean(prob.get("passed").toString())).count();
-                Optional<Report> rewrite = reportRepo.findByContentAndUser(content, user);
-                // if exists, rewrite (update) report entity
-                // if not exists, make new report entity
-                Report report = rewrite.orElseGet(() -> Report.builder()
-                        .content(content).user(user).wordLen(wordLen * 3).sentenceLen(sentenceLen * 2)
-                        .build());
+                LinkedHashMap<String, Object> input = environment.getArgument("input");
+                long contentKey = Long.parseLong(input.get("content").toString());
+                int level = Integer.parseInt(input.get("level").toString());
+                List<LinkedHashMap<String, Object>> solved = (List<LinkedHashMap<String, Object>>) input.get("solved");
 
-                // toggle solved level, correct words
-                switch (level) {
-                    case 0:
-                        report.setCorrectWordsLev1(passed);
-                        report.toggleWordPassLev1();
-                        break;
-                    case 1:
-                        report.setCorrectWordsLev2(passed);
-                        report.toggleWordPassLev2();
-                        break;
-                    case 2:
-                        report.setCorrectWordsLev3(passed);
-                        report.toggleWordPassLev3();
-                        break;
-                    case 3:
-                        report.setCorrectSentencesLev1(passed);
-                        report.toggleSentencePassLev1();
-                        break;
-                    case 4:
-                        report.setCorrectSentencesLev2(passed);
-                        report.toggleSentencePassLev2();
-                        break;
-                    default: throw new IllegalArgumentException();
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+                    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+                    UserInfo user = userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+                    int wordLen = content.getWords().size(), sentenceLen = content.getSentences().size();
+                    int passed = (int) solved.stream().filter(prob -> Boolean.parseBoolean(prob.get("passed").toString())).count();
+                    Optional<Report> rewrite = reportRepo.findByContentAndUser(content, user);
+                    // if exists, rewrite (update) report entity
+                    // if not exists, make new report entity
+                    Report report = rewrite.orElseGet(() -> Report.builder()
+                            .content(content).user(user).wordLen(wordLen * 3).sentenceLen(sentenceLen * 2)
+                            .build());
+
+                    // toggle solved level, correct words
+                    switch (level) {
+                        case 0:
+                            report.setCorrectWordsLev1(passed);
+                            report.toggleWordPassLev1();
+                            break;
+                        case 1:
+                            report.setCorrectWordsLev2(passed);
+                            report.toggleWordPassLev2();
+                            break;
+                        case 2:
+                            report.setCorrectWordsLev3(passed);
+                            report.toggleWordPassLev3();
+                            break;
+                        case 3:
+                            report.setCorrectSentencesLev1(passed);
+                            report.toggleSentencePassLev1();
+                            break;
+                        case 4:
+                            report.setCorrectSentencesLev2(passed);
+                            report.toggleSentencePassLev2();
+                            break;
+                        default:
+                            throw new IllegalArgumentException();
+                    }
+
+                    reportRepo.save(report);
                 }
-
-                reportRepo.save(report);
-                return new DefaultResponse(HttpStatus.OK.value());
+                return new DefaultResponse(isAuthenticated);
             } catch (RuntimeException e) {
-                e.printStackTrace();
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -104,9 +112,12 @@ public class ReportDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> report() {
         return environment -> {
-            long reportKey = environment.getArgument("report");
             try {
-                return reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
+                long reportKey = environment.getArgument("report");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    return reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
+                } else throw new RuntimeException();
             } catch (RuntimeException e) {
                 return null;
             } catch (Exception e) {
@@ -119,17 +130,20 @@ public class ReportDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> bar() {
         return environment -> {
-            long reportKey = environment.getArgument("report");
             try {
-                Report report = reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
-                List<Report> otherReports = reportRepo.findAllByIdNotAndContent(reportKey, report.getContent());
+                long reportKey = environment.getArgument("report");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Report report = reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
+                    List<Report> otherReports = reportRepo.findAllByIdNotAndContent(reportKey, report.getContent());
 
-                // summarize
-                List<BarDataType> data = new ArrayList<>();
-                data.add(summarizeToBar(otherReports, "평균 정답률"));
-                data.add(summarizeToBar(Collections.singletonList(report), "내 정답률"));
+                    // summarize
+                    List<BarDataType> data = new ArrayList<>();
+                    data.add(summarizeToBar(otherReports, "평균 정답률"));
+                    data.add(summarizeToBar(Collections.singletonList(report), "내 정답률"));
 
-                return new BarResponse(HttpStatus.OK.value(), data);
+                    return new BarResponse(HttpStatus.OK.value(), data);
+                } else return new BarResponse(isAuthenticated.value());
             } catch (RuntimeException e) {
                 return new BarResponse(HttpStatus.NOT_FOUND.value());
             } catch (Exception e) {
@@ -142,11 +156,14 @@ public class ReportDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> pie() {
         return environment -> {
-            long reportKey = environment.getArgument("report");
-            int option = environment.getArgument("option");
             try {
-                Report report = reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
-                return new PieResponse(HttpStatus.OK.value(), summarizeToPie(report, option));
+                long reportKey = environment.getArgument("report");
+                int option = environment.getArgument("option");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Report report = reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
+                    return new PieResponse(HttpStatus.OK.value(), summarizeToPie(report, option));
+                } else return new PieResponse(isAuthenticated.value());
             } catch (RuntimeException e) {
                 return new PieResponse(HttpStatus.NOT_FOUND.value());
             } catch (Exception e) {
@@ -159,10 +176,13 @@ public class ReportDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> radar() {
         return environment -> {
-            long reportKey = environment.getArgument("report");
             try {
-                Report report = reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
-                return new RadarResponse(HttpStatus.OK.value(), summarizeToRadar(report));
+                long reportKey = environment.getArgument("report");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Report report = reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
+                    return new RadarResponse(HttpStatus.OK.value(), summarizeToRadar(report));
+                } else return new RadarResponse(isAuthenticated.value());
             } catch (RuntimeException e) {
                 return new RadarResponse(HttpStatus.NOT_FOUND.value());
             } catch (Exception e) {
@@ -176,15 +196,19 @@ public class ReportDataFetcher {
     public DataFetcher<?> recent() {
         return environment -> {
             LinkedHashMap<String, Object> lhm = new LinkedHashMap<>();
-            final LinkedHashMap<String, Object> req = environment.getArgument("pr");
-            int page = Integer.parseInt(req.get("page").toString()),
-                    renderItem = Integer.parseInt(req.get("renderItem").toString());
             try {
+                final LinkedHashMap<String, Object> req = environment.getArgument("pr");
+                int page = Integer.parseInt(req.get("page").toString()),
+                        renderItem = Integer.parseInt(req.get("renderItem").toString());
                 String email = SecurityContextHolder.getContext().getAuthentication().getName();
-                UserInfo user = userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
-                Page<Report> reports = reportRepo.findAllByUser(user, PageRequest.of(page - 1, renderItem, Sort.Direction.DESC, "modified"));
-                lhm.put("reports", reports);
-                lhm.put("totalElements", reports.getTotalElements());
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    UserInfo user = userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+                    Page<Report> reports = reportRepo.findAllByUser(user, PageRequest.of(page - 1, renderItem, Sort.Direction.DESC, "modified"));
+                    lhm.put("reports", reports);
+                    lhm.put("totalElements", reports.getTotalElements());
+                } else throw new RuntimeException();
             } catch (RuntimeException e) {
                 lhm.put("reports", Collections.emptyList());
                 lhm.put("totalElements", 0);
