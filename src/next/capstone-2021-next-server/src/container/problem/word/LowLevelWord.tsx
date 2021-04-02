@@ -10,6 +10,7 @@ import Choose from "../Choose";
 import Notiflix from 'notiflix';
 import dynamic from "next/dynamic";
 import {Button} from "@material-ui/core";
+import {routeHttpStatus} from "../../../../utils/func";
 const TextToSpeech = dynamic(() => import('../TextToSpeech'), { ssr: false });
 
 type Props = {
@@ -76,7 +77,7 @@ const LowLevelWord: React.FunctionComponent<Props> = ({ }) => {
             if (data && data.rewrite && data.rewrite.status === 200) {
                 router.back();
                 Notiflix.Loading.Remove(1000);
-            }
+            } else routeHttpStatus(router, data.rewrite.status, data.rewrite.message);
         }});
 
     const { data, loading, refetch } = useQuery(GET_CHOICES, { variables: { option: 0, except: problems.length > 0 && problems[0].id ? problems[0].id : -1 }})

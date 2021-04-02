@@ -1,6 +1,7 @@
 package r.demo.graphql.response;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class DefaultResponse {
@@ -14,5 +15,10 @@ public class DefaultResponse {
     public DefaultResponse(int status, String message) {
         this.status = status;
         this.message = message;
+    }
+
+    public DefaultResponse(HttpStatus httpStatus) {
+        this.status = httpStatus.value();
+        this.message = httpStatus.getReasonPhrase();
     }
 }

@@ -11,7 +11,8 @@ import r.demo.graphql.response.ParseResponse;
 import r.demo.graphql.types.Paragraph;
 import r.demo.graphql.utils.StanfordLemmatizer;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Gql
@@ -26,8 +27,8 @@ public class Parser {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> parse() {
         return environment -> {
-            String captions = environment.getArgument("captions");
             try {
+                String captions = environment.getArgument("captions");
                 CoreDocument coreDocument = lemmatizer.parse(captions);
                 List<Paragraph> sentences = coreDocument.sentences().stream().map(coreSentence -> new Paragraph(coreSentence.text(), "", null)).collect(Collectors.toList()),
                         words = coreDocument.tokens().stream()

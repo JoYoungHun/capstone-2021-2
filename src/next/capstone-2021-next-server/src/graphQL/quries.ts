@@ -90,25 +90,37 @@ export const POST_LOGIN = gql`
 
 export const POST_SIGN = gql`
     mutation sign($id: String!, $password: String!, $name: String!) {
-        sign(id: $id, password: $password, name: $name)
+        sign(id: $id, password: $password, name: $name) {
+            status
+            message
+        }
     }
 `
 
 export const POST_CREATE_CATEGORY = gql`
     mutation createCategory($title: String!) {
-        createCategory(title: $title)
+        createCategory(title: $title) {
+            status
+            message
+        }
     }
 `
 
 export const PUT_UPDATE_CATEGORY = gql`
     mutation updateCategory($id: Int!, $title: String!) {
-        updateCategory(id: $id, title: $title)
+        updateCategory(id: $id, title: $title) {
+            status
+            message
+        }
     }   
 `
 
 export const DELETE_REMOVE_CATEGORY = gql`
     mutation deleteCategory($id: Int!) {
-        deleteCategory(id: $id)
+        deleteCategory(id: $id) {
+            status
+            message
+        }
     }   
 `
 

@@ -8,6 +8,8 @@ import { Error } from "../index";
 import { DELETE_REMOVE_CATEGORY } from "../../graphQL/quries";
 import { modifyCategories } from "../../reducers/CategoryReducer";
 import Notiflix from 'notiflix';
+import { NextRouter, useRouter } from "next/router";
+import {routeHttpStatus} from "../../../utils/func";
 
 type Props = {
     hidden: boolean
@@ -20,6 +22,7 @@ type Props = {
 
 const D_CategoryModal: React.FunctionComponent<Props> = ({ hidden, context, close }: Props) => {
     const dispatch = useDispatch();
+    const router: NextRouter = useRouter();
     const { selectedCategory, refetch } = useSelector((state: RootState) => state.CategoryReducer)
     const [ deleteCategory, { error }] = useMutation(DELETE_REMOVE_CATEGORY, { variables: { id: selectedCategory.id }, awaitRefetchQueries: true })
     if (error) return <Error msg={error.message} />
@@ -35,7 +38,7 @@ const D_CategoryModal: React.FunctionComponent<Props> = ({ hidden, context, clos
                                 if (refetchResponse.data)
                                     dispatch(modifyCategories(refetchResponse.data.categories));
                             });
-                    }
+                    } else routeHttpStatus(router, res.data.deleteCategory.status, res.data.deleteCategory.message);
                 })
             close();
         }

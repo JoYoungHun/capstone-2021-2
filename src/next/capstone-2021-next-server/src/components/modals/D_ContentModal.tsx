@@ -4,6 +4,8 @@ import { CloseOutlined } from "@material-ui/icons";
 import { Button, Modal } from "@material-ui/core";
 import { DELETE_REMOVE_CONTENT } from "../../graphQL/quries";
 import Notiflix from 'notiflix';
+import {routeHttpStatus} from "../../../utils/func";
+import { NextRouter, useRouter } from "next/router";
 
 type Props = {
     hidden: boolean
@@ -17,11 +19,12 @@ type Props = {
 }
 
 const D_ContentModal: React.FunctionComponent<Props> = ({ hidden, context, reRenderContentList, close }) => {
+    const router: NextRouter = useRouter();
     const [ deleteContent, { }] = useMutation(DELETE_REMOVE_CONTENT, { onCompleted: async (data) => {
             if (data.deleteContent.status === 200 && reRenderContentList) {
                 close();
                 reRenderContentList();
-            }
+            } else routeHttpStatus(router, data.deleteContent.status, data.deleteContent.message);
         }})
 
     return (

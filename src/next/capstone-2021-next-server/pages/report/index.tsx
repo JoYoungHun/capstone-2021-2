@@ -8,7 +8,6 @@ import { ReportDetails } from "../../src/components";
 import { Bar, Pie, Radar, PieRadioBtns } from "../../src/components/charts";
 import { RootState } from "../../src/modules";
 import Cookies from 'js-cookie';
-import absoluteUrl from "next-absolute-url/index";
 
 const Report = ({ ri }) => {
     const router: NextRouter = useRouter();

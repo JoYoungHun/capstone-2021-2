@@ -3,6 +3,7 @@ package r.demo.graphql.core;
 import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import r.demo.graphql.response.ExcelResponse;
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class FileController {
     private final FileService service;
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER', 'ROLE_READONLY')")
     @PostMapping(value = "/upload", produces = "application/json")
     public FileResponse upload(@NotNull MultipartFile file) {
         return service.upload(file);
@@ -32,6 +34,7 @@ public class FileController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     @PostMapping(value = "/excel/upload", produces = "application/json")
     public ExcelResponse uploadExcel(@NotNull MultipartFile excel) {
         return service.uploadExcel(excel);

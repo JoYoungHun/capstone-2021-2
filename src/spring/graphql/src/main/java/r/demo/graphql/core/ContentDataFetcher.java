@@ -30,6 +30,7 @@ import r.demo.graphql.types.Paragraph;
 import r.demo.graphql.types.Problem;
 import r.demo.graphql.types.SummaryShell;
 import r.demo.graphql.types.SummaryToken;
+import r.demo.graphql.utils.InternalFilterChains;
 import r.demo.graphql.utils.StanfordLemmatizer;
 
 import java.util.*;
@@ -40,6 +41,7 @@ import java.util.stream.Stream;
 @Service
 public class ContentDataFetcher {
     private final StanfordLemmatizer lemmatizer;
+    private final InternalFilterChains chains;
     private final UserInfoRepo userRepo;
     private final ContentRepo contentRepo;
     private final WordRepo wordRepo;
@@ -48,9 +50,11 @@ public class ContentDataFetcher {
     private final List<String> validPos;
 
     public ContentDataFetcher(@Lazy StanfordLemmatizer lemmatizer,
+                              InternalFilterChains chains,
                               UserInfoRepo userRepo, ContentRepo contentRepo,
                               WordRepo wordRepo, SentenceRepo sentenceRepo, CategoryRepo categoryRepo) {
         this.lemmatizer = lemmatizer;
+        this.chains = chains;
         this.userRepo = userRepo;
         this.contentRepo = contentRepo;
         this.wordRepo = wordRepo;
@@ -72,30 +76,32 @@ public class ContentDataFetcher {
                         ref = inputObj.get("ref").toString(),
                         captions = inputObj.get("captions").toString();
 
-                UserInfo registerer = userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
-                        .orElseThrow(() -> new IndexOutOfBoundsException("Invalid user"));
-                Set<Category> categories = new HashSet<>();
-                for (int categoryKey : categoryKeys) {
-                    try {
-                        categories.add(categoryRepo.findById((long) categoryKey).orElseThrow(IndexOutOfBoundsException::new));
-                    } catch (IndexOutOfBoundsException ignored) { }
-                }
-                Content content = contentRepo.save(Content.builder().title(title).ref(ref).captions(captions).categories(categories).user(registerer).build());
-                for (int i = 0; i < words.size(); i++) {
-                    Paragraph word = new Paragraph(words.get(i));
-                    CoreLabel label = lemmatizer.getCoreLabel(word.getEng());
-                    // save if pos valid.
-                    if (validPos.contains(lemmatizer.partOfSpeech(label.lemma())))
-                        wordRepo.save(Word.builder().content(content).eng(word.getEng()).kor(word.getKor())
-                                .pos(label.tag()).lemma(label.lemma()).sequence(i).build());
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    UserInfo registerer = userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+                            .orElseThrow(() -> new IndexOutOfBoundsException("Invalid user"));
+                    Set<Category> categories = new HashSet<>();
+                    for (int categoryKey : categoryKeys) {
+                        try {
+                            categories.add(categoryRepo.findById((long) categoryKey).orElseThrow(IndexOutOfBoundsException::new));
+                        } catch (IndexOutOfBoundsException ignored) { }
+                    }
+                    Content content = contentRepo.save(Content.builder().title(title).ref(ref).captions(captions).categories(categories).user(registerer).build());
+                    for (int i = 0; i < words.size(); i++) {
+                        Paragraph word = new Paragraph(words.get(i));
+                        CoreLabel label = lemmatizer.getCoreLabel(word.getEng());
+                        // save if pos valid.
+                        if (validPos.contains(lemmatizer.partOfSpeech(label.lemma())))
+                            wordRepo.save(Word.builder().content(content).eng(word.getEng()).kor(word.getKor())
+                                    .pos(label.tag()).lemma(label.lemma()).sequence(i).build());
 
+                    }
+                    for (int i = 0; i < sentences.size(); i++) {
+                        Paragraph sentence = new Paragraph(sentences.get(i));
+                        sentenceRepo.save(Sentence.builder().content(content).eng(sentence.getEng()).kor(sentence.getKor()).sequence(i).build());
+                    }
                 }
-                for (int i = 0; i < sentences.size(); i++) {
-                    Paragraph sentence = new Paragraph(sentences.get(i));
-                    sentenceRepo.save(Sentence.builder().content(content).eng(sentence.getEng()).kor(sentence.getKor()).sequence(i).build());
-                }
-
-                return new DefaultResponse(200);
+                return new DefaultResponse(isAuthenticated);
             } catch (RuntimeException e) {
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (Exception e) {
@@ -110,13 +116,12 @@ public class ContentDataFetcher {
     public DataFetcher<?> allContents() {
         return environment -> {
             LinkedHashMap<String, Object> lhm = new LinkedHashMap<>();
-            long categoryKey = Long.parseLong(environment.getArgument("category").toString());
-            Integer option = environment.getArgument("option");
-            final LinkedHashMap<String, Object> req = environment.getArgument("pr");
-            int page = Integer.parseInt(req.get("page").toString()),
-                    renderItem = Integer.parseInt(req.get("renderItem").toString());
-
             try {
+                long categoryKey = Long.parseLong(environment.getArgument("category").toString());
+                Integer option = environment.getArgument("option");
+                final LinkedHashMap<String, Object> req = environment.getArgument("pr");
+                int page = Integer.parseInt(req.get("page").toString()),
+                        renderItem = Integer.parseInt(req.get("renderItem").toString());
                 Category category;
                 Page<Content> contents;
                 if (categoryKey != -1) {
@@ -146,8 +151,8 @@ public class ContentDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> content() {
         return environment -> {
-            long contentKey = environment.getArgument("id");
             try {
+                long contentKey = environment.getArgument("id");
                 return contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
             } catch (IllegalArgumentException e) {
                 return null;
@@ -161,11 +166,14 @@ public class ContentDataFetcher {
     @GqlDataFetcher(type = GqlType.MUTATION)
     public DataFetcher<?> deleteContent() {
         return environment -> {
-            long contentKey = Long.parseLong(environment.getArgument("id").toString());
             try {
-                if (this.deleteContentDetails(contentKey))
-                    throw new RuntimeException();
-                else return new DefaultResponse(200);
+                long contentKey = Long.parseLong(environment.getArgument("id").toString());
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    if (this.deleteContentDetails(contentKey))
+                        throw new RuntimeException();
+                }
+                return new DefaultResponse(isAuthenticated);
             } catch (RuntimeException e) {
                 return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
             }
@@ -175,23 +183,27 @@ public class ContentDataFetcher {
     @GqlDataFetcher(type = GqlType.MUTATION)
     public DataFetcher<?> saveContentsToCategory() {
         return environment -> {
-            long categoryKey = Long.parseLong(environment.getArgument("category").toString());
-            List<Integer> keys = environment.getArgument("id");
             try {
-                Category category = categoryRepo.findById(categoryKey).orElseThrow(IllegalArgumentException::new);
-                List<Long> ctgContents = contentRepo.findAllByCategory(category).stream().map(Content::getId).collect(Collectors.toList()),
-                        reqContents = contentRepo.findAllByIdIsIn(keys.stream().mapToLong(i -> (long) i).boxed().collect(Collectors.toSet()))
-                                .stream().map(Content::getId).collect(Collectors.toList());
+                long categoryKey = Long.parseLong(environment.getArgument("category").toString());
+                List<Integer> keys = environment.getArgument("id");
 
-                Set<Long> nonDuplicatedIds = new HashSet<>(ctgContents);
-                nonDuplicatedIds.addAll(reqContents);
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Category category = categoryRepo.findById(categoryKey).orElseThrow(IllegalArgumentException::new);
+                    List<Long> ctgContents = contentRepo.findAllByCategory(category).stream().map(Content::getId).collect(Collectors.toList()),
+                            reqContents = contentRepo.findAllByIdIsIn(keys.stream().mapToLong(i -> (long) i).boxed().collect(Collectors.toSet()))
+                                    .stream().map(Content::getId).collect(Collectors.toList());
 
-                List<Content> contents = contentRepo.findAllByIdIsIn(nonDuplicatedIds);
-                for (Content content : contents)
-                    content.addCategory(category);
+                    Set<Long> nonDuplicatedIds = new HashSet<>(ctgContents);
+                    nonDuplicatedIds.addAll(reqContents);
 
-                contentRepo.saveAll(contents);
-                return new DefaultResponse(200);
+                    List<Content> contents = contentRepo.findAllByIdIsIn(nonDuplicatedIds);
+                    for (Content content : contents)
+                        content.addCategory(category);
+
+                    contentRepo.saveAll(contents);
+                }
+                return new DefaultResponse(isAuthenticated);
             } catch (IllegalArgumentException e) {
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (RuntimeException e) {
@@ -203,15 +215,19 @@ public class ContentDataFetcher {
     @GqlDataFetcher(type = GqlType.MUTATION)
     public DataFetcher<?> deleteContentsInCategory() {
         return environment -> {
-            long categoryKey = Long.parseLong(environment.getArgument("category").toString()),
-                    contentKey = Long.parseLong(environment.getArgument("id").toString());
             try {
-                Category category = categoryRepo.findById(categoryKey).orElseThrow(IllegalArgumentException::new);
-                Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+                long categoryKey = Long.parseLong(environment.getArgument("category").toString()),
+                        contentKey = Long.parseLong(environment.getArgument("id").toString());
 
-                content.filterCategory(category);
-                contentRepo.save(content);
-                return new DefaultResponse(200);
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Category category = categoryRepo.findById(categoryKey).orElseThrow(IllegalArgumentException::new);
+                    Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+
+                    content.filterCategory(category);
+                    contentRepo.save(content);
+                }
+                return new DefaultResponse(isAuthenticated);
             } catch (IllegalArgumentException e) {
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (RuntimeException e) {
@@ -223,10 +239,10 @@ public class ContentDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> summary() {
         return environment -> {
-            long contentKey = environment.getArgument("content");
-            int level = environment.getArgument("level"),
-                    page = environment.getArgument("page");
             try {
+                long contentKey = environment.getArgument("content");
+                int level = environment.getArgument("level"),
+                        page = environment.getArgument("page");
                 Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
                 // persist
                 Page<Sentence> sentences = sentenceRepo.findAllByContent(content, PageRequest.of(page - 1, 8, Sort.Direction.ASC, "sequence"));
@@ -274,29 +290,32 @@ public class ContentDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> choices() {
         return environment -> {
-            long except = environment.getArgument("except");
-            int option = environment.getArgument("option");
             try {
-                List<Problem> problems;
-                switch (option) {
-                    case 0:
-                        Word word = wordRepo.findById(except).orElseThrow(IllegalArgumentException::new);
-                        List<Word> words = wordRepo.getRandWords(except, word.getEng());
-                        words.add(word);
-                        Collections.shuffle(words);
-                        problems = words.stream().map(Problem::new).collect(Collectors.toList());
-                        break;
-                    case 1:
-                        Sentence sentence = sentenceRepo.findById(except).orElseThrow(IllegalArgumentException::new);
-                        List<Sentence> sentences = sentenceRepo.getRandSentences(except, sentence.getEng());
-                        sentences.add(sentence);
-                        Collections.shuffle(sentences);
-                        problems = sentences.stream().map(Problem::new).collect(Collectors.toList());
-                        break;
-                    default: throw new IllegalArgumentException();
-                }
-
-                return new ProblemResponse(HttpStatus.OK.value(), problems);
+                long except = environment.getArgument("except");
+                int option = environment.getArgument("option");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    List<Problem> problems;
+                    switch (option) {
+                        case 0:
+                            Word word = wordRepo.findById(except).orElseThrow(IllegalArgumentException::new);
+                            List<Word> words = wordRepo.getRandWords(except, word.getEng());
+                            words.add(word);
+                            Collections.shuffle(words);
+                            problems = words.stream().map(Problem::new).collect(Collectors.toList());
+                            break;
+                        case 1:
+                            Sentence sentence = sentenceRepo.findById(except).orElseThrow(IllegalArgumentException::new);
+                            List<Sentence> sentences = sentenceRepo.getRandSentences(except, sentence.getEng());
+                            sentences.add(sentence);
+                            Collections.shuffle(sentences);
+                            problems = sentences.stream().map(Problem::new).collect(Collectors.toList());
+                            break;
+                        default:
+                            throw new IllegalArgumentException();
+                    }
+                    return new ProblemResponse(HttpStatus.OK.value(), problems);
+                } else return new ProblemResponse(isAuthenticated.value());
             } catch (IllegalArgumentException e) {
                 return new ProblemResponse(HttpStatus.NOT_FOUND.value());
             } catch (Exception e) {
@@ -309,10 +328,13 @@ public class ContentDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> allWords() {
         return environment -> {
-            long contentKey = environment.getArgument("id");
             try {
-                Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
-                return new ProblemResponse(HttpStatus.OK.value(), wordRepo.getAllWordsByRandOrdered(content).stream().map(Problem::new).collect(Collectors.toList()));
+                long contentKey = environment.getArgument("id");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+                    return new ProblemResponse(HttpStatus.OK.value(), wordRepo.getAllWordsByRandOrdered(content).stream().map(Problem::new).collect(Collectors.toList()));
+                } else return new ProblemResponse(isAuthenticated.value());
             } catch (IllegalArgumentException e) {
                 return new ProblemResponse(HttpStatus.NOT_FOUND.value());
             } catch (Exception e) {
@@ -325,10 +347,13 @@ public class ContentDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> allSentences() {
         return environment -> {
-            long contentKey = environment.getArgument("id");
             try {
-                Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
-                return new ProblemResponse(HttpStatus.OK.value(), sentenceRepo.getAllSentencesByRandOrdered(content).stream().map(Problem::new).collect(Collectors.toList()));
+                long contentKey = environment.getArgument("id");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Content content = contentRepo.findById(contentKey).orElseThrow(IllegalArgumentException::new);
+                    return new ProblemResponse(HttpStatus.OK.value(), sentenceRepo.getAllSentencesByRandOrdered(content).stream().map(Problem::new).collect(Collectors.toList()));
+                } else return new ProblemResponse(isAuthenticated.value());
             } catch (IllegalArgumentException e) {
                 return new ProblemResponse(HttpStatus.NOT_FOUND.value());
             } catch (Exception e) {

@@ -9,6 +9,8 @@ import { PUT_UPDATE_CATEGORY } from "../../graphQL/quries";
 import { Error } from "../index";
 import { modifyCategories } from "../../reducers/CategoryReducer";
 import Notiflix from 'notiflix';
+import { NextRouter, useRouter } from "next/router";
+import {routeHttpStatus} from "../../../utils/func";
 
 type Props = {
     hidden: boolean
@@ -19,6 +21,7 @@ type Props = {
 
 const CU_CategoryModal = ({ hidden, close, create, option }: Props) => {
     const dispatch = useDispatch();
+    const router: NextRouter = useRouter();
     const { selectedCategory, refetch } = useSelector((state: RootState) => state.CategoryReducer);
     const [ title, setTitle ] = React.useState<string>(selectedCategory ? selectedCategory.name : '');
 
@@ -30,7 +33,7 @@ const CU_CategoryModal = ({ hidden, close, create, option }: Props) => {
             Notiflix.Loading.Hourglass('카테고리 수정중...');
             await updateCategory({ variables: { id: selectedCategory.id, title: title }})
                 .then((res) => {
-                    if (res && res.data && res.data.updateCategory === 200) {
+                    if (res && res.data && res.data.updateCategory.status === 200) {
                         refetch && refetch()
                             .then(refetchResponse => {
                                 if (refetchResponse.data) {
@@ -38,7 +41,7 @@ const CU_CategoryModal = ({ hidden, close, create, option }: Props) => {
                                     setTitle('');
                                 }
                             });
-                    }
+                    } else routeHttpStatus(router, res.data.updateCategory.status, res.data.updateCategory.message);
                 })
         }
     }
