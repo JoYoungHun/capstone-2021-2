@@ -43,7 +43,7 @@ date:   2021-03-21 06:43:25 +0900
 
 ***
 
-## [💕 Sexy guys of TEAM 2 💕](/_posts/2021-03-29-introduce-team.md)<a name = "team"></a>
+## 💕 Sexy guys of TEAM 2 💕 <a name = "team"></a>
 <h2>
   <p align="center">
     조영훈 &#128060;
@@ -143,7 +143,7 @@ z
 
 <br>
 
-## [💭 Ⅲ. Tutorial](/_posts/2021-04-05-tutorial.md) <a name = "tutorial"></a>
+## 💭 Ⅲ. Tutorial <a name = "tutorial"></a>
 
 추후 동영상 추가 예정
 
