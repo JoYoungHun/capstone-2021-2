@@ -138,8 +138,9 @@ z
 
 ## 🎥 Ⅱ. Introduction <a name = "intro"></a>
 ### 계획서 영상 
-{: .text-center}
-{% youtube "https://youtu.be/NRNmtivPw1g" %}
+
+{% include video.html id="NRNmtivPw1g" %  }
+
 <br>
 
 ## [💭 Ⅲ. Tutorial](/_posts/2021-04-05-tutorial.md) <a name = "tutorial"></a>
