@@ -47,8 +47,10 @@ date:   2021-03-21 06:43:25 +0900
 <h2>
   <p align="center">
     조영훈 &#128060;
+    <img src="assets/img/younghoon.jpg", width="50%">
   </p>
 </h2>
+
 
 ![younghoon](assets/img/younghoon.jpg){: width="50%" .align-center}
 ```jsx
