@@ -9,9 +9,6 @@ date:   2021-03-29 06:43:25 +0900
 ***Capstone-2021-2***
 {: .text-center}
 
-[< Back](../)
-{: .align-right}
-
 <br>
 
 ## 조영훈 &#128060;
