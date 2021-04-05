@@ -43,7 +43,7 @@ date:   2021-03-29 06:43:25 +0900
 
 ## 강신표 &#128018;
 {: .text-center}
-![Comma](../assets/img/Comma.jpg){: width="50%" .align-center}
+![Comma](../assets/img/comma.jpg){: width="50%" .align-center}
 ```jsx
 학번 : 20163081
 #전문바리스타🍹 #Comma #thedotio #thedotiolounge
