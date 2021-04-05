@@ -78,6 +78,17 @@ date:   2021-03-29 06:43:25 +0900
 
 <br>
 
+## ✍️ Authors <a name = "authors"></a>
++ Comma - Initial work
+    + [github](https://github.com/sinpyo)
+    + [instagram](https://www.instagram.com/kang__comma)
+
+See also the list of [contributors](https://github.com/kookmin-sw/capstone-2021-2) who participated in this project.
+
+You can also see the other project of [capstone-2021](https://github.com/kookmin-sw)
+
+<br>
+
 ***
 
 <br>
