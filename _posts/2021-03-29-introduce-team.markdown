@@ -2,6 +2,7 @@
 layout: posts
 title:  "섹시한 2팀의 팀원을 소개합니다!"
 date:   2021-03-29 06:43:25 +0900
+star: true
 ---
 
 <br>
