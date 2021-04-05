@@ -139,7 +139,7 @@ z
 ## 🎥 Ⅱ. Introduction <a name = "intro"></a>
 ### 계획서 영상 
 
-{% include video.html id="NRNmtivPw1g" %  }
+{% include video.html id="NRNmtivPw1g" %}
 
 <br>
 
