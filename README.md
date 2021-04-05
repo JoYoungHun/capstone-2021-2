@@ -169,32 +169,42 @@ z
 > **나만의 컨텐츠 만들기**
 
 ![function_1](assets/img/function_1.png)
+
+<br>
 <br>
 
 > **컨텐츠 풀이(QUIZ) 및 문제 진행 방식**
 
 ![function_2](assets/img/function_2.png)
 
+<br>
+<br>
 
 > **QUIZ 결과 통계화 및 서비스**
 
 ![function_3](assets/img/function_3.png)
+
+<br>
 <br>
 
 ## 🔍 Ⅵ. 시스템 구성도 <a name = "system_diagram"></a>
 ![diagram](assets/img/diagram.png)
 
 <br>
+<br>
 
 ## 🛠 Ⅶ. 시스템 설계도 <a name = "system_design"></a>
 ![design](assets/img/system_design.png)
 
+<br>
 <br>
 
 ## 🔄 Ⅷ. 데이터 흐름도 <a name = "data_flow"></a>
 ![dataflow](assets/img/data_flow.png)
 
 <br>
+<br>
+
 
 ## ✍️ Authors <a name = "authors"></a>
 + Comma - Initial work
