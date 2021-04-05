@@ -66,7 +66,7 @@ date:   2021-03-21 06:43:25 +0900
     전범수 &#128047;
   </p>
   <p align="center">
-    <img src="assets/img/beomsuu.jpg", width="50%">
+    <img src="assets/img/beomsu.jpg", width="50%">
   </p>
 </h2>
 
