@@ -47,12 +47,11 @@ date:   2021-03-21 06:43:25 +0900
 <h2>
   <p align="center">
     조영훈 &#128060;
+  </p>
+  <p align="center">
     <img src="assets/img/younghoon.jpg", width="50%">
   </p>
 </h2>
-
-
-![younghoon](assets/img/younghoon.jpg){: width="50%" .align-center}
 ```jsx
 학번 : 20153223
 #팀장 #뭐라써 #일단 #비워놔줘
