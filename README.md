@@ -52,6 +52,7 @@ date:   2021-03-21 06:43:25 +0900
     <img src="assets/img/younghoon.jpg", width="50%">
   </p>
 </h2>
+
 ```jsx
 학번 : 20153223
 #팀장 #뭐라써 #일단 #비워놔줘
@@ -60,9 +61,15 @@ date:   2021-03-21 06:43:25 +0900
 
 ***
 
-## 전범수 &#128047;
-{: .text-center}
-![beomsu](assets/img/beomsu.jpg){: width="50%" .align-center} 
+<h2>
+  <p align="center">
+    전범수 &#128047;
+  </p>
+  <p align="center">
+    <img src="assets/img/beomsuu.jpg", width="50%">
+  </p>
+</h2>
+
 ```jsx
 학번 : 20153223
 #비둘기
@@ -71,9 +78,15 @@ date:   2021-03-21 06:43:25 +0900
 
 ***
 
-## 강신표 &#128018;
-{: .text-center}
-![Comma](assets/img/Comma.jpg){: width="50%" .align-center}
+<h2>
+  <p align="center">
+    강신표 &#128018;
+  </p>
+  <p align="center">
+    <img src="assets/img/comma.jpg", width="50%">
+  </p>
+</h2>
+
 ```jsx
 학번 : 20163081
 #전문바리스타🍹 #Comma #thedotio #thedotiolounge
@@ -82,9 +95,15 @@ date:   2021-03-21 06:43:25 +0900
 
 ***
 
-## 이헌재 &#128055;
-{: .text-center}
-![heonjae](assets/img/heonjae.jpg){: width="50%" .align-center}
+<h2>
+  <p align="center">
+    이헌재 &#128055;
+  </p>
+  <p align="center">
+    <img src="assets/img/heonjae.jpg", width="50%">
+  </p>
+</h2>
+
 ```jsx
 학번 : 20163148
 #잘먹고잘살자 #펭-하
@@ -93,9 +112,15 @@ date:   2021-03-21 06:43:25 +0900
 
 ***
 
-## 김동욱 &#128039;	
-{: .text-center}
-![wooki](assets/img/wooki.jpg){: width="50%" .align-center}
+<h2>
+  <p align="center">
+    김동욱 &#128039;	
+  </p>
+  <p align="center">
+    <img src="assets/img/wooki.jpg", width="50%">
+  </p>
+</h2>
+
 ```jsx
 학번 : 20163090
 #너랑 #나랑 #슬랑 #제4대 #소프트웨어융합대학 #학생회장 #크크큭
