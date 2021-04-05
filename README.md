@@ -44,7 +44,11 @@ date:   2021-03-21 06:43:25 +0900
 ***
 
 ## [💕 Sexy guys of TEAM 2 💕](/_posts/2021-03-29-introduce-team.md)<a name = "team"></a>
-## 조영훈 &#128060; {: .text-center}
+<h2>
+  <p align="center">
+    조영훈 &#128060;
+  </p>
+</h2>
 
 ![younghoon](assets/img/younghoon.jpg){: width="50%" .align-center}
 ```jsx
