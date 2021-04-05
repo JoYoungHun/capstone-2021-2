@@ -9,7 +9,7 @@ date:   2021-03-21 06:43:25 +0900
 
 <p align="center">
   <a href="http://www.hiing.ml/" rel="noopener">
- <img width="50%" src="../assets/img/logo.png" alt="HIING logo"></a>
+ <img width="50%" src="assets/img/logo.png" alt="HIING logo"></a>
 </p>
 
 
@@ -39,13 +39,11 @@ date:   2021-03-21 06:43:25 +0900
 + [시스템 구성도](#system_diagram)
 + [시스템 설계도](#system_design)
 + [데이터 흐름도](#data_flow)
-+ [Contributing](../CONTRIBUTING.md)
 + [Authors](#authors)
-+ [Acknowledgments](#acknowledgement)
 
 ***
 
-## [💕 Sexy guys of TEAM 2 💕](../2021-03-29-introduce-team.md)<a name = "team"></a>
+## [💕 Sexy guys of TEAM 2 💕](/_posts/2021-03-29-introduce-team.md)<a name = "team"></a>
 ## 조영훈 &#128060;
 {: .text-center}
 
@@ -120,7 +118,7 @@ z
 {% youtube "https://youtu.be/NRNmtivPw1g" %}
 <br>
 
-## [💭 Ⅲ. Tutorial](../2021-04-05-tutorial.md) <a name = "tutorial"></a>
+## [💭 Ⅲ. Tutorial](/_posts/2021-04-05-tutorial.md) <a name = "tutorial"></a>
 
 추후 동영상 추가 예정
 
@@ -145,32 +143,32 @@ z
 ## 🔍 Ⅴ. 핵심 기능 <a name = "core_function"></a>
 > **나만의 컨텐츠 만들기**
 
-![function_1](../assets/img/function_1.png){: .align-center}
+![function_1](assets/img/function_1.png){: .align-center}
 <br>
 
 > **컨텐츠 풀이(QUIZ) 및 문제 진행 방식**
 
-![function_2](../assets/img/function_2.png){: .align-center}
+![function_2](assets/img/function_2.png){: .align-center}
 
 
 > **QUIZ 결과 통계화 및 서비스**
 
-![function_3](../assets/img/function_3.png){: .align-center}
+![function_3](assets/img/function_3.png){: .align-center}
 
 <br>
 
 ## 🔍 Ⅵ. 시스템 구성도 <a name = "system_diagram"></a>
-![diagram](../assets/img/diagram.png){: .algin-center}
+![diagram](assets/img/diagram.png){: .algin-center}
 
 <br>
 
 ## 🛠 Ⅶ. 시스템 설계도 <a name = "system_design"></a>
-![design](../assets/img/system_design.png){:. algin-center}
+![design](assets/img/system_design.png){:. algin-center}
 
 <br>
 
 ## 🔄 Ⅷ. 데이터 흐름도 <a name = "data_flow"></a>
-![dataflow](../assets/img/data_flow.png){: .algin-center}
+![dataflow](assets/img/data_flow.png){: .algin-center}
 
 <br>
 
