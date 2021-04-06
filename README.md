@@ -143,6 +143,7 @@ z
 {% youtube "https://youtu.be/NRNmtivPw1g" %} -->
 
 [![HIING](https://img.youtube.com/vi/NRNmtivPw1g/hqdefault.jpg)](https://youtu.be/NRNmtivPw1g)
+{: .align-center}
 
 
 <br>
