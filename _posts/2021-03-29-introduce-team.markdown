@@ -12,6 +12,11 @@ star: true
 
 <br>
 
+## 📝 GO TO
++ [README](../README)
++ [Tutorial](../tutorial)
+
+
 ## 조영훈 &#128060;
 {: .text-center}
 
