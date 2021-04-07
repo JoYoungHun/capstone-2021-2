@@ -31,8 +31,8 @@ const WordChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, close, g
             // initialize states
             Notiflix.Loading.Dots('Preparing problems...');
             await new Promise(async (resolve) => {
-                await getWords();
-                setTimeout(() => resolve(true), 1000);
+                getWords()
+                resolve(true)
             }).then(() => {
                 dispatch(storeLevel(contentKey, selected));
                 setTimeout(() => { router.push('/problem/word'); Notiflix.Loading.Remove(500); }, 1000);

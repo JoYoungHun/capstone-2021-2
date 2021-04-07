@@ -37,7 +37,7 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
     });
 
     // instance variable
-    const renderItem: number = 4;
+    const renderItem: number = 5;
     const currentPage: React.MutableRefObject<number> = React.useRef(1);
     const totalPage: React.MutableRefObject<number> = React.useRef(0);
     const rootRef = React.useRef<HTMLDivElement | undefined>(undefined);
@@ -88,9 +88,9 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
         }}, fetchPolicy: "network-only" })
 
     return (
-        <PerfectScrollbar>
-            <div style={{ width: '100%' }}>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '8pt' }}>
+        <PerfectScrollbar style={{ width: '100%', perspective: '1000px' }}>
+            <div style={{ minWidth: '100%' }}>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '2rem' }}>
                     <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box'}}
                             onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
                                 .then(() => router.push('/?tb=2').then()) }}>
@@ -99,7 +99,8 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
                         </span>
                     </Button>
                 </div>
-                <div className={"ovf"} ref={rootRef} style={{ paddingLeft: '16pt', height: '530pt', border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
+                <div className={"ovf"} ref={rootRef}
+                     style={{ width: '100%', paddingLeft: '16pt', height: '80vh', border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
                     <PerfectScrollbar style={{ display: 'flex', flexWrap: 'wrap', overflow: 'auto' }}>
                         {
                             scrollViewState.contents.map((cont: ContentDetails) => (

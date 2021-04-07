@@ -21,13 +21,14 @@ const DashboardContainer: React.FunctionComponent<Props> = ({ }) => {
     return (
         <PerfectScrollbar>
             <div style={{ width: '100%', height: '80vh', display: 'flex', padding: '12pt' }}>
-                <div style={{ width: '1000pt' }}>
+                <div style={{ width: '75rem' }}>
 
                 </div>
                 <Divider variant={"middle"} orientation={"vertical"} />
-                <div style={{ width: 'calc(100% - 1000pt)' }}>
+                <div style={{ width: '25rem' }}>
                     <PerfectScrollbar>
-                        <div style={{ width: '100%', cursor: 'pointer', height: '150pt', display: 'flex', justifyContent: 'flex-end' }} onClick={() => router.push('/mypage').then()}>
+                        <div style={{ width: '100%', cursor: 'pointer', height: '20vh', display: 'flex', justifyContent: 'flex-end' }}
+                             onClick={() => router.push('/mypage').then()}>
                                 {
                                     data && data.myInfo && data.myInfo.profile ?
                                         <img src={data.myInfo.profile.url} width={'150pt'} height={'150pt'} alt={'profile'} style={{ objectFit: 'cover', borderRadius: '18pt' }} />
@@ -44,7 +45,7 @@ const DashboardContainer: React.FunctionComponent<Props> = ({ }) => {
                                             </span>
                                 }
                             </div>
-                        <div style={{ width: '100%', height: 'calc(80vh - 150pt)' }}>
+                        <div style={{ width: '100%', height: '60vh' }}>
                             <RecentReport />
                         </div>
                     </PerfectScrollbar>

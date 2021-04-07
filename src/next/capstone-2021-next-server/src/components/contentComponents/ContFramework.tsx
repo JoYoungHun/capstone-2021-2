@@ -13,6 +13,7 @@ import TextInput from "../TextInput";
 import { YellowBtn } from "./commons";
 import { GET_PARSE } from "../../graphQL/quries";
 import { R_CategoryModal } from "../modals";
+import { FLASK_ADDRESS } from "../../env";
 // import { CLIENT_ID, REDIRECT, SCOPE } from "../../env";
 
 type Props = {
@@ -69,7 +70,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
             Notiflix.Report.Failure('모든 항목을 입력해주세요.', 'Checkout the all required fields.', 'OK! I will check.');
         } else {
             Notiflix.Loading.Hourglass('Parsing captions...')
-            await parse({ variables: { captions: captions }})
+            await parse({ variables: { captions: captions.replaceAll('\r\n', '\. ') }})
         }
     }
 
@@ -77,7 +78,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
         const videoId: string = parseYoutube(ref);
         if (videoId !== '') {
             Notiflix.Loading.Dots('Fetching Captions...');
-            await Axios.get(`http://localhost:5000/transcript?videoId=${videoId}`)
+            await Axios.get(`${FLASK_ADDRESS}/transcript?videoId=${videoId}`)
                 .then((res) => {
                     if (res.status === 200) {
                         Notiflix.Notify.Success('Successfully Fetch Captions!');
@@ -150,7 +151,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
                                     * 자막(캡션)을 입력해주세요.
                                 </span>
                             </div>
-                            <YellowBtn onClick={() => fetchCaptions().then(() => Notiflix.Loading.Remove(500))}>
+                            <YellowBtn onClick={() => fetchCaptions().finally(() => Notiflix.Loading.Remove(500))}>
                                 <span style={{ fontFamily: 'sans-serif', color: '#000', fontWeight: 'bold', fontSize: '8pt' }}>
                                     캡션 가져오기
                                 </span>
