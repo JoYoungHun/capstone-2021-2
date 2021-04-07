@@ -60,6 +60,13 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.1'
 
+    // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6
+    implementation group: 'com.google.oauth-client', name: 'google-oauth-client-java6', version: '1.31.4'
+    // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty
+    implementation group: 'com.google.oauth-client', name: 'google-oauth-client-jetty', version: '1.31.4'
+    compile 'com.google.apis:google-api-services-youtube:v3-rev20210210-1.31.0'
+
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compileOnly 'org.projectlombok:lombok'

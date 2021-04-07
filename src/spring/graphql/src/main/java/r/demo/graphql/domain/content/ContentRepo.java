@@ -25,6 +25,6 @@ public interface ContentRepo extends CrudRepository<Content, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "SET SQL_SAFE_UPDATES = 0;", nativeQuery = true)
-    void updateSQLMode();
+    @Query(value = "SET SQL_SAFE_UPDATES = ?1;", nativeQuery = true)
+    void updateSQLMode(int mode);
 }
