@@ -21,9 +21,9 @@ title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "Capstone-2021-2 / HIING"
 description              : "English Study Platform"
-url                      : "https://sinpyo.github.io/"
-baseurl                  : # "/capstone-2021-2/"
-repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
+url                      : "https://kookmin-sw.github.io/"
+baseurl                  : "capstone-2021-2/"
+repository               : "kookmin-sw/capstone-2021-2"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
 logo                     : "/assets/img/logo.png"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
@@ -115,9 +115,21 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/kookmin-sw/capstone-2021-2/"
-    - label: "Instagram"
+    - label: "Comma"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/kang__comma/"
+    - label: "Younghoon"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/sonar.0/"
+    - label: "Beomsu"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/sonar.0/"
+    - label: "Heonjae"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/j_hhoney/"
+    - label: "Wooki"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/kdwooki/"
 
 # Site Footer
 footer:
@@ -137,9 +149,21 @@ footer:
     - label: "Bitbucket"
       icon: "fab fa-fw fa-bitbucket"
       # url:
-    - label: "Instagram"
+    - label: "Comma"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/kang__comma/"
+    - label: "Younghoon"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/sonar.0/"
+    - label: "Beomsu"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/sonar.0/"
+    - label: "Heonjae"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/j_hhoney/"
+    - label: "Wooki"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/kdwooki/"
 
 
 # Reading Files

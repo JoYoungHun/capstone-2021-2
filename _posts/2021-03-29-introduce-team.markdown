@@ -7,15 +7,19 @@ star: true
 
 <br>
 
-***Capstone-2021-2***
+## ***"Capstone-2021-2"***
 {: .text-center}
 
 <br>
 
 ## 📝 GO TO
++ [HOME](../)
 + [README](../README)
 + [Tutorial](../tutorial)
 
+<br>
+
+***
 
 ## 조영훈 &#128060;
 {: .text-center}
@@ -80,6 +84,8 @@ star: true
 {: .text-center}
 
 <br>
+
+***
 
 ## ✍️ Authors <a name = "authors"></a>
 + Comma - Initial work
