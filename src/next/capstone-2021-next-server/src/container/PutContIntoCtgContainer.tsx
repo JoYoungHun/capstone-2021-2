@@ -21,7 +21,7 @@ import {
     PUT_UPDATE_CONTENTS_IN_CATEGORY
 } from "../graphQL/quries";
 import { ContentDetails, Paginate } from "../types";
-import { Loading, SimpleContCard } from "../components";
+import {CardDetails, Loading, SimpleContCard} from "../components";
 import { selectCategory } from "../reducers/CategoryReducer";
 import Notiflix from 'notiflix';
 import { routeHttpStatus } from "../../utils/func";
@@ -213,7 +213,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                                                     }
                                                                     label=""
                                                                 />
-                                                                <SimpleContCard details={cont} />
+                                                                <CardDetails details={cont} />
                                                                 { index > 0 && index % 3 === 0 && <br />}
                                                             </div>
                                                         ))
@@ -221,7 +221,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                                 </div>
                                                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                                     <TablePagination
-                                                        style={{ width: '400pt' }}
+                                                        style={{ width: '100%' }}
                                                         component={"div"}
                                                         count={data.allContents.totalElements ? data.allContents.totalElements : 0}
                                                         page={pageProps.page - 1}

@@ -13,10 +13,10 @@ const Home = ({ }: Props) => {
     const appNav = useSelector((state: RootState) => state.AppNavReducer);
     return (
         <React.Fragment>
-            <div className={"ovf"} style={{ display: 'flex', flexDirection: 'column', width: '100%', paddingRight: '16pt' }}>
+            <div className={"ovf"} style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                 <AppNavigation />
                 <div className={"ovf"} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%',
-                    marginTop: '100pt', paddingTop: '8pt', overflowY: 'auto' }}>
+                    marginTop: '17vh', overflowY: 'auto' }}>
                     {
                         appNav.value === 0 && <Hub />
                     }

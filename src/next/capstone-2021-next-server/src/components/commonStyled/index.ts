@@ -44,3 +44,20 @@ export const HoverEvtDiv = styled.div`
         border: 2px solid ${props => props.borderColor ? props.borderColor : "#00000029"};
     }   
 `
+
+export const Card = styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    width: 20rem; 
+    height: 20rem;
+    margin: 16pt auto;
+    background: linear-gradient(
+        to right,
+        ${props => props.to ? props.to : 'rgba(69, 65, 64, 0.3)'},
+        ${props => props.right ? props.right : 'rgba(8, 83, 156, 0.75)'}
+    ); 
+    border-radius: 50%;
+    transform-style: preserve-3d;
+`
