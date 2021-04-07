@@ -115,9 +115,21 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/kookmin-sw/capstone-2021-2/"
-    - label: "Instagram"
+    - label: "Comma"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/kang__comma/"
+    - label: "Younghoon"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/sonar.0/"
+    - label: "Beomsu"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/sonar.0/"
+    - label: "Heonjae"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/j_hhoney/"
+    - label: "Wooki"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/kdwooki/"
 
 # Site Footer
 footer:
@@ -137,9 +149,21 @@ footer:
     - label: "Bitbucket"
       icon: "fab fa-fw fa-bitbucket"
       # url:
-    - label: "Instagram"
+    - label: "Comma"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/kang__comma/"
+    - label: "Younghoon"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/sonar.0/"
+    - label: "Beonsu"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/sonar.0/"
+    - label: "Heonjae"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/j_hhoney/"
+    - label: "Wooki"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/kdwooki/"
 
 
 # Reading Files
