@@ -1,5 +1,4 @@
 import React from 'react';
-import { NextRouter, useRouter } from "next/router";
 import { useDispatch } from 'react-redux';
 import { useLazyQuery } from "@apollo/client";
 import { Divider } from "@material-ui/core";
@@ -7,7 +6,6 @@ import { TextRotateVerticalRounded } from '@material-ui/icons';
 import YouTube from "react-youtube";
 import Axios from 'axios'
 import Notiflix from 'notiflix';
-import { API_KEY, CLIENT_ID, REDIRECT, SCOPE } from "../../env";
 import { parseYoutube } from "../../../utils/func";
 import { Category, ContFrame } from "../../types";
 import { storeContent } from "../../reducers/ContReducer";
@@ -15,6 +13,7 @@ import TextInput from "../TextInput";
 import { YellowBtn } from "./commons";
 import { GET_PARSE } from "../../graphQL/quries";
 import { R_CategoryModal } from "../modals";
+// import { CLIENT_ID, REDIRECT, SCOPE } from "../../env";
 
 type Props = {
     modifyTab: (modified: number) => void
@@ -31,7 +30,6 @@ type FramePageStates = {
 }
 
 const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
-    const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const [ framePageState, setFramePageState ] = React.useState<FramePageStates>({
         frameInfo: {
@@ -78,42 +76,23 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
     const fetchCaptions = async () => {
         const videoId: string = parseYoutube(ref);
         if (videoId !== '') {
-            await Axios.get(`https://www.googleapis.com/youtube/v3/captions?videoId=${videoId}&key=${API_KEY}&part=snippet`, { })
-                .then( async (res) => {
+            Notiflix.Loading.Dots('Fetching Captions...');
+            await Axios.get(`http://localhost:5000/transcript?videoId=${videoId}`)
+                .then((res) => {
                     if (res.status === 200) {
-                        let captionKey: string | undefined = undefined;
-                        for (let i = 0; i < res.data.items.length; i++) {
-                            if (res.data.items[i].snippet.language === 'en')
-                                captionKey = res.data.items[i].id;
-                        }
-                        const hash: string | undefined = window.location.hash.substr(1);
-                        const accessToken = hash.substr(hash.search(/(?<=^|&)access_token=/))
-                            .split('&')[0]
-                            .split('=')[1]
-                        if (accessToken && captionKey) {
-                            await Axios.get(`https://www.googleapis.com/youtube/v3/captions/${captionKey}?key=${API_KEY}`, {
-                                headers: {
-                                    Authorization: `Bearer ${accessToken}`
-                                }
-                            })
-                                .then((response) => console.log('finally', response))
-                        } else {
-                            await getGoogleOAuthAccessToken();
-                        }
-                    } else if (res.status === 401) {
-                        router.push('/login').then(() => Notiflix.Report.Failure('Session Timeout!', '세션이 만료됐거나, 로그인 된 상태가 아닙니다.', 'OK! I will check.'));
-                    } else if (res.status === 406) {
-                        router.push('/').then(() => Notiflix.Notify.Failure('접근 권한이 없습니다.'));
+                        Notiflix.Notify.Success('Successfully Fetch Captions!');
+                        setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo,
+                                captions: res.data.join('\r\n') }})
                     } else {
-                        Notiflix.Notify.Failure(res.statusText);
+                        Notiflix.Notify.Failure('Subtitles(Captions) are disabled for this video.');
                     }
                 })
         }
     }
 
-    const getGoogleOAuthAccessToken = async () => {
-        await router.push(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&scope=${SCOPE}&redirect_uri=${REDIRECT}&response_type=token`)
-    }
+    // const getGoogleOAuthAccessToken = async () => {
+    //     await router.push(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&scope=${SCOPE}&redirect_uri=${REDIRECT}&response_type=token`)
+    // }
 
     const [ parse, { } ] = useLazyQuery(GET_PARSE, { onCompleted: async (parsed) => {
             await new Promise((resolve) => {
@@ -171,7 +150,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
                                     * 자막(캡션)을 입력해주세요.
                                 </span>
                             </div>
-                            <YellowBtn onClick={() => fetchCaptions()}>
+                            <YellowBtn onClick={() => fetchCaptions().then(() => Notiflix.Loading.Remove(500))}>
                                 <span style={{ fontFamily: 'sans-serif', color: '#000', fontWeight: 'bold', fontSize: '8pt' }}>
                                     캡션 가져오기
                                 </span>
