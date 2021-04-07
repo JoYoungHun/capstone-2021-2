@@ -7,12 +7,13 @@ star: true
 
 <br>
 
-***"Capstone-2021-2"***
+## ***"Capstone-2021-2"***
 {: .text-center}
 
 <br>
 
 ## 📝 GO TO
++ [HOME](../)
 + [README](../README)
 + [Tutorial](../tutorial)
 
