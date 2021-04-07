@@ -17,6 +17,7 @@ import r.demo.graphql.domain.category.Category;
 import r.demo.graphql.domain.category.CategoryRepo;
 import r.demo.graphql.domain.content.Content;
 import r.demo.graphql.domain.content.ContentRepo;
+import r.demo.graphql.domain.report.ReportRepo;
 import r.demo.graphql.domain.sentence.Sentence;
 import r.demo.graphql.domain.sentence.SentenceRepo;
 import r.demo.graphql.domain.user.UserInfo;
@@ -47,12 +48,14 @@ public class ContentDataFetcher {
     private final WordRepo wordRepo;
     private final SentenceRepo sentenceRepo;
     private final CategoryRepo categoryRepo;
+    private final ReportRepo reportRepo;
     private final List<String> validPos;
 
     public ContentDataFetcher(@Lazy StanfordLemmatizer lemmatizer,
                               InternalFilterChains chains,
                               UserInfoRepo userRepo, ContentRepo contentRepo,
-                              WordRepo wordRepo, SentenceRepo sentenceRepo, CategoryRepo categoryRepo) {
+                              WordRepo wordRepo, SentenceRepo sentenceRepo,
+                              CategoryRepo categoryRepo, ReportRepo reportRepo) {
         this.lemmatizer = lemmatizer;
         this.chains = chains;
         this.userRepo = userRepo;
@@ -60,6 +63,7 @@ public class ContentDataFetcher {
         this.wordRepo = wordRepo;
         this.sentenceRepo = sentenceRepo;
         this.categoryRepo = categoryRepo;
+        this.reportRepo = reportRepo;
         this.validPos = Arrays.asList("v.", "conj.", "ad.", "n.");
     }
 
@@ -366,12 +370,14 @@ public class ContentDataFetcher {
     public boolean deleteContentDetails(long contentKey) {
         try {
             Content content = contentRepo.findById(contentKey).orElseThrow(IndexOutOfBoundsException::new);
-            contentRepo.updateSQLMode();
+            contentRepo.updateSQLMode(0);
 
             wordRepo.disconnectWithParent(content);
             sentenceRepo.disconnectWithParent(content);
+            reportRepo.disconnectWithParent(content);
             // after delete child rows
             contentRepo.delete(content);
+            contentRepo.updateSQLMode(1);
             return false;
         } catch (RuntimeException e) {
             e.printStackTrace();
