@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { AppNavigation } from "../src/components";
 import { RootState } from "../src/modules";
 import { Hub, Content, Dashboard } from '../src/container';
-import {Button} from "@material-ui/core";
 
 type Props = {
 
