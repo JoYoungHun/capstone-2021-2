@@ -1,5 +1,5 @@
 import React from 'react';
-import Notiflix from 'Notiflix';
+import Notiflix from 'notiflix';
 import dynamic from "next/dynamic";
 import TextInput from "../../src/components/TextInput";
 const ThreeDimension = dynamic(() => import('../../src/components/ThreeDimension'), { ssr: false })
