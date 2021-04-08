@@ -201,6 +201,9 @@ date:   2021-03-21 06:43:25 +0900
 + Comma - Initial work
     + [github](https://github.com/sinpyo)
     + [instagram](https://www.instagram.com/kang__comma)
++ Wooki
+    + [github](https://github.com/kdwooki)
+    + [instagram](https://www.instagram.com/kdwooki)
 
 See also the list of [contributors](https://github.com/kookmin-sw/capstone-2021-2) who participated in this project.
 
