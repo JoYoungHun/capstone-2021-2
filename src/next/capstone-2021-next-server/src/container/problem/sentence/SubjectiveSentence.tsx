@@ -10,7 +10,9 @@ import { POST_REWRITE_REPORT } from "../../../graphQL/quries";
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
 import dynamic from "next/dynamic";
-import {routeHttpStatus} from "../../../../utils/func";
+import { routeHttpStatus } from "../../../../utils/func";
+import { HealthBar } from "../../../components";
+import {gainHealthPower, loseHealthPower} from "../../../reducers/HealthGaugeReducer";
 const TextToSpeech = dynamic(() => import('../TextToSpeech'), { ssr: false });
 
 type Props = {
@@ -21,6 +23,7 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
     const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const sentences = useSelector((state: RootState) => state.ProbReducer);
+    const { hp, offset } = useSelector((state: RootState) => state.HealthGaugeReducer);
     let { id, problems, passed } = sentences;
 
     const [ indexes, setIndexes ] = React.useState<IndexProps>({
@@ -35,10 +38,17 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
         const currentTry: number = tried + 1;
         const problem: Paragraph = problems[currentIdx];
         let updatedPassed: Solved[] = [];
+        let currentGauge: number = hp;
         let userAnswered: string = answer.toLowerCase(), correctAnswer = problem.eng.toLowerCase();
         if ((correctAnswer === userAnswered) || (correctAnswer !== userAnswered && currentTry === 3)) {
-            if (correctAnswer === userAnswered) Notiflix.Notify.Success('Correct!');
-            else Notiflix.Notify.Failure('Failed... NexT!');
+            if (correctAnswer === userAnswered) {
+                Notiflix.Notify.Success('Correct!');
+                dispatch(gainHealthPower());
+            } else {
+                Notiflix.Notify.Failure('Failed... NexT!');
+                dispatch(loseHealthPower());
+                currentGauge -= offset;
+            }
 
             updatedPassed = [ ...passed, { id: problem.id, eng: problem.eng,
                 passed: correctAnswer === userAnswered, tried: currentTry }]
@@ -48,18 +58,26 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
                 setAnswer('');
             } else {
                 // TODO: prevent currentIdx + 1 > length
-                Notiflix.Confirm.Show(
-                    'Test Completed!',
-                    'I want to leave it to my report!',
-                    'Yes',
-                    'No',
-                    () => onClickRewriteReport(updatedPassed),
-                    () => router.back()
-                )
+                if (currentGauge > 0) {
+                    Notiflix.Confirm.Show(
+                        'Test Completed!',
+                        'I want to leave it to my report!',
+                        'Yes',
+                        'No',
+                        () => onClickRewriteReport(updatedPassed),
+                        () => router.back()
+                    )
+                }
             }
         } else {
             Notiflix.Notify.Failure('Failed...');
+            dispatch(loseHealthPower());
+            currentGauge -= offset;
             setIndexes({ ...indexes, tried: tried + 1 });
+        }
+
+        if (currentGauge <= 0) {
+            Notiflix.Report.Failure('통과 실패!', 'Failed to pass the exam...', 'Return to preview', () => sentences.id ? router.push(`/preview?ct=${sentences.id}`) : router.back());
         }
     }
 
@@ -101,8 +119,9 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
         }});
 
     return (
-        <div className={"ovf"} style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
-            <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
+            <div style={{ width: '100%', height: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+                paddingLeft: '4rem', paddingRight: '4rem' }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: '32pt', fontWeight: 'bold' }}>
                     { problems.length > 0 ? problems[currentIdx].kor : '-' }
                 </span>
@@ -121,16 +140,17 @@ const SubjectiveSentence: React.FunctionComponent<Props> = ({ }) => {
                 </span>
                 <br />
                 <TextToSpeech text={problems.length > 0 ? problems[currentIdx].eng : 'error occurred. please push the back button.'} />
+                <HealthBar />
             </div>
-            <div style={{ width: '100%', height: '300pt', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start' }}>
-                <div style={{ display: 'flex', height: '60pt', alignItems: 'center' }}>
+            <div style={{ width: '100%', height: '50vh', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', height: '9vh', alignItems: 'center' }}>
                     <OutlinedInput
-                        style={{ width: '580pt', height: '60pt', fontSize: '21pt', color: Cookies.get('dove-dark-mode') === 'true' ? '#FFF' : '#000',
+                        style={{ width: '55rem', height: '9vh', fontSize: '21pt', color: Cookies.get('dove-dark-mode') === 'true' ? '#FFF' : '#000',
                             border: `${Cookies.get('dove-dark-mode') === 'true' ? '2' : '0'}px solid ${Cookies.get('dove-dark-mode') === 'true' ? '#FFF' : '#000'}` }}
                         value={answer} onChange={(e) => setAnswer(e.target.value)}
                         placeholder={'정답을 입력해주세요.'}
                         onKeyDown={(e) => { if (e.key === 'Enter') onEnterAnswer().then(() => { }) }}/>
-                    <Button style={{ marginLeft: '12pt', width: '100pt', height: '60pt', background: '#FFE94A 0% 0% no-repeat padding-box', boxShadow: '0px 3px 6px #00000029',
+                    <Button style={{ marginLeft: '12pt', width: '8rem', height: '9vh', background: '#FFE94A 0% 0% no-repeat padding-box', boxShadow: '0px 3px 6px #00000029',
                         border: 0, borderRadius: '12pt' }} onClick={() => onEnterAnswer()}>
                         <span style={{ color: '#000', fontSize: '13pt', fontWeight: 'bold' }}>
                             정답!

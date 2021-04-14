@@ -10,7 +10,7 @@ type Props = {
 const ReportDetails: React.FunctionComponent<Props> = ({ details, selectedValue }) => {
     return (
         <React.Fragment>
-            <div className="chart" style={{ color: '#000', fontFamily: 'sans-serif', fontWeight: 'bold', width: '600pt', padding: '24pt' }}>
+            <div className="chart" style={{ color: '#000', fontFamily: 'sans-serif', fontWeight: 'bold', width: '50rem', padding: '24pt' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <AssignmentIndRounded fontSize={'large'} />
                     <span style={{ fontSize: '22pt', marginLeft: '8pt' }}>

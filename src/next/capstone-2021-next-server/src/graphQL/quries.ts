@@ -397,3 +397,16 @@ export const GET_RECENT_REPORT = gql`
         }
     }   
 `
+
+export const GET_TROPHIES = gql`
+    query trophies($content: Long!) {
+        trophies(content: $content) {
+            content
+            wordLev1
+            wordLev2
+            wordLev3
+            sentenceLev1
+            sentenceLev2
+        }
+    }    
+`

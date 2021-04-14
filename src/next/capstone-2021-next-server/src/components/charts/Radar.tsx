@@ -5,38 +5,10 @@ import { RadarPiece } from "../../types";
 type Props = {
     data: RadarPiece[]
 }
-//
-// const demo = [
-//     {
-//         "taste": "fruity",
-//         "total": 100,
-//         "correct": 50,
-//     },
-//     {
-//         "taste": "bitter",
-//         "total": 100,
-//         "correct": 50,
-//     },
-//     {
-//         "taste": "heavy",
-//         "total": 100,
-//         "correct": 50,
-//     },
-//     {
-//         "taste": "strong",
-//         "total": 100,
-//         "correct": 50,
-//     },
-//     {
-//         "taste": "sunny",
-//         "total": 100,
-//         "correct": 50,
-//     }
-// ]
 
 const Radar: React.FunctionComponent<Props> = React.memo(({ data }) => {
     return (
-        <div className="chart" style={{ width: '600pt', height: '300pt' }}>
+        <div className="chart" style={{ width: '50rem', height: '35rem' }}>
             <ResponsiveRadar
                 data={data}
                 keys={[ 'total', 'correct' ]}

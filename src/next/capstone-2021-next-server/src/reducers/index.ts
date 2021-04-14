@@ -6,3 +6,4 @@ export { default as ContListReducer} from './ContListReducer';
 export { default as UserListReducer } from './UserListReducer';
 export { default as ProbReducer } from './ProbReducer';
 export { default as ReportReducer } from './ReportReducer';
+export { default as HealthGaugeReducer } from './HealthGaugeReducer';

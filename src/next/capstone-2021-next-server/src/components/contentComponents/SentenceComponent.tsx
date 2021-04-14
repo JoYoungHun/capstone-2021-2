@@ -12,7 +12,7 @@ type Props = {
 const SentenceComponent: React.FunctionComponent<Props> = ({ backgroundColor, text, index, type,
                                                                 onChangeTextArea, translateWhenBlurred }) => {
     return (
-        <div style={{ background: `${backgroundColor} 0% 0% no-repeat padding-box`, borderRadius: '12px 12px 0px 0px', width: '500px',
+        <div style={{ background: `${backgroundColor} 0% 0% no-repeat padding-box`, borderRadius: '12px 12px 0px 0px', width: '100%',
             display: 'flex', flexDirection: 'row', alignItems: 'flex-start', paddingTop: '12px', paddingBottom: '3px', border: 0 }}>
             <span style={{ fontFamily: 'Helvetica Neue, Light', fontSize: '13px', color: '#707070', marginLeft: '12px', width: '50px', paddingTop: '3px' }}>
                 {`# ${index + 1}`}
