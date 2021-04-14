@@ -3,11 +3,13 @@ import { NextRouter, useRouter } from "next/router";
 import { useDispatch } from 'react-redux';
 import { CloseOutlined } from "@material-ui/icons";
 import { Button, Modal, Slide } from "@material-ui/core";
-import { useLazyQuery } from "@apollo/client";
-import { GET_WORDS } from "../../graphQL/quries";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { GET_TROPHIES, GET_WORDS } from "../../graphQL/quries";
 import { initializeProblems, storeLevel } from "../../reducers/ProbReducer";
 import Notiflix from 'notiflix'
-import {routeHttpStatus} from "../../../utils/func";
+import { routeHttpStatus } from "../../../utils/func";
+import { settingOffset } from "../../reducers/HealthGaugeReducer";
+import Image from "next/image";
 
 type Props = {
     hidden: boolean,
@@ -15,9 +17,22 @@ type Props = {
     getCtKey: () => number | undefined
 }
 
+type WordTrophy = {
+    wordLev1: boolean,
+    wordLev2: boolean,
+    wordLev3: boolean,
+}
+
 const WordChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, close, getCtKey }) => {
     const router: NextRouter = useRouter();
     const dispatch = useDispatch();
+
+    const [ trophies, setTrophies ] = React.useState<WordTrophy>({
+        wordLev1: false,
+        wordLev2: false,
+        wordLev3: false,
+    })
+
     const Level = ({ children, backgroundColor, onClick }) => (
         <Button style={{ width: '180pt', height: '50pt', backgroundColor: backgroundColor ? backgroundColor : '#FFE94A', margin: '12pt',
             border: 0, boxShadow: '0px 3px 6px #00000029' }} onClick={onClick}>
@@ -40,13 +55,22 @@ const WordChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, close, g
         }
     }
 
-    const [ getWords ] = useLazyQuery(GET_WORDS, { variables: { id: getCtKey() },
+    const [ getWords ] = useLazyQuery(GET_WORDS, { variables: { id: getCtKey() }, fetchPolicy: 'network-only',
         onCompleted: data => {
             if (data.allWords && data.allWords.status === 200) {
                 dispatch(initializeProblems(data.allWords.problems))
+                dispatch(settingOffset(Math.ceil(100 / (data.allWords.problems.length * 3))))
             } else routeHttpStatus(router, data.allWords.status, data.allWords.message);
         }})
 
+    const { error } = useQuery(GET_TROPHIES, { variables: { content: getCtKey() }, fetchPolicy: 'network-only',
+        onCompleted: data => {
+            if (data.trophies) {
+                setTrophies({ ...data.trophies })
+            }
+        }})
+
+    let { wordLev1, wordLev2, wordLev3 } = trophies;
     return (
         <Modal open={!hidden} style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', transition: 'all ease 1s' }}>
             <Slide direction="down" in={!hidden} mountOnEnter unmountOnExit>
@@ -60,13 +84,40 @@ const WordChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, close, g
                     <div style={{ marginTop: '24pt', width: '100%', height: '200pt', display: 'flex', flexDirection: 'column',
                         justifyContent: 'center', alignItems: 'center', paddingLeft: '8pt', paddingRight: '8pt', color: '#000' }}>
                         <Level backgroundColor={'#1976d2'} onClick={() => onReadyToSolveProblems(0)}>
-                            <span style={{ fontWeight: 'bold', fontSize: '12pt' }}>Level 1</span>
+                            {
+                                wordLev1 &&
+                                    <Image
+                                        src={"/trophy.png"}
+                                        alt="reward for lev1"
+                                        width={30}
+                                        height={30}
+                                    />
+                            }
+                            <span style={{ marginLeft: wordLev1 ? '.7rem' : 0, fontWeight: 'bold', fontSize: '12pt' }}>Level 1</span>
                         </Level>
                         <Level backgroundColor={'mediumaquamarine'} onClick={() => onReadyToSolveProblems(1)}>
-                            <span style={{ fontWeight: 'bold', fontSize: '12pt' }}>Level 2</span>
+                            {
+                                wordLev2 &&
+                                <Image
+                                    src={"/trophy.png"}
+                                    alt="reward for lev2"
+                                    width={30}
+                                    height={30}
+                                />
+                            }
+                            <span style={{ marginLeft: wordLev1 ? '.7rem' : 0, fontWeight: 'bold', fontSize: '12pt' }}>Level 2</span>
                         </Level>
                         <Level backgroundColor={'lightcoral'} onClick={() => onReadyToSolveProblems(2)}>
-                            <span style={{ fontWeight: 'bold', fontSize: '12pt' }}>Level 3</span>
+                            {
+                                wordLev3 &&
+                                <Image
+                                    src={"/trophy.png"}
+                                    alt="reward for lev3"
+                                    width={30}
+                                    height={30}
+                                />
+                            }
+                            <span style={{ marginLeft: wordLev1 ? '.7rem' : 0, fontWeight: 'bold', fontSize: '12pt' }}>Level 3</span>
                         </Level>
                     </div>
                 </div>

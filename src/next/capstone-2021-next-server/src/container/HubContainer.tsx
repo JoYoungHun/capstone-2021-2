@@ -90,7 +90,7 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
     return (
         <PerfectScrollbar style={{ width: '100%', perspective: '1000px' }}>
             <div style={{ minWidth: '100%' }}>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '2rem' }}>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem', paddingRight: '1rem' }}>
                     <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box'}}
                             onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
                                 .then(() => router.push('/?tb=2').then()) }}>

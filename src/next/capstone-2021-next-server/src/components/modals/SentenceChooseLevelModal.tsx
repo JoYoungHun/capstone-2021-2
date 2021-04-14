@@ -1,13 +1,15 @@
 import React from 'react';
 import { useRouter, NextRouter } from "next/router";
 import { useDispatch } from 'react-redux';
-import { useLazyQuery } from "@apollo/client";
+import {useLazyQuery, useQuery} from "@apollo/client";
 import { CloseOutlined } from "@material-ui/icons";
 import { Button, Modal, Slide } from "@material-ui/core";
-import { GET_SENTENCES } from "../../graphQL/quries";
+import {GET_SENTENCES, GET_TROPHIES} from "../../graphQL/quries";
 import { initializeProblems, storeLevel } from "../../reducers/ProbReducer";
+import { routeHttpStatus } from "../../../utils/func";
+import { settingOffset } from "../../reducers/HealthGaugeReducer";
 import Notiflix from 'notiflix';
-import {routeHttpStatus} from "../../../utils/func";
+import Image from "next/image";
 
 type Props = {
     hidden: boolean,
@@ -15,9 +17,20 @@ type Props = {
     getCtKey: () => number | undefined
 }
 
+type SentenceTrophy = {
+    sentenceLev1: boolean,
+    sentenceLev2: boolean,
+}
+
 const SentenceChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, close, getCtKey }) => {
     const router: NextRouter = useRouter();
     const dispatch = useDispatch();
+
+    const [ trophies, setTrophies ] = React.useState<SentenceTrophy>({
+        sentenceLev1: false,
+        sentenceLev2: false,
+    })
+
     const Level = ({ children, backgroundColor, onClick }) => (
         <Button style={{ width: '180pt', height: '50pt', backgroundColor: backgroundColor ? backgroundColor : '#FFE94A', margin: '12pt',
             border: 0, boxShadow: '0px 3px 6px #00000029' }} onClick={onClick}>
@@ -40,13 +53,22 @@ const SentenceChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, clos
         }
     }
 
-    const [ getSentences ] = useLazyQuery(GET_SENTENCES, { variables: { id: getCtKey() },
+    const [ getSentences ] = useLazyQuery(GET_SENTENCES, { variables: { id: getCtKey() }, fetchPolicy: 'network-only',
         onCompleted: data => {
             if (data.allSentences && data.allSentences.status === 200) {
                 dispatch(initializeProblems(data.allSentences.problems))
+                dispatch(settingOffset(Math.ceil(100 / (data.allSentences.problems.length * 3))))
             } else routeHttpStatus(router, data.allSentences.status, data.allSentences.message);
         }})
 
+    const { error } = useQuery(GET_TROPHIES, { variables: { content: getCtKey() }, fetchPolicy: 'network-only',
+        onCompleted: data => {
+            if (data.trophies) {
+                setTrophies({ ...data.trophies })
+            }
+        }})
+
+    let { sentenceLev1, sentenceLev2 } = trophies;
     return (
         <Modal open={!hidden} style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Slide direction="down" in={!hidden} mountOnEnter unmountOnExit>
@@ -60,10 +82,28 @@ const SentenceChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, clos
                     <div style={{ marginTop: '24pt', width: '100%', height: '150pt', display: 'flex', flexDirection: 'column',
                         justifyContent: 'center', alignItems: 'center', paddingLeft: '8pt', paddingRight: '8pt', color: '#000' }}>
                         <Level backgroundColor={'#1976d2'} onClick={() => onReadyToSolveProblems(0)}>
-                            <span style={{ fontWeight: 'bold', fontSize: '12pt' }}>객관식</span>
+                            {
+                                sentenceLev1 &&
+                                <Image
+                                    src={"/trophy.png"}
+                                    alt="reward for lev1"
+                                    width={30}
+                                    height={30}
+                                />
+                            }
+                            <span style={{ marginLeft: sentenceLev1 ? '.7rem' : 0, fontWeight: 'bold', fontSize: '12pt' }}>객관식</span>
                         </Level>
                         <Level backgroundColor={'mediumaquamarine'} onClick={() => onReadyToSolveProblems(1)}>
-                            <span style={{ fontWeight: 'bold', fontSize: '12pt' }}>주관식</span>
+                            {
+                                sentenceLev2 &&
+                                <Image
+                                    src={"/trophy.png"}
+                                    alt="reward for lev2"
+                                    width={30}
+                                    height={30}
+                                />
+                            }
+                            <span style={{ marginLeft: sentenceLev2 ? '.7rem' : 0, fontWeight: 'bold', fontSize: '12pt' }}>주관식</span>
                         </Level>
                     </div>
                 </div>

@@ -11,7 +11,7 @@ const getColor = bar => colors[bar.id]
 
 const Pie: React.FunctionComponent<Props> = React.memo(({ data }) => {
     return (
-        <div className="chart" style={{ width: '600pt', height: '300pt' }}>
+        <div className="chart" style={{ width: '50rem', height: '35rem' }}>
             <ResponsivePie
                 colors={getColor}
                 data={data}

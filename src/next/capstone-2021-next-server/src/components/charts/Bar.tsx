@@ -8,7 +8,7 @@ type Props = {
 
 const Bar: React.FunctionComponent<Props> = React.memo(({ data }) => {
     return (
-        <div className="chart" style={{ width: '600pt', height: '400pt' }}>
+        <div className="chart" style={{ width: '50rem', height: '35rem' }}>
             <ResponsiveBar
                 data={data}
                 keys={[ 'level1', 'level2', 'level3', 'objective', 'subjective' ]}

@@ -34,26 +34,24 @@ const Report = ({ ri }) => {
     const radar = useQuery(GET_RADAR, { variables: { report: ri ? ri : getReportKey() }, fetchPolicy: "cache-first" })
     const details = useQuery(GET_REPORT, { variables: { report: ri ? ri : getReportKey() }, fetchPolicy: "cache-first" })
     return (
-        <div>
+        <div className={"ovf"} style={{ overflowX: 'hidden' }}>
             <ArrowBackRounded fontSize={'large'} style={{ position: 'absolute', left: '12pt', top: '32pt',
                 color: Cookies.get('dove-dark-mode') === 'true' ? '#FFF' : '#000', cursor: 'pointer' }}
                               onClick={() => router.back()} />
-            <div style={{ width: '100%', height: '100%', padding: '50pt' }}>
-                <div ref={ref} style={{ width: 'calc(100% - 40pt)', height: '100%', backgroundColor: '#FFF', borderRadius: '12pt',
+            <div style={{ width: '100%', height: '100%', padding: '4.2rem' }}>
+                <div ref={ref} style={{ width: '100%', height: '100%', backgroundColor: '#FFF', borderRadius: '12pt',
                     boxShadow: '0px 4px 8px 0 rgba(0,0,0,0.2)', transition: '0.3s', padding: '24pt' }}>
-                    <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <div>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <CheckRounded fontSize={'large'} style={{ color: '#000'}} />
-                                <span style={{ color: '#000', fontFamily: 'sans-serif', fontSize: '19pt', fontWeight: 'bold', marginLeft: '8pt' }}>
-                                    {`정답률 (${radio === 0 ? '전체' : radio === 1 ? '단어' : '문장'})`}
-                                </span>
-                            </div>
-                            <PieRadioBtns selectedValue={radio} onClickBtn={onClickRadioBtn} />
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Pie data={pie.data ? pie.data.pie.data : [ ]} />
-                                <Radar data={radar.data ? radar.data.radar.data : [ ]} />
-                            </div>
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <CheckRounded fontSize={'large'} style={{ color: '#000'}} />
+                            <span style={{ color: '#000', fontFamily: 'sans-serif', fontSize: '19pt', fontWeight: 'bold', marginLeft: '8pt' }}>
+                                {`정답률 (${radio === 0 ? '전체' : radio === 1 ? '단어' : '문장'})`}
+                            </span>
+                        </div>
+                        <PieRadioBtns selectedValue={radio} onClickBtn={onClickRadioBtn} />
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <Pie data={pie.data ? pie.data.pie.data : [ ]} />
+                            <Radar data={radar.data ? radar.data.radar.data : [ ]} />
                         </div>
                     </div>
                     <div>

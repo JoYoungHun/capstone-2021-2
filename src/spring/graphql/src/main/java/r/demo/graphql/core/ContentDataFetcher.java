@@ -95,7 +95,7 @@ public class ContentDataFetcher {
                         Paragraph word = new Paragraph(words.get(i));
                         CoreLabel label = lemmatizer.getCoreLabel(word.getEng());
                         // save if pos valid.
-                        if (validPos.contains(lemmatizer.partOfSpeech(label.lemma())))
+                        if (validPos.contains(lemmatizer.partOfSpeech(label.tag())))
                             wordRepo.save(Word.builder().content(content).eng(word.getEng()).kor(word.getKor())
                                     .pos(label.tag()).lemma(label.lemma()).sequence(i).build());
 
@@ -259,7 +259,7 @@ public class ContentDataFetcher {
                     List<CoreLabel> labels = lemmatizer.getPartOfSpeechAboutSentence(sentence.getEng());
                     for (CoreLabel label : labels) {
                         int labelLen = label.originalText().length();
-                        Optional<Word> word = wordRepo.findByContentAndLemma(content, label.lemma());
+                        Optional<Word> word = wordRepo.getMatchedLatestWord(content, label.lemma(), label.word());
                         String translatedKorean = "";
                         boolean highlight = false;
                         if (word.isPresent()) {
@@ -319,12 +319,13 @@ public class ContentDataFetcher {
                             throw new IllegalArgumentException();
                     }
                     return new ProblemResponse(HttpStatus.OK.value(), problems);
-                } else return new ProblemResponse(isAuthenticated.value());
+                } else return new ProblemResponse(isAuthenticated.value(), Collections.emptyList());
             } catch (IllegalArgumentException e) {
-                return new ProblemResponse(HttpStatus.NOT_FOUND.value());
+                e.printStackTrace();
+                return new ProblemResponse(HttpStatus.NOT_FOUND.value(), Collections.emptyList());
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ProblemResponse(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                return new ProblemResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), Collections.emptyList());
             }
         };
     }

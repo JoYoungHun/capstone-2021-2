@@ -5,7 +5,7 @@ export const Tab = styled.div`
     cursor: pointer;
     width: ${props => props.width ? props.width : "120pt"};
     height: ${props => props.height ? props.height : "40pt"};
-    borderRadius: 20pt;
+    borderRadius: 40rem;
     &: hover {
         background-color: ${props => props.background ? props.background : "#87bdd8"};
         color: #FFF;

@@ -107,47 +107,53 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
     return (
         <React.Fragment>
             <div style={{ width: '100%' }}>
-                <div style={{ width: '500pt', marginBottom: '12pt' }}>
-                    <div style={{ marginBottom: '8pt' }}>
-                        <span style={{ fontFamily: 'sans-serif', fontSize: '12pt', fontWeight: 'bold' }}>
-                            * 컨텐츠 제목을 입력해주세요.
-                        </span>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ width: '41.7rem', marginBottom: '12pt' }}>
+                        <div style={{ marginBottom: '8pt' }}>
+                            <span style={{ fontFamily: 'sans-serif', fontSize: '12pt', fontWeight: 'bold' }}>
+                                * 컨텐츠 제목을 입력해주세요.
+                            </span>
+                        </div>
+                        <TextInput width={'41.7rem'} height={'6vh'} value={title}
+                                   onChangeValue={(e) => setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo, title: e } } )}
+                                   placeholder={'ex) 나만의 컨텐츠 1'} />
                     </div>
-                    <TextInput width={'500pt'} height={'40pt'} value={title}
-                               onChangeValue={(e) => setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo, title: e } } )}
-                               placeholder={'ex) 나만의 컨텐츠 1'} />
+                    <div style={{ width: '60.5rem' }} />
                 </div>
-                <div style={{ width: '500pt', marginBottom: '12pt' }}>
-                    <div style={{ marginBottom: '8pt' }}>
-                        <span style={{ fontFamily: 'sans-serif', fontSize: '12pt', fontWeight: 'bold' }}>
-                            - 영상의 카테고리를 선택해주세요.
-                        </span>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                    <div style={{ width: '41.7rem', marginBottom: '12pt' }}>
+                        <div style={{ marginBottom: '8pt' }}>
+                            <span style={{ fontFamily: 'sans-serif', fontSize: '12pt', fontWeight: 'bold' }}>
+                                - 영상의 카테고리를 선택해주세요.
+                            </span>
+                        </div>
+                        <div onClick={() => setFramePageState({ ...framePageState, modalState: { ...framePageState.modalState, hidden: false }})}>
+                            <TextInput width={'41.7rem'} height={'6vh'} value={categoryNames} onChangeValue={() => { }}
+                                       placeholder={'선택된 카테고리들이 표시됩니다.'} readonly={true} />
+                        </div>
                     </div>
-                    <div onClick={() => setFramePageState({ ...framePageState, modalState: { ...framePageState.modalState, hidden: false }})}>
-                        <TextInput width={'500pt'} height={'40pt'} value={categoryNames} onChangeValue={() => { }}
-                                   placeholder={'선택된 카테고리들이 표시됩니다.'} readonly={true} />
-                    </div>
+                    <div style={{ width: '60.5rem' }} />
                 </div>
                 <Divider variant={"middle"} orientation={"horizontal"} />
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginTop: '12pt' }}>
-                    <div style={{ width: '500pt' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginTop: '12pt', justifyContent: 'center' }}>
+                    <div style={{ width: '41.7rem' }}>
                         <div style={{ marginBottom: '8pt' }}>
                             <span style={{ fontFamily: 'sans-serif', fontSize: '12pt', fontWeight: 'bold' }}>
                                 * 참조한 영상의 주소를 입력해주세요.
                             </span>
                         </div>
-                        <TextInput width={'500pt'} height={'40pt'} value={ref}
+                        <TextInput width={'41.7rem'} height={'6vh'} value={ref}
                                    onChangeValue={(e) => setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo, ref: e } } )}
                                    placeholder={'ex) https://www.youtube.com/watch?v={videoId}'} onBlur={() => {}} />
                         <div style={{ marginTop: '24pt', width: '100%' }}>
                             <YouTube videoId={parseYoutube(ref)} opts={{ width: '100%', playerVars: { }}} />
                         </div>
                     </div>
-                    <div style={{ width: '700pt', marginLeft: '24pt' }}>
-                        <div style={{ height: '86pt', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ width: '58.5rem', marginLeft: '2rem', paddingTop: '.2rem' }}>
+                        <div style={{ height: '12vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <TextRotateVerticalRounded fontSize={'large'} color={'secondary'} />
-                                <span style={{ fontFamily: 'sans-serif', fontSize: '16pt', fontWeight: 600, paddingLeft: '8pt' }}>
+                                <span style={{ fontFamily: 'sans-serif', fontSize: '16pt', fontWeight: 600, paddingLeft: '0.8rem' }}>
                                     * 자막(캡션)을 입력해주세요.
                                 </span>
                             </div>
@@ -157,8 +163,8 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
                                 </span>
                             </YellowBtn>
                         </div>
-                        <div style={{ marginTop: '2pt' }}>
-                            <textarea style={{ width: '700pt', height: '268pt', border: '1px solid gray', padding: '4pt', resize: 'none', borderRadius: '4pt' }}
+                        <div style={{ marginTop: '2pt', width: '100%' }}>
+                            <textarea style={{ width: '100%', height: '278pt', border: '1px solid gray', padding: '4pt', resize: 'none', borderRadius: '4pt' }}
                                       value={captions}
                                       onChange={(e) =>
                                           setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo, captions: e.target.value } })} />

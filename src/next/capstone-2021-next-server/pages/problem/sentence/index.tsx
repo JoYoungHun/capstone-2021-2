@@ -16,7 +16,7 @@ const SentenceProblem = () => {
                     :
                     <SubjectiveSentence />
             }
-            <div style={{ height: '700pt', display: 'flex', alignItems: 'center', marginRight: '24pt' }}>
+            <div style={{ height: '100vh', display: 'flex', alignItems: 'center', marginRight: '2rem' }}>
                 <Histories />
             </div>
         </div>

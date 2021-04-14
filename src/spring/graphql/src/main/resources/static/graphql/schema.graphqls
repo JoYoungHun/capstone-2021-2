@@ -25,6 +25,7 @@ type Query {
     allSentences(id: Long!): ProblemReponse
 
     report(report: Long!): Report
+    trophies(content: Long!): Trophies
     bar(report: Long!): BarResponse!
     pie(report: Long!, option: Int!): PieResponse!
     radar(report: Long!): RadarResponse!
@@ -224,6 +225,15 @@ type Report {
     passSentenceLev2: Boolean!,
     created: String!,
     modified: String!
+}
+
+type Trophies {
+    content: Long!
+    wordLev1: Boolean!
+    wordLev2: Boolean!
+    wordLev3: Boolean!
+    sentenceLev1: Boolean!
+    sentenceLev2: Boolean!
 }
 
 type SolvedResponse {
