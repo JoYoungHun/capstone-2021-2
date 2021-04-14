@@ -43,7 +43,7 @@ graphql.playground:
 jwt:
   secret: DOVE
 project:
-  name: capstone2021-305109
+  name: capstone-310111
 aws:
   accessKeyId: AKIA2YXQIEZVD2WIHXUW
   secretAccessKey: 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

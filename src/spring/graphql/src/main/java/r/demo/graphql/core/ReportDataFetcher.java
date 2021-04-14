@@ -17,10 +17,7 @@ import r.demo.graphql.domain.report.Report;
 import r.demo.graphql.domain.report.ReportRepo;
 import r.demo.graphql.domain.user.UserInfo;
 import r.demo.graphql.domain.user.UserInfoRepo;
-import r.demo.graphql.response.BarResponse;
-import r.demo.graphql.response.DefaultResponse;
-import r.demo.graphql.response.PieResponse;
-import r.demo.graphql.response.RadarResponse;
+import r.demo.graphql.response.*;
 import r.demo.graphql.types.BarDataType;
 import r.demo.graphql.types.PieDataType;
 import r.demo.graphql.types.RadarDataType;
@@ -117,6 +114,29 @@ public class ReportDataFetcher {
                 HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
                 if (isAuthenticated.equals(HttpStatus.OK)) {
                     return reportRepo.findById(reportKey).orElseThrow(IllegalArgumentException::new);
+                } else throw new RuntimeException();
+            } catch (RuntimeException e) {
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> trophies() {
+        return environment -> {
+            try {
+                long contentKey = environment.getArgument("content");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+                    UserInfo user = userRepo.findByEmail(email).orElseThrow(RuntimeException::new);
+                    Content content = contentRepo.findById(contentKey).orElseThrow(RuntimeException::new);
+                    Optional<Report> report = reportRepo.findByContentAndUser(content, user);
+
+                    return report.map(en -> new TrophyResponse(contentKey, en)).orElseGet(() -> new TrophyResponse(contentKey));
                 } else throw new RuntimeException();
             } catch (RuntimeException e) {
                 return null;
