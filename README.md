@@ -127,11 +127,18 @@ date:   2021-03-21 06:43:25 +0900
 ---
 
 ## 🧐 Ⅰ. 프로젝트 개요 <a name = "overview"></a>
-z
-z
-z
-z
-z
+
+### **프로젝트 HIING(하잉)은 `원하는 유튜브 영상`의 자막 텍스트를 가져와**
+
+### **`형태소 분석`을 진행해 `단어와 문장을 문제의 형태로` 만들어 풀 수 있고,**
+
+### **풀었던 `문제에 대해 통계 자료`도 제공해주는 `플랫폼형 웹 서비스`입니다.**
+
+<br>
+
+### **HIING(하잉)의 슬로건**
+> #### ***"안전한 비대면으로, 비용이 거의 없이, 좋아하는 컨텐츠로 쉽고 재밌는 영어 학습을 할 수 있게 하자"***
+
 
 <br>
 
@@ -147,27 +154,14 @@ z
 
 ## 💭 Ⅲ. Tutorial <a name = "tutorial"></a>
 
-추후 동영상 추가 예정
+[Tutorial.pdf](https://url.kr/equis2)
+
+추후 Tutorial 동영상 추가 예정
 
 <br>
 
 
-## 🎈 Ⅳ. 사용법 <a name = "usage"></a>
-### Example:
-
-> 홍홍홍
-
-**Definition:**
-
-잉잉잉
-
-**Example:**
-
-앙앙앙
-
-<br>
-
-## 🔍 Ⅴ. 핵심 기능 <a name = "core_function"></a>
+## 🔍 Ⅳ. 핵심 기능 <a name = "core_function"></a>
 > **나만의 컨텐츠 만들기**
 
 ![function_1](assets/img/function_1.png)
@@ -189,19 +183,19 @@ z
 <br>
 <br>
 
-## 🔍 Ⅵ. 시스템 구성도 <a name = "system_diagram"></a>
+## 🔍 Ⅴ. 시스템 구성도 <a name = "system_diagram"></a>
 ![diagram](assets/img/diagram.png)
 
 <br>
 <br>
 
-## 🛠 Ⅶ. 시스템 설계도 <a name = "system_design"></a>
+## 🛠 Ⅵ. 시스템 설계도 <a name = "system_design"></a>
 ![design](assets/img/system_design.png)
 
 <br>
 <br>
 
-## 🔄 Ⅷ. 데이터 흐름도 <a name = "data_flow"></a>
+## 🔄 Ⅶ. 데이터 흐름도 <a name = "data_flow"></a>
 ![dataflow](assets/img/data_flow.png)
 
 <br>
@@ -212,6 +206,9 @@ z
 + Comma - Initial work
     + [github](https://github.com/sinpyo)
     + [instagram](https://www.instagram.com/kang__comma)
++ Wooki
+    + [github](https://github.com/kdwooki)
+    + [instagram](https://www.instagram.com/kdwooki)
 
 See also the list of [contributors](https://github.com/kookmin-sw/capstone-2021-2) who participated in this project.
 
