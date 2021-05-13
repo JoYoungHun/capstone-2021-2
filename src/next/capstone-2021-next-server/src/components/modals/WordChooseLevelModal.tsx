@@ -8,7 +8,7 @@ import { GET_TROPHIES, GET_WORDS } from "../../graphQL/quries";
 import { initializeProblems, storeLevel } from "../../reducers/ProbReducer";
 import Notiflix from 'notiflix'
 import { routeHttpStatus } from "../../../utils/func";
-import { settingOffset } from "../../reducers/HealthGaugeReducer";
+import {settingOffset, settingTotal} from "../../reducers/HealthGaugeReducer";
 import Image from "next/image";
 
 type Props = {
@@ -60,6 +60,7 @@ const WordChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, close, g
             if (data.allWords && data.allWords.status === 200) {
                 dispatch(initializeProblems(data.allWords.problems))
                 dispatch(settingOffset(Math.ceil(100 / (data.allWords.problems.length * 3))))
+                dispatch(settingTotal(data.allWords.problems.length))
             } else routeHttpStatus(router, data.allWords.status, data.allWords.message);
         }})
 

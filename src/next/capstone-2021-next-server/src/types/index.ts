@@ -155,3 +155,17 @@ export type ReportHeaderProps = {
     created?: string,
     modified?: string,
 }
+
+export type Bubble = {
+    id: string,
+    title: string,
+    captions?: string,
+    ref: string,
+    created?: string
+}
+
+export type Ecosystem = {
+    bubbles: Bubble[],
+    isFetching: boolean,
+    hasMore: boolean
+}

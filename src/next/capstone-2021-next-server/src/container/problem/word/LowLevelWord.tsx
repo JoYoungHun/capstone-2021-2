@@ -11,7 +11,7 @@ import Notiflix from 'notiflix';
 import dynamic from "next/dynamic";
 import { routeHttpStatus } from "../../../../utils/func";
 import { HealthBar } from "../../../components";
-import { gainHealthPower, loseHealthPower } from "../../../reducers/HealthGaugeReducer";
+import {gainHealthPower, loseHealthPower, settingCurrent} from "../../../reducers/HealthGaugeReducer";
 const TextToSpeech = dynamic(() => import('../TextToSpeech'), { ssr: false });
 
 type Props = {

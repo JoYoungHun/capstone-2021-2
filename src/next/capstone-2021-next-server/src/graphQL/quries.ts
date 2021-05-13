@@ -410,3 +410,29 @@ export const GET_TROPHIES = gql`
         }
     }    
 `
+
+export const GET_BUBBLES = gql`
+    query ocean($pr: PaginationInput!, $keyword: String, $dFilter: String) {
+        ocean(pr: $pr, keyword: $keyword, dFilter: $dFilter) {
+            bubbles {
+                id
+                title
+                captions
+                ref
+                created    
+            }
+            totalPages
+        }
+    }
+`
+
+export const GET_BUBBLE = gql`
+    query bubble($id: String!) {
+        bubble {
+            id
+            title
+            captions
+            ref
+        }
+    }
+`

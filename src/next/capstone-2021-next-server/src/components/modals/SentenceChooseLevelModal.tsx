@@ -7,7 +7,7 @@ import { Button, Modal, Slide } from "@material-ui/core";
 import {GET_SENTENCES, GET_TROPHIES} from "../../graphQL/quries";
 import { initializeProblems, storeLevel } from "../../reducers/ProbReducer";
 import { routeHttpStatus } from "../../../utils/func";
-import { settingOffset } from "../../reducers/HealthGaugeReducer";
+import {settingOffset, settingTotal} from "../../reducers/HealthGaugeReducer";
 import Notiflix from 'notiflix';
 import Image from "next/image";
 
@@ -58,6 +58,7 @@ const SentenceChooseLevelModal: React.FunctionComponent<Props> = ({ hidden, clos
             if (data.allSentences && data.allSentences.status === 200) {
                 dispatch(initializeProblems(data.allSentences.problems))
                 dispatch(settingOffset(Math.ceil(100 / (data.allSentences.problems.length * 3))))
+                dispatch(settingTotal(data.allSentences.problems.length))
             } else routeHttpStatus(router, data.allSentences.status, data.allSentences.message);
         }})
 

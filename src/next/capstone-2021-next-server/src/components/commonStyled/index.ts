@@ -50,8 +50,8 @@ export const Card = styled.div`
     display: flex;
     align-items: center; 
     justify-content: center; 
-    width: 20rem; 
-    height: 20rem;
+    width: ${props => props.width ? props.width : '20rem'}; 
+    height: ${props => props.height ? props.height : '20rem'};
     margin: 16pt auto;
     background: linear-gradient(
         to right,

@@ -1,14 +1,15 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLazyQuery } from "@apollo/client";
 import { Divider } from "@material-ui/core";
 import { TextRotateVerticalRounded } from '@material-ui/icons';
+import { RootState } from "../../modules";
 import YouTube from "react-youtube";
 import Axios from 'axios'
 import Notiflix from 'notiflix';
 import { parseYoutube } from "../../../utils/func";
-import { Category, ContFrame } from "../../types";
-import { storeContent } from "../../reducers/ContReducer";
+import { Category } from "../../types";
+import {storeContent, storeFrame} from "../../reducers/ContReducer";
 import TextInput from "../TextInput";
 import { YellowBtn } from "./commons";
 import { GET_PARSE } from "../../graphQL/quries";
@@ -25,44 +26,28 @@ type RetrieveModalProps = {
     hidden: boolean
 }
 
-type FramePageStates = {
-    frameInfo: ContFrame,
-    modalState: RetrieveModalProps
-}
-
 const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
     const dispatch = useDispatch();
-    const [ framePageState, setFramePageState ] = React.useState<FramePageStates>({
-        frameInfo: {
-            ref: '',
-            title: '',
-            captions: '',
-            categories: [],
-        },
-        modalState: {
-            categoryNames: '',
-            hidden: true
-        }
+    const frameInfo = useSelector((state: RootState) => state.ContReducer)
+    const [ modalState, setModalState ] = React.useState<RetrieveModalProps>({
+        categoryNames: '',
+        hidden: true,
     })
-    let { ref, title, captions, categories } = framePageState.frameInfo;
-    let { categoryNames, hidden } = framePageState.modalState;
+
+    let { ref, title, captions, categories } = frameInfo.frame;
+    let { categoryNames, hidden } = modalState;
 
     const modifyCategoryNameText = (selected: Category[]) => {
         let names: string = selected.map((ctg: Category) => ctg.name).toString();
-        setFramePageState({
-            frameInfo: {
-                ...framePageState.frameInfo,
-                categories: selected.map((ctg: Category) => ctg.id)
-            }
-            , modalState: {
-                categoryNames: names.substr(0, names.length),
-                hidden: true
-            }
-        });
+        dispatch(storeFrame({ ...frameInfo.frame, categories: selected.map((ctg: Category) => ctg.id) }))
+        setModalState({
+            categoryNames: names.substr(0, names.length),
+            hidden: true
+        })
     }
 
     const closeRetrieveModal = () => {
-        setFramePageState({ ...framePageState, modalState: { hidden: true, categoryNames: '' }})
+        setModalState({ hidden: true, categoryNames: '' })
     }
 
     const onRouteToWordTab = async () => {
@@ -82,8 +67,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
                 .then((res) => {
                     if (res.status === 200) {
                         Notiflix.Notify.Success('Successfully Fetch Captions!');
-                        setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo,
-                                captions: res.data.join('\r\n') }})
+                        dispatch(storeFrame({ ...frameInfo.frame, captions: res.data.join('\r\n') }))
                     } else {
                         Notiflix.Notify.Failure('Subtitles(Captions) are disabled for this video.');
                     }
@@ -106,6 +90,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
     }});
     return (
         <React.Fragment>
+            {console.log('captions', captions)}
             <div style={{ width: '100%' }}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div style={{ width: '41.7rem', marginBottom: '12pt' }}>
@@ -115,7 +100,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
                             </span>
                         </div>
                         <TextInput width={'41.7rem'} height={'6vh'} value={title}
-                                   onChangeValue={(e) => setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo, title: e } } )}
+                                   onChangeValue={(e) => dispatch(storeFrame({ ...frameInfo.frame, title: e })) }
                                    placeholder={'ex) 나만의 컨텐츠 1'} />
                     </div>
                     <div style={{ width: '60.5rem' }} />
@@ -127,7 +112,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
                                 - 영상의 카테고리를 선택해주세요.
                             </span>
                         </div>
-                        <div onClick={() => setFramePageState({ ...framePageState, modalState: { ...framePageState.modalState, hidden: false }})}>
+                        <div onClick={() => setModalState({ ...modalState, hidden: false }) }>
                             <TextInput width={'41.7rem'} height={'6vh'} value={categoryNames} onChangeValue={() => { }}
                                        placeholder={'선택된 카테고리들이 표시됩니다.'} readonly={true} />
                         </div>
@@ -143,7 +128,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
                             </span>
                         </div>
                         <TextInput width={'41.7rem'} height={'6vh'} value={ref}
-                                   onChangeValue={(e) => setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo, ref: e } } )}
+                                   onChangeValue={(e) => dispatch(storeFrame({ ...frameInfo.frame, ref: e })) }
                                    placeholder={'ex) https://www.youtube.com/watch?v={videoId}'} onBlur={() => {}} />
                         <div style={{ marginTop: '24pt', width: '100%' }}>
                             <YouTube videoId={parseYoutube(ref)} opts={{ width: '100%', playerVars: { }}} />
@@ -167,7 +152,7 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
                             <textarea style={{ width: '100%', height: '278pt', border: '1px solid gray', padding: '4pt', resize: 'none', borderRadius: '4pt' }}
                                       value={captions}
                                       onChange={(e) =>
-                                          setFramePageState({ ...framePageState, frameInfo: { ...framePageState.frameInfo, captions: e.target.value } })} />
+                                          dispatch(storeFrame({ ...frameInfo.frame, captions: e.target.value })) } />
                         </div>
                     </div>
                 </div>

@@ -1,22 +1,25 @@
 import React from 'react';
-import { ContentDetails } from "../types";
+import {Bubble, ContentDetails} from "../types";
 import { parseYoutube } from "../../utils/func";
 import { Card } from "./commonStyled";
 import Cookies from 'js-cookie';
 
 type Props = {
-    details: ContentDetails
+    details: ContentDetails | Bubble
     onClick?: () => Promise<any>
+    width?: string,
+    height?: string,
+    denominator?: number,
 }
 
-const SimpleContCard: React.FunctionComponent<Props> = ({ details, onClick }) => {
+const SimpleContCard: React.FunctionComponent<Props> = ({ details, onClick, width, height, denominator }) => {
     const card: React.MutableRefObject<HTMLDivElement | null> = React.useRef(null);
     const img: React.MutableRefObject<HTMLImageElement | null> = React.useRef(null);
 
     // Moving Animation Event
     const onMouseMoveEventListener = (e) => {
-        let xAxis = (window.innerWidth / 2 - e.pageX) / 15;
-        let yAxis = (window.innerHeight / 2 - e.pageY) / 15;
+        let xAxis = (window.innerWidth / 2 - e.pageX) / (denominator ? denominator : 15);
+        let yAxis = (window.innerHeight / 2 - e.pageY) / (denominator ? denominator : 15);
 
         card.current.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`
     }
@@ -42,6 +45,7 @@ const SimpleContCard: React.FunctionComponent<Props> = ({ details, onClick }) =>
         <Card ref={card} onClick={() => onClick && onClick()}
               to={Cookies.get('dove-dark-mode') === 'true' ? 'rgba(62, 68, 68, 0.75)' : undefined}
               right={Cookies.get('dove-dark-mode') === 'true' ? 'rgba(218, 194, 146, 0.75)' : undefined}
+              width={width} height={height}
               onMouseMove={(e) => onMouseMoveEventListener(e)}
               onMouseLeave={() => onMouseLeaveEventListener()}
               onMouseEnter={() => onMouseEnterEventListener()}>
