@@ -30,6 +30,9 @@ type Query {
     pie(report: Long!, option: Int!): PieResponse!
     radar(report: Long!): RadarResponse!
     recent(pr: PaginationInput!): PaginatedReportResponse!
+
+    ocean(pr: PaginationInput!, keyword: String, dFilter: String): BubbleResponse!
+    bubble(id: String!): Bubble
 }
 
 type Mutation {
@@ -234,6 +237,19 @@ type Trophies {
     wordLev3: Boolean!
     sentenceLev1: Boolean!
     sentenceLev2: Boolean!
+}
+
+type Bubble {
+    id: String!,
+    title: String!,
+    captions: String!,
+    ref: String!,
+    created: String
+}
+
+type BubbleResponse {
+    bubbles: [Bubble!]!
+    totalPages: Int!
 }
 
 type SolvedResponse {

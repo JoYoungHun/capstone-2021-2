@@ -66,6 +66,9 @@ dependencies {
     implementation group: 'com.google.oauth-client', name: 'google-oauth-client-jetty', version: '1.31.4'
     compile 'com.google.apis:google-api-services-youtube:v3-rev20210210-1.31.0'
 
+    // spring data, elastic search
+    // https://mvnrepository.com/artifact/org.springframework.data/spring-data-elasticsearch
+    implementation group: 'org.springframework.data', name: 'spring-data-elasticsearch', version: '4.2.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
