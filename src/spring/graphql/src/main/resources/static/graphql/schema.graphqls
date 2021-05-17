@@ -33,6 +33,8 @@ type Query {
 
     ocean(pr: PaginationInput!, keyword: String, dFilter: String): BubbleResponse!
     bubble(id: String!): Bubble
+
+    synapses(keyword: String!, renderItem: Int!): [Neuron!]!
 }
 
 type Mutation {
@@ -51,6 +53,8 @@ type Mutation {
     deleteContentsInCategory(category: Int!, id: Int!): NoResponse!
 
     rewrite(input: ReportInput!): NoResponse!
+
+    remember(keyword: String!): NoResponse!
 }
 
 type SubScription { }
@@ -250,6 +254,14 @@ type Bubble {
 type BubbleResponse {
     bubbles: [Bubble!]!
     totalPages: Int!
+}
+
+type Neuron {
+    id: String!,
+    word: String!,
+    synapse: [String!]!,
+    recall: String,
+    clicked: Long!
 }
 
 type SolvedResponse {

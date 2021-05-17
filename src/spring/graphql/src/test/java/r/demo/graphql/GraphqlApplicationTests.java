@@ -14,12 +14,17 @@ import com.google.api.services.youtube.YouTube;
 import com.google.cloud.translate.v3.*;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import r.demo.graphql.domain.documents.autocomplete.Neuron;
+import r.demo.graphql.domain.documents.autocomplete.NeuronRepository;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Optional;
 
 @SpringBootTest
 class GraphqlApplicationTests {
@@ -50,7 +55,6 @@ class GraphqlApplicationTests {
             String[] paragraphs = { "hola mundo", "hello world!", "it's the empire from a new city" };
             // Supported Mime Types: https://cloud.google.com/translate/docs/supported-formats
             for (String paragraph : paragraphs) {
-                System.out.println("TRY: " + paragraph);
                 TranslateTextRequest request =
                         TranslateTextRequest.newBuilder()
                                 .setParent(parent.toString())
@@ -92,7 +96,6 @@ class GraphqlApplicationTests {
     public static Credential authorize(final NetHttpTransport httpTransport) throws IOException {
         // Load client secrets.
         File f = new File(CLIENT_SECRETS);
-        System.out.println(f.getName() + " // ");
         InputStream in = FileUtils.openInputStream(f);
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
@@ -115,5 +118,21 @@ class GraphqlApplicationTests {
         return new YouTube.Builder(httpTransport, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+    }
+
+    @Autowired
+    private NeuronRepository neuronRepository;
+
+    @Test
+    public void elasticsearch_insert_test_demo() throws Exception {
+//        Calendar c = Calendar.getInstance();
+//        Neuron neuron = neuronRepository.save(Neuron.builder().user("test").word("김부선").autocomplete("김 김부 부선 김부선").clicked(1).recall(c.getTime()).build());
+//        Neuron neuron1 = neuronRepository.save(Neuron.builder().user("test").word("김치찜").autocomplete("김 김치 치찜 김치찜").clicked(1).recall(c.getTime()).build());
+//        System.out.println("NEURON 0: " + neuron.getId() + " // " + neuron.getAutocomplete());
+//        System.out.println("NEURON 1: " + neuron1.getId() + " // " + neuron1.getAutocomplete());
+//
+//        Optional<Neuron> neuron2 = neuronRepository.findById(0L);
+//        System.out.println(neuron2.isPresent() + " // " + neuron.getWord() + " // " + neuron2.map(Neuron::getWord));
+//        System.out.println(neuron.getWord().equals(neuron2.map(Neuron::getWord).orElse("")));
     }
 }

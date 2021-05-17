@@ -23,13 +23,13 @@ public class GoogleTranslationClient {
         this.parent = LocationName.of(project, "global");
     }
 
-    public List<Translation> getTranslatedParagraphs(String paragraph) {
+    public List<Translation> getTranslatedParagraphs(String paragraph, String targetLanguage) {
         try {
             TranslateTextRequest request =
                     TranslateTextRequest.newBuilder()
                             .setParent(parent.toString())
                             .setMimeType("text/plain")
-                            .setTargetLanguageCode("ko")
+                            .setTargetLanguageCode(targetLanguage)
                             .addContents(paragraph)
                             .build();
 
