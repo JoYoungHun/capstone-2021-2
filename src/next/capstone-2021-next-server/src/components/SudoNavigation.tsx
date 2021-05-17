@@ -39,12 +39,12 @@ const SudoNavigation: React.FunctionComponent<Props> = React.memo(({ modifyTab, 
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginTop: '50pt' }}>
                 <Menu>
                     <MenuShell>
-                        <Image
+                        `<Image
                             src={"/hiing.png"}
                             alt="Picture of the author"
                             width={400}
                             height={200}
-                        />
+                        />`
                     </MenuShell>
                 </Menu>
                 <Menu onClick={() => modifyTab(0) }>

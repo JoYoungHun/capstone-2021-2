@@ -13,6 +13,7 @@ import Notiflix from 'notiflix';
 import {storeFrame} from "../reducers/ContReducer";
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import PerfectScrollbar from 'react-perfect-scrollbar'
+import Image from 'next/image';
 
 type Props = {
 
@@ -92,6 +93,19 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
             <div style={{ minWidth: '100%' }}>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem', paddingRight: '1rem' }}>
                     <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box'}}
+                            onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
+                                .then(() => router.push('/deepsea').then()) }}>
+                        <Image
+                            src={"/scuba-diving-recreation.png"}
+                            alt="search"
+                            width={28}
+                            height={28}
+                        />
+                        <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt', marginLeft: '4pt' }}>
+                            검색
+                        </span>
+                    </Button>
+                    <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box', marginLeft: '8pt' }}
                             onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
                                 .then(() => router.push('/?tb=2').then()) }}>
                         <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt' }}>
