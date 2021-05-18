@@ -12,6 +12,9 @@ import r.demo.graphql.domain.documents.autocomplete.NeuronRepository;
 import r.demo.graphql.domain.user.UserInfo;
 import r.demo.graphql.domain.user.UserInfoRepo;
 import r.demo.graphql.response.DefaultResponse;
+import r.demo.graphql.response.Synapse;
+import r.demo.graphql.types.Link;
+import r.demo.graphql.types.Node;
 import r.demo.graphql.utils.InternalFilterChains;
 
 import java.util.*;
@@ -40,7 +43,7 @@ public class AutoCompleteDataFetcher {
                 HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
                 if (isAuthenticated.equals(HttpStatus.OK)) {
                     // remove special characters
-                    keyword = keyword.replaceAll("[^\\uAC00-\\uD7A3xfe0-9a-zA-Z\\\\s ]", "");
+                    keyword = keyword.replaceAll("[ !@#$%^&*(),.?\"':{}|<>]", "");
                     String email = SecurityContextHolder.getContext().getAuthentication().getName();
                     UserInfo user = userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
 
@@ -70,18 +73,27 @@ public class AutoCompleteDataFetcher {
         return environment -> {
             String centralNeuron = environment.getArgument("keyword");
             int neuronsToRender = environment.getArgument("renderItem");
+            List<Node> nodes = Collections.emptyList();
+            List<Link> links = Collections.emptyList();
+
             try {
                 HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
                 if (isAuthenticated.equals(HttpStatus.OK)) {
                     String email = SecurityContextHolder.getContext().getAuthentication().getName();
                     UserInfo user = userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
 
-                    List<Neuron> neurons = neuronRepository.findAllByUserAndSynapseContains(user.getId(), centralNeuron);
+                    final String trimmedCN = centralNeuron.replaceAll("[ !@#$%^&*(),.?\"':{}|<>]", "");
+                    List<Neuron> neurons = neuronRepository.findAllByUserAndSynapseContains(user.getId(), trimmedCN);
                     neurons.sort((n1, n2) -> Float.compare(weight(n2), weight(n1)));
-                    return neurons.stream().limit(neuronsToRender).collect(Collectors.toList());
-                } else return Collections.emptyList();
+                    // rank algo applied
+                    List<Neuron> iRememberThese = neurons.stream().limit(neuronsToRender).collect(Collectors.toList());
+
+                    nodes = iRememberThese.stream().map(n -> new Node(n, weight(n))).collect(Collectors.toList());
+                    links = new ArrayList<>();
+                }
+                return new Synapse(nodes, links);
             } catch (Exception e) {
-                return Collections.emptyList();
+                return new Synapse(Collections.emptyList(), Collections.emptyList());
             }
         };
     }

@@ -56,7 +56,6 @@ public class ELKDataFetcher {
                     }
                 }
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
                 Page<Video> videos = dFilter == null ?
                         "".equals(keyword) ? videoRepository.findAll(pageRequest)
                                 : videoRepository.findAllByCaptionsInOrTitleIn(keyword, keyword, pageRequest)

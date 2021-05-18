@@ -34,7 +34,7 @@ type Query {
     ocean(pr: PaginationInput!, keyword: String, dFilter: String): BubbleResponse!
     bubble(id: String!): Bubble
 
-    synapses(keyword: String!, renderItem: Int!): [Neuron!]!
+    synapses(keyword: String!, renderItem: Int!): Synapse!
 }
 
 type Mutation {
@@ -256,12 +256,20 @@ type BubbleResponse {
     totalPages: Int!
 }
 
-type Neuron {
-    id: String!,
-    word: String!,
-    synapse: [String!]!,
-    recall: String,
-    clicked: Long!
+type Synapse {
+    points: [Node!]!
+    links: [Link!]!
+}
+
+type Node {
+    id: String!
+    name: String!
+    val: Float!
+}
+
+type Link {
+    source: String!
+    target: String!
 }
 
 type SolvedResponse {
