@@ -436,3 +436,28 @@ export const GET_BUBBLE = gql`
         }
     }
 `
+
+export const POST_REMEMBER = gql`
+    mutation remember($keyword: String!) {
+        remember(keyword: $keyword) {
+            status
+            message   
+        }
+    }
+`
+
+export const GET_SYNAPSES = gql`
+    query synapses($keyword: String!, $renderItem: Int!) {
+        synapses(keyword: $keyword, renderItem: $renderItem) {
+            points {
+                id
+                name
+                val
+            }
+            links {
+                source
+                target
+            }
+        }
+    }
+`

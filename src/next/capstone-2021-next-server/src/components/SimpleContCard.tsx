@@ -18,9 +18,10 @@ const SimpleContCard: React.FunctionComponent<Props> = ({ details, onClick, widt
 
     // Moving Animation Event
     const onMouseMoveEventListener = (e) => {
-        let xAxis = (window.innerWidth / 2 - e.pageX) / (denominator ? denominator : 15);
-        let yAxis = (window.innerHeight / 2 - e.pageY) / (denominator ? denominator : 15);
+        let xAxis = (window.innerWidth / 2 - e.pageX) / (denominator ? denominator : 20);
+        let yAxis = (window.innerHeight / 2 - e.pageY) / (denominator ? denominator : 20);
 
+        if (yAxis < -7) yAxis = -yAxis;
         card.current.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`
     }
 

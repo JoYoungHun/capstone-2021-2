@@ -18,3 +18,4 @@ export { default as ContSentence } from './contentComponents/ContSentence';
 export { default as ContWord } from './contentComponents/ContWord';
 
 export { default as ReportDetails } from './ReportDetails';
+export { default as BubbleEffect } from './BubbleEffect';

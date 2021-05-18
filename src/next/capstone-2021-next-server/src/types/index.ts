@@ -169,3 +169,8 @@ export type Ecosystem = {
     isFetching: boolean,
     hasMore: boolean
 }
+
+export type GraphDataType = {
+    nodes: any[],
+    links: any[]
+}

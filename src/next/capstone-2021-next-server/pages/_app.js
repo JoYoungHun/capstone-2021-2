@@ -14,9 +14,8 @@ import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import reducer from "../src/modules";
 import Cookies from 'js-cookie';
-import Image from "next/image";
-import dynamic from "next/dynamic";
 import ThemeToggleBtn from "../src/components/ThemeToggleBtn";
+import '../styles/bubble.css';
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware()))
 
