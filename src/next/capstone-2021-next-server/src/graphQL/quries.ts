@@ -461,3 +461,23 @@ export const GET_SYNAPSES = gql`
         }
     }
 `
+
+export const GET_MY_CONTENTS = gql`
+    query myContents {
+        myContents {
+            id
+            title
+            ref
+        }
+    }
+`
+
+export const GET_RECENT_VIEWED_CONTENTS = gql`
+    query recentViewed($pr: PaginationInput!) {
+        recentViewed(pr: $pr) {
+            id
+            title
+            ref
+        }
+    }
+`

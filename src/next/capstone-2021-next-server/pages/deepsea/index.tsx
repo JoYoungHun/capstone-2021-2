@@ -1,14 +1,14 @@
 import React from 'react';
+import { NextRouter, useRouter } from "next/dist/client/router";
 import { useDispatch } from 'react-redux';
 import useIntersectionObserver from "../../src/hooks/useIntersectionObserver";
-import {useLazyQuery, useMutation} from "@apollo/client";
-import { Bubble, Ecosystem } from "../../src/types";
-import Notiflix from 'notiflix'
-import {GET_BUBBLES, POST_REMEMBER} from "../../src/graphQL/quries";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import {BubbleEffect, Loading, SimpleContCard, TopDrawer} from "../../src/components";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { storeFrame } from "../../src/reducers/ContReducer";
-import { NextRouter, useRouter } from "next/dist/client/router";
+import { Bubble, Ecosystem } from "../../src/types";
+import { GET_BUBBLES, POST_REMEMBER } from "../../src/graphQL/quries";
+import { Loading, SimpleContCard, TopDrawer } from "../../src/components";
+import Notiflix from 'notiflix'
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 type DrawerEvtProps = {
     keyword: string,
@@ -28,10 +28,6 @@ const DeepSea = ({ search }) => {
         triggered: false,
         keyword: ''
     });
-
-    const diveDeeply = (e) => {
-        console.log(e.pageYOffset)
-    }
 
     // instance variable
     const renderItem: number = 20;
@@ -75,7 +71,7 @@ const DeepSea = ({ search }) => {
     const onRouteToCreateNewContent = (bubble: Bubble) => {
         Notiflix.Loading.Pulse('Pop Bubble...')
         dispatch(storeFrame({ title: bubble.title, ref: bubble.ref, captions: bubble.captions ? bubble.captions : '', categories: [], id: undefined }))
-        return router.push('/?tb=2')
+        return router.push('/home?tb=2')
     }
 
     const onChangeKeyword = (s: string) => {
@@ -90,24 +86,32 @@ const DeepSea = ({ search }) => {
     }
 
     return (
-        <PerfectScrollbar style={{ }}>
-            <div style={{ minWidth: '100%', background: 'rgb(0,143,240) linear-gradient(180deg, rgba(0,143,240,1) 0%, rgba(24,98,148,1) 50%, rgba(24,35,43,1) 100%)' }}
-                 onMouseOver={(e) => diveDeeply(e)}>
+        <PerfectScrollbar style={{ maxHeight: '100vh' }}>
+            <div style={{ minWidth: '100%', background: 'rgb(0,143,240) linear-gradient(180deg, rgba(0,143,240,1) 0%, rgba(24,98,148,1) 50%, rgba(24,35,43,1) 100%)' }}>
                 <TopDrawer keyword={drawerEvt.keyword} onChangeKeyword={onChangeKeyword} forceReRendering={forceReRendering} />
-                <div className={"ovf"} ref={rootRef}
-                     style={{ width: '100%', height: '100vh', paddingLeft: '16pt', border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt',
-                         display: 'flex', flexWrap: 'wrap', overflow: 'auto', marginTop: '5vh', background: 'transparent' }}>
+                <div ref={rootRef} style={{ width: '100%', paddingLeft: '16pt', border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt',
+                    marginTop: '5vh', background: 'transparent' }}>
+                    <PerfectScrollbar style={{ display: 'flex', flexWrap: 'wrap', overflow: 'auto', height: '100vh' }}>
                     {
-                        ecosystem.bubbles.map((bubble: Bubble) => (
-                            <SimpleContCard key={bubble.id + Math.random()} details={bubble}
-                                            onClick={() => onRouteToCreateNewContent(bubble).then(() => { Notiflix.Loading.Remove(800) })}
-                                            width={'15rem'} height={'15rem'} denominator={25} />
-                        ))
-                    }
-                    {
-                        ecosystem.isFetching && <Loading />
-                    }
-                    <div ref={targetRef} />
+                            ecosystem.bubbles.length === 0 &&
+                                <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '15vh' }}>
+                                    <p style={{ color: '#FFF', fontWeight: 'bold', fontSize: '14pt' }}>
+                                        There are no matched results.
+                                    </p>
+                                </div>
+                        }
+                        {
+                            ecosystem.bubbles.map((bubble: Bubble) => (
+                                <SimpleContCard key={bubble.id + Math.random()} details={bubble}
+                                                onClick={() => onRouteToCreateNewContent(bubble).then(() => { Notiflix.Loading.Remove(800) })}
+                                                width={'15rem'} height={'15rem'} denominator={25} />
+                            ))
+                        }
+                        {
+                            ecosystem.isFetching && <Loading />
+                        }
+                        <div ref={targetRef} />
+                    </PerfectScrollbar>
                 </div>
             </div>
         </PerfectScrollbar>

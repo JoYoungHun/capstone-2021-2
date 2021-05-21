@@ -174,3 +174,9 @@ export type GraphDataType = {
     nodes: any[],
     links: any[]
 }
+
+export type CardContProps = {
+    id: number,
+    title: string,
+    ref: string,
+}

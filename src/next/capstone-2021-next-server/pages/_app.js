@@ -16,6 +16,7 @@ import reducer from "../src/modules";
 import Cookies from 'js-cookie';
 import ThemeToggleBtn from "../src/components/ThemeToggleBtn";
 import '../styles/bubble.css';
+import '../styles/manual.css';
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware()))
 

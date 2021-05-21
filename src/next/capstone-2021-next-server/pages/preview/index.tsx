@@ -25,7 +25,7 @@ const Preview = ({ ct }) => {
     }, [ router.query ])
     return (
         <div style={{ width: '100%', height: '100%' }}>
-            <PreviewHeader goBack={() => router.push('/?tb=0')}/>
+            <PreviewHeader goBack={() => router.push('/home?tb=0')}/>
             <PreviewContainer ct={ct} />
         </div>
     )

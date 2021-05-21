@@ -38,7 +38,7 @@ const ContSentence: React.FunctionComponent<Props> = () => {
                             resolve(true)
                         }).then(() => {
                             Notiflix.Loading.Remove(1000);
-                            router.push('/?tb=0').then();
+                            router.push('/home?tb=0').then();
                         })
                     } else routeHttpStatus(router, res.data.createContent.status, res.data.createContent.message);
                 });

@@ -90,7 +90,6 @@ const ContFramework: React.FunctionComponent<Props> = ({ modifyTab }) => {
     }});
     return (
         <React.Fragment>
-            {console.log('captions', captions)}
             <div style={{ width: '100%' }}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div style={{ width: '41.7rem', marginBottom: '12pt' }}>
