@@ -1,0 +1,53 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'kr.dove'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.0.0-alpha-1'
+
+    // spring data, elastic search
+    // https://mvnrepository.com/artifact/org.springframework.data/spring-data-elasticsearch
+    implementation group: 'org.springframework.data', name: 'spring-data-elasticsearch', version: '4.2.0'
+
+    // scheduling libs
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-quartz
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-quartz', version: '2.4.5'
+    // https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
+    implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
+    // https://mvnrepository.com/artifact/org.springframework/spring-context
+    implementation group: 'org.springframework', name: 'spring-context', version: '5.3.6'
+
+    // retrofit2
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-gson
+    implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-jackson
+    implementation group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.9.0'
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
