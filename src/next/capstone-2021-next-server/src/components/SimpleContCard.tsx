@@ -1,11 +1,11 @@
 import React from 'react';
-import {Bubble, ContentDetails} from "../types";
+import {Bubble, CardContProps, ContentDetails} from "../types";
 import { parseYoutube } from "../../utils/func";
 import { Card } from "./commonStyled";
 import Cookies from 'js-cookie';
 
 type Props = {
-    details: ContentDetails | Bubble
+    details: ContentDetails | Bubble | CardContProps
     onClick?: () => Promise<any>
     width?: string,
     height?: string,

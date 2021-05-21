@@ -10,7 +10,7 @@ import { Loading, SimpleContCard } from "../components";
 import { ContentDetails } from "../types";
 import useIntersectionObserver from "../hooks/useIntersectionObserver";
 import Notiflix from 'notiflix';
-import {storeFrame} from "../reducers/ContReducer";
+import { storeFrame } from "../reducers/ContReducer";
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import Image from 'next/image';
@@ -92,8 +92,8 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
         <PerfectScrollbar style={{ width: '100%', perspective: '1000px' }}>
             <div style={{ minWidth: '100%' }}>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem', paddingRight: '1rem' }}>
-                    <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box'}}
-                            onClick={async () => { router.push('/deepsea').then() }}>
+                    <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box' }}
+                            onClick={async () => { router.push('/search').then() }}>
                         <Image
                             src={"/scuba-diving-recreation.png"}
                             alt="search"
@@ -105,8 +105,20 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
                         </span>
                     </Button>
                     <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box', marginLeft: '8pt' }}
+                            onClick={async () => { router.push('/deepsea').then() }}>
+                        <Image
+                            src={"/water-wave_1f30a.png"}
+                            alt="deepsea"
+                            width={28}
+                            height={28}
+                        />
+                        <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt', marginLeft: '4pt' }}>
+                            바다
+                        </span>
+                    </Button>
+                    <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box', marginLeft: '8pt' }}
                             onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
-                                .then(() => router.push('/?tb=2').then()) }}>
+                                .then(() => router.push('/home?tb=2').then()) }}>
                         <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt' }}>
                             컨텐츠 만들기
                         </span>

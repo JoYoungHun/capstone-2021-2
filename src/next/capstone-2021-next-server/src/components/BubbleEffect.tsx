@@ -1,8 +1,13 @@
 import React from 'react';
 
-const BubbleEffect: React.FunctionComponent = () => {
+type Props = {
+    zIndex?: number
+    id?: string
+}
+
+const BubbleEffect: React.FunctionComponent<Props> = ({ zIndex }) => {
     return (
-        <div id="background-wrap">
+        <div id="background-wrap" style={{ zIndex: zIndex ? zIndex : 0.5 }}>
             <div className="bubble x1"/>
             <div className="bubble x2"/>
             <div className="bubble x3"/>

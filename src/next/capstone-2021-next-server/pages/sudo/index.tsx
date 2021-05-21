@@ -22,7 +22,7 @@ const Sudo = ({ code }: { code: number }) => {
         if (code === 401) {
             router.push('/login').then(() => Notiflix.Report.Failure('Session Timeout!', '세션이 만료됐거나, 로그인 된 상태가 아닙니다.', 'OK! I will check.'));
         } else if (code === 406) {
-            router.push('/').then(() => Notiflix.Notify.Failure('접근 권한이 없습니다.'));
+            router.push('/home').then(() => Notiflix.Notify.Failure('접근 권한이 없습니다.'));
         }
     }, [ ])
 
@@ -35,7 +35,7 @@ const Sudo = ({ code }: { code: number }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-            <SudoNavigation modifyTab={modifyTab} goBack={() => router.push('/')}/>
+            <SudoNavigation modifyTab={modifyTab} goBack={() => router.push('/home')}/>
             <Divider orientation={'vertical'} flexItem />
             <div style={{ width: 'calc(100% - 200pt)', marginTop: '100pt', paddingLeft: '16pt', paddingRight: '16pt' }}>
                 {

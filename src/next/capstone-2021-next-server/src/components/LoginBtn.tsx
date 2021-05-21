@@ -28,7 +28,7 @@ const LoginBtn: React.FunctionComponent<Props> = ({ id, password }) => {
             Notiflix.Report.Failure('로그인에 실패했습니다.');
         } else if (data && data.login.status === 200) {
             Cookies.set('dove-token', data.login.token);
-            router.push('/').then();
+            router.push('/home').then();
         }
     }, [ data ])
 

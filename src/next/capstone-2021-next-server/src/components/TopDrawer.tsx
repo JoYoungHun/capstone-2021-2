@@ -35,7 +35,7 @@ const TopDrawer: React.FunctionComponent<Props> = ({ keyword, onChangeKeyword, f
                      onClick={() => toggleOpen()}>
                     <SearchRounded style={{ color: '#FFE94A' }} />
                 </div>
-                <ArrowBackRounded style={{ cursor: 'pointer', color: '#FFE94A' }} onClick={() => router.push('/')} />
+                <ArrowBackRounded style={{ cursor: 'pointer', color: '#FFE94A' }} onClick={() => router.push('/home')} />
             </div>
             <SwipeableDrawer anchor={'top'} open={open} onClose={toggleOpen} onOpen={toggleOpen}>
                 <div style={{ height: '15vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

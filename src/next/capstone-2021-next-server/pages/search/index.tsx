@@ -1,14 +1,13 @@
 import React from 'react';
 import { useRouter, NextRouter } from "next/router";
 import dynamic from "next/dynamic";
-import { useLazyQuery } from "@apollo/client";
-import { GET_SYNAPSES } from "../../src/graphQL/quries";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { GET_SYNAPSES, POST_REMEMBER } from "../../src/graphQL/quries";
 import { GraphDataType } from "../../src/types";
 import Image from 'next/image';
 import Notiflix from 'notiflix';
 import TextInput from "../../src/components/TextInput";
 import { BubbleEffect } from "../../src/components";
-
 const ThreeDimension = dynamic(() => import('../../src/components/ThreeDimension'), { ssr: false })
 
 type Window = {
@@ -16,7 +15,7 @@ type Window = {
     height: number
 }
 
-const Demo = () => {
+const Search = () => {
     const router: NextRouter = useRouter();
     const search: React.MutableRefObject<string> = React.useRef<string>('')
     const [ windowSize, setWindowSize ] = React.useState<Window>({
@@ -52,16 +51,23 @@ const Demo = () => {
         }
     }});
 
-    const onRouteToDeepSea = () => {
-        if (search && search.current !== '')
-            router.push(`/deepsea?search=${search.current}`).then()
+    const onRouteToDeepSea = (node?: any, evt?: MouseEvent) => {
+        console.log(node, evt, node?.name)
+        const query: string | undefined = node ? node?.name : search.current
+        if (query && query !== '') {
+            remember({ fetchPolicy: 'no-cache', variables: { keyword: query }}).then(async () => {
+                router.push(`/deepsea?search=${query}`).then()
+            })
+        }
         else Notiflix.Notify.Failure('검색어를 입력해주세요.')
     }
+
+    const [ remember ] = useMutation(POST_REMEMBER);
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', height: '100vh' }}>
             <div style={{ width: '100%', height: windowSize.height / 1.2, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
-                <ThreeDimension width={windowSize.width} height={windowSize.height / 1.5} graphData={graphData} />
+                <ThreeDimension width={windowSize.width} height={windowSize.height / 1.5} graphData={graphData} onNodeClick={onRouteToDeepSea} />
             </div>
             <div style={{ zIndex: 1, width: '100%', height: '100%' }}>
                 <div style={{ height: '100%', display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
@@ -83,4 +89,4 @@ const Demo = () => {
     )
 }
 
-export default Demo;
+export default Search;
