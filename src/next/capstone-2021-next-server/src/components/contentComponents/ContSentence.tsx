@@ -10,6 +10,7 @@ import { Paragraph } from "../../types";
 import { YellowBtn } from "./commons";
 import SentenceComponent from "./SentenceComponent";
 import Notiflix from 'notiflix';
+import {routeHttpStatus} from "../../../utils/func";
 
 type Props = {
 
@@ -30,14 +31,16 @@ const ContSentence: React.FunctionComponent<Props> = () => {
             const filteredSentences = content.sentences.filter((sentence: Paragraph) => sentence.eng !== '' && sentence.kor !== '');
 
             create({ variables: { input: { ...content.frame, words: filteredWords, sentences: filteredSentences } }})
-                .then( async () => {
-                    await new Promise((resolve) => {
-                        dispatch(initializeContent())
-                        resolve(true)
-                    }).then(() => {
-                        Notiflix.Loading.Remove(1000);
-                        router.push('/?tb=0').then();
-                    })
+                .then( async (res) => {
+                    if (res && res.data && res.data.createContent.status === 200) {
+                        await new Promise((resolve) => {
+                            dispatch(initializeContent())
+                            resolve(true)
+                        }).then(() => {
+                            Notiflix.Loading.Remove(1000);
+                            router.push('/home?tb=0').then();
+                        })
+                    } else routeHttpStatus(router, res.data.createContent.status, res.data.createContent.message);
                 });
         }
     }
@@ -80,58 +83,60 @@ const ContSentence: React.FunctionComponent<Props> = () => {
 
     return (
         <React.Fragment>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', width: '628pt', marginTop: '76.5px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', width: '500px' }}>
-                    <span style={{ color: '#000', fontSize: '19px', fontWeight: 'bold', fontFamily: 'Helvetica Neue, Bold' }}>
-                        영어 가사/캡션
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', width: '64rem', marginTop: '9vh' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '31.5rem' }}>
+                        <span style={{ fontSize: '19px', fontWeight: 'bold', fontFamily: 'Helvetica Neue, Bold' }}>
+                            영어 가사/캡션
+                        </span>
+                        <span style={{ color: '#707070', fontFamily: 'Helvetica Neue, Light', fontSize: '13px', marginTop: '4px' }}>
+                            영어 원문 또는 한국어 번역을 직접 수정하려면 입력창을 클릭하세요.
+                        </span>
+                    </div>
+                    <span style={{ fontSize: '19px', fontWeight: 'bold', fontFamily: 'Helvetica Neue, Bold', marginLeft: '2.2rem' }}>
+                        한국어 뜻 (자동으로 입력됩니다)
                     </span>
-                    <span style={{ color: '#707070', fontFamily: 'Helvetica Neue, Light', fontSize: '13px', marginTop: '4px' }}>
-                        영어 원문 또는 한국어 번역을 직접 수정하려면 입력창을 클릭하세요.
-                    </span>
                 </div>
-                <span style={{ color: '#000', fontSize: '19px', fontWeight: 'bold', fontFamily: 'Helvetica Neue, Bold', marginLeft: '36px' }}>
-                    한국어 뜻 (자동으로 입력됩니다)
-                </span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginTop: '14pt' }}>
-                <div style={{ width: '500px', background: '#F2F2F2 0% 0% no-repeat padding-box',
-                    boxShadow: '0px 3px 6px #00000029', border: '0px solid #707070' }}>
-                    {
-                        sentences && sentences.length > 0 &&
-                        sentences.map(( paragraph: Paragraph, index: number ) => (
-                            <SentenceComponent key={paragraph.id ? paragraph.id : 'paragraph' + index}
-                                           backgroundColor={index % 2 === 0 ? '#fff' : '#F2F2F2'} text={paragraph.eng}
-                                           index={index} type={0} onChangeTextArea={onChangeTextArea} translateWhenBlurred={translateWhenBlurred} />
-                        ))
-                    }
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginTop: '14pt' }}>
+                    <div style={{ width: '31.2rem', background: '#F2F2F2 0% 0% no-repeat padding-box',
+                        boxShadow: '0px 3px 6px #00000029', border: '0px solid #707070' }}>
+                        {
+                            sentences && sentences.length > 0 &&
+                            sentences.map(( paragraph: Paragraph, index: number ) => (
+                                <SentenceComponent key={paragraph.id ? paragraph.id : 'paragraph' + index}
+                                               backgroundColor={index % 2 === 0 ? '#fff' : '#F2F2F2'} text={paragraph.eng}
+                                               index={index} type={0} onChangeTextArea={onChangeTextArea} translateWhenBlurred={translateWhenBlurred} />
+                            ))
+                        }
+                    </div>
+                    <div style={{ width: '31.2rem', background: '#F2F2F2 0% 0% no-repeat padding-box',
+                        boxShadow: '0px 3px 6px #00000029', border: '0px solid #707070', marginLeft: '2.2rem' }}>
+                        {
+                            sentences && sentences.length > 0 &&
+                            sentences.map(( paragraph: Paragraph, index: number ) => (
+                                <SentenceComponent backgroundColor={index % 2 === 0 ? '#fff' : '#F2F2F2'} text={paragraph.kor}
+                                                   index={index} type={1} onChangeTextArea={onChangeTextArea} />
+                            ))
+                        }
+                    </div>
                 </div>
-                <div style={{ width: '500px', background: '#F2F2F2 0% 0% no-repeat padding-box',
-                    boxShadow: '0px 3px 6px #00000029', border: '0px solid #707070', marginLeft: '36px' }}>
-                    {
-                        sentences && sentences.length > 0 &&
-                        sentences.map(( paragraph: Paragraph, index: number ) => (
-                            <SentenceComponent backgroundColor={index % 2 === 0 ? '#fff' : '#F2F2F2'} text={paragraph.kor}
-                                               index={index} type={1} onChangeTextArea={onChangeTextArea} />
-                        ))
-                    }
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '3.1rem' }}>
+                    <div style={{ width: '45px', height: '45px', borderRadius: '23px', display: 'flex', justifyContent: 'center', alignItems: 'center'
+                        , background: '#0074C9 0% 0% no-repeat padding-box', border: 0, cursor: 'pointer' }}
+                         onClick={() => addTenMoreParagraphs()}>
+                        <AddRounded color={'primary'} fontSize={'large'} />
+                    </div>
+                    <p style={{ color: '#707070', fontFamily: 'Helvetica Neue, Light', fontSize: '18px' }}>
+                        10칸 더 추가하기
+                    </p>
                 </div>
-            </div>
-            <div style={{ width: '1000px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '38pt' }}>
-                <div style={{ width: '45px', height: '45px', borderRadius: '23px', display: 'flex', justifyContent: 'center', alignItems: 'center'
-                    , background: '#0074C9 0% 0% no-repeat padding-box', border: 0, cursor: 'pointer' }}
-                     onClick={() => addTenMoreParagraphs()}>
-                    <AddRounded color={'primary'} fontSize={'large'} />
-                </div>
-                <p style={{ color: '#707070', fontFamily: 'Helvetica Neue, Light', fontSize: '18px' }}>
-                    10칸 더 추가하기
-                </p>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '24pt' }}>
-                <YellowBtn onClick={() => onCompleteEditContent()}>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
+                    <YellowBtn onClick={() => onCompleteEditContent()}>
                     <span style={{ fontFamily: 'sans-serif', color: '#000', fontWeight: 'bold', fontSize: '14px' }}>
                         완료하기
                     </span>
-                </YellowBtn>
+                    </YellowBtn>
+                </div>
             </div>
         </React.Fragment>
     )

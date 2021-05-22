@@ -17,22 +17,44 @@ type Query {
     parse(captions: String!): ParseResponse!
 
     allContents(category: Int!, pr: PaginationInput!, option: Int): PaginatedContentResponse!
+    content(id: Long!): Content
+    summary(content: Long!, level: Int!, page: Int!): SummaryResponse!
+
+    choices(option: Int!, except: Long!): ProblemReponse
+    allWords(id: Long!): ProblemReponse
+    allSentences(id: Long!): ProblemReponse
+
+    report(report: Long!): Report
+    trophies(content: Long!): Trophies
+    bar(report: Long!): BarResponse!
+    pie(report: Long!, option: Int!): PieResponse!
+    radar(report: Long!): RadarResponse!
+    recent(pr: PaginationInput!): PaginatedReportResponse!
+
+    ocean(pr: PaginationInput!, keyword: String, dFilter: String): BubbleResponse!
+    bubble(id: String!): Bubble
+
+    synapses(keyword: String!, renderItem: Int!): Synapse!
 }
 
 type Mutation {
-    sign(id: String!, password: String!, name: String!): Int
+    sign(id: String!, password: String!, name: String!): NoResponse!
     updateUserAuthority(id: Long!, authority: String!): NoResponse!
     deleteUser(id: Long!): NoResponse!
     updateUserInfo(input: UpdateUserInput!): NoResponse!
 
-    createCategory(title: String!): Int!
-    updateCategory(id: Int!, title: String!): Int!
-    deleteCategory(id: Int!): Int!
+    createCategory(title: String!): NoResponse!
+    updateCategory(id: Int!, title: String!): NoResponse!
+    deleteCategory(id: Int!): NoResponse!
 
     createContent(input: ContentInput!): NoResponse!
     deleteContent(id: Int!): NoResponse!
     saveContentsToCategory(category: Int!, id: [Int!]!): NoResponse!
     deleteContentsInCategory(category: Int!, id: Int!): NoResponse!
+
+    rewrite(input: ReportInput!): NoResponse!
+
+    remember(keyword: String!): NoResponse!
 }
 
 type SubScription { }
@@ -94,16 +116,171 @@ type Translated {
     idx: Int!
 }
 
-input ParagraphIn {
-    eng: String!
-    kor: String!
-    __typename: String
-}
-
 type Paragraph {
     id: Int
     eng: String!
     kor: String!
+    pos: String
+}
+
+type PaginatedContentResponse {
+    contents: [Content!]!
+    totalElements: Int!
+}
+
+type PaginatedUserResponse {
+    users: [User!]!
+    totalElements: Int!
+}
+
+type PaginatedReportResponse {
+    reports: [Report!]!
+    totalElements: Int!
+}
+
+type Profile {
+    id: Long!
+    url: String!
+}
+
+type SummaryResponse {
+    shells: [SummaryShell!]!
+    totalPages: Int!
+}
+
+type SummaryShell {
+    originalText: String!
+    translatedKor: String!
+    tokens: [SummaryToken!]!
+}
+
+type SummaryToken {
+    eng: String!
+    kor: String!
+    pos: String!
+    highlight: Boolean!
+}
+
+type ProblemReponse {
+    status: Int!
+    problems: [Problem!]!
+}
+
+type Problem {
+    id: Long!
+    eng: String!
+    kor: String!
+}
+
+type BarResponse {
+    status: Int!
+    data: [BarProps!]
+}
+
+type BarProps {
+    country: String!
+    level1: Float!
+    level1Color: String!
+    level2: Float!
+    level2Color: String!
+    level3: Float!
+    level3Color: String!
+    objective: Float!
+    objectiveColor: String!
+    subjective: Float!
+    subjectiveColor: String!
+}
+
+type PieResponse {
+    status: Int!,
+    data: [PieProps!]
+}
+
+type PieProps {
+    id: String!
+    label: String!
+    value: Float!
+    color: String!
+}
+
+type RadarResponse {
+    status: Int!,
+    data: [RadarProps!]
+}
+
+type RadarProps {
+    taste: String!
+    total: Int!,
+    correct: Float!,
+}
+
+type Report {
+    id: Long!,
+    content: ContentFilteredByCategory,
+    user: User!,
+    wordLen: Int!,
+    sentenceLen: Int!,
+    correctWordsLev1: Int!,
+    correctWordsLev2: Int!,
+    correctWordsLev3: Int!,
+    correctSentencesLev1: Int!,
+    correctSentencesLev2: Int!,
+    passWordLev1: Boolean!,
+    passWordLev2: Boolean!,
+    passWordLev3: Boolean!,
+    passSentenceLev1: Boolean!,
+    passSentenceLev2: Boolean!,
+    created: String!,
+    modified: String!
+}
+
+type Trophies {
+    content: Long!
+    wordLev1: Boolean!
+    wordLev2: Boolean!
+    wordLev3: Boolean!
+    sentenceLev1: Boolean!
+    sentenceLev2: Boolean!
+}
+
+type Bubble {
+    id: String!,
+    title: String!,
+    captions: String!,
+    ref: String!,
+    created: String
+}
+
+type BubbleResponse {
+    bubbles: [Bubble!]!
+    totalPages: Int!
+}
+
+type Synapse {
+    points: [Node!]!
+    links: [Link!]!
+}
+
+type Node {
+    id: String!
+    name: String!
+    val: Float!
+}
+
+type Link {
+    source: String!
+    target: String!
+}
+
+type SolvedResponse {
+
+}
+
+input ParagraphIn {
+    eng: String!
+    kor: String!
+    pos: String
+    __typename: String
 }
 
 input ContentInput {
@@ -128,19 +305,17 @@ input UpdateUserInput {
     profile: Int
 }
 
-type PaginatedContentResponse {
-    contents: [Content!]!
-    totalElements: Int!
-}
-
-type PaginatedUserResponse {
-    users: [User!]!
-    totalElements: Int!
-}
-
-type Profile {
+input ProblemInput {
     id: Long!
-    url: String!
+    eng: String!
+    tried: Int!
+    passed: Boolean!
+}
+
+input ReportInput {
+    content: Long!
+    solved: [ProblemInput!]!
+    level: Int!
 }
 
 scalar Long

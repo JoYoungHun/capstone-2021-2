@@ -17,8 +17,10 @@ import { CloseOutlined } from "@material-ui/icons";
 import { User } from "../../types";
 import { PUT_UPDATE_USER_AUTHORITY } from "../../graphQL/quries";
 import Notiflix from 'notiflix';
-import {storeUserList} from "../../reducers/UserListReducer";
-import {RootState} from "../../modules";
+import { storeUserList } from "../../reducers/UserListReducer";
+import { RootState } from "../../modules";
+import { routeHttpStatus } from "../../../utils/func";
+import { NextRouter, useRouter } from "next/router";
 
 type Props = {
     hidden: boolean
@@ -42,6 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const U_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close }) => {
     const classes = useStyles();
+    const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const listStates = useSelector((state: RootState) => state.UserListReducer)
     const [ modifiedAuth, setModifiedAuth ] = React.useState<string>(details.authority);
@@ -64,7 +67,7 @@ const U_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close })
                 .then((response: ApolloQueryResult<any>) => {
                     dispatch(storeUserList({ ...listStates, items: [ ...response.data.allUsers.users ]}))
                 })
-        }
+        } else routeHttpStatus(router, data.updateUserAuthority.status, data.updateUserAuthority.message);
     }})
 
     return (
@@ -82,8 +85,8 @@ const U_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close })
                         <span style={{ fontSize: '17pt', fontWeight: 'bold', width: '60pt' }}>
                             Id
                         </span>
-                        <div style={{ marginLeft: '40pt', border: '0.25px solid #00000029', boxShadow: '0px 3px 6px #00000029',
-                            borderRadius: '12pt', width: 'calc(100% - 100pt)', height: '100%', overflow: 'scroll',
+                        <div className={"ovf"} style={{ marginLeft: '40pt', border: '0.25px solid #00000029', boxShadow: '0px 3px 6px #00000029',
+                            borderRadius: '12pt', width: 'calc(100% - 100pt)', height: '100%', overflow: 'auto',
                             display: 'flex', justifyContent: 'flex-start', alignItems: 'center', paddingLeft: '8pt' }}>
                             <span>{details.email}</span>
                         </div>
@@ -93,8 +96,8 @@ const U_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close })
                         <span style={{ fontSize: '17pt', fontWeight: 'bold', width: '60pt' }}>
                             Name
                         </span>
-                        <div style={{ marginLeft: '40pt', border: '0.25px solid #00000029', boxShadow: '0px 3px 6px #00000029',
-                            borderRadius: '12pt', width: 'calc(100% - 100pt)', height: '100%', overflow: 'scroll',
+                        <div className={"ovf"} style={{ marginLeft: '40pt', border: '0.25px solid #00000029', boxShadow: '0px 3px 6px #00000029',
+                            borderRadius: '12pt', width: 'calc(100% - 100pt)', height: '100%', overflow: 'auto',
                             display: 'flex', justifyContent: 'flex-start', alignItems: 'center', paddingLeft: '8pt' }}>
                             <span>{details.name}</span>
                         </div>
@@ -128,8 +131,8 @@ const U_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close })
                         <span style={{ fontSize: '17pt', fontWeight: 'bold', width: '60pt' }}>
                             Created
                         </span>
-                        <div style={{ marginLeft: '40pt', border: '0.25px solid #00000029', boxShadow: '0px 3px 6px #00000029',
-                            borderRadius: '12pt', width: 'calc(100% - 100pt)', height: '100%', overflow: 'scroll',
+                        <div className={"ovf"} style={{ marginLeft: '40pt', border: '0.25px solid #00000029', boxShadow: '0px 3px 6px #00000029',
+                            borderRadius: '12pt', width: 'calc(100% - 100pt)', height: '100%', overflow: 'auto',
                             display: 'flex', justifyContent: 'flex-start', alignItems: 'center', paddingLeft: '8pt' }}>
                             <span>{details.created}</span>
                         </div>

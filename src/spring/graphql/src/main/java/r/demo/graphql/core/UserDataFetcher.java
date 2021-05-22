@@ -20,6 +20,7 @@ import r.demo.graphql.domain.user.UserInfo;
 import r.demo.graphql.domain.user.UserInfoRepo;
 import r.demo.graphql.response.DefaultResponse;
 import r.demo.graphql.response.Token;
+import r.demo.graphql.utils.InternalFilterChains;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,37 +35,42 @@ public class UserDataFetcher {
     private final FileInfoRepo fileRepo;
     private final ContentRepo contentRepo;
     private final JwtTokenProvider jwtTokenProvider;
+    private final InternalFilterChains chains;
     private final List<String> authorities = Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY");
 
     public UserDataFetcher(PasswordEncoder encoder,
                            UserInfoRepo userRepo, FileInfoRepo fileRepo, ContentRepo contentRepo,
-                           @Lazy JwtTokenProvider jwtTokenProvider) {
+                           @Lazy JwtTokenProvider jwtTokenProvider, InternalFilterChains chains) {
         this.encoder = encoder;
         this.userRepo = userRepo;
         this.fileRepo = fileRepo;
         this.contentRepo = contentRepo;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.chains = chains;
     }
 
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> allUsers() {
         return environment -> {
             LinkedHashMap<String, Object> lhm = new LinkedHashMap<>();
-            String authority = environment.getArgument("authority");
-            final LinkedHashMap<String, Object> req = environment.getArgument("pr");
-            int page = Integer.parseInt(req.get("page").toString()),
-                    renderItem = Integer.parseInt(req.get("renderItem").toString());
             try {
-                Page<UserInfo> users;
-                if (authorities.contains(authority)) {
-                    users = userRepo.findAllByAuthorityIsIn(
-                            Arrays.asList(authority, "ROLE_USER".equals(authority) ? "ROLE_READONLY" : ""), PageRequest.of(page - 1, renderItem));
-                } else {
-                    users = userRepo.findAll(PageRequest.of(page - 1, renderItem));
-                }
+                String authority = environment.getArgument("authority");
+                final LinkedHashMap<String, Object> req = environment.getArgument("pr");
+                int page = Integer.parseInt(req.get("page").toString()),
+                        renderItem = Integer.parseInt(req.get("renderItem").toString());
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Page<UserInfo> users;
+                    if (authorities.contains(authority)) {
+                        users = userRepo.findAllByAuthorityIsIn(
+                                Arrays.asList(authority, "ROLE_USER".equals(authority) ? "ROLE_READONLY" : ""), PageRequest.of(page - 1, renderItem));
+                    } else {
+                        users = userRepo.findAll(PageRequest.of(page - 1, renderItem));
+                    }
 
-                lhm.put("users", users);
-                lhm.put("totalElements", users.getTotalElements());
+                    lhm.put("users", users);
+                    lhm.put("totalElements", users.getTotalElements());
+                } else throw new RuntimeException();
             } catch (RuntimeException e) {
                 lhm.put("users", Collections.emptyList());
                 lhm.put("totalElements", 0L);
@@ -76,8 +82,8 @@ public class UserDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> myInfo() {
         return environment -> {
-            String email = SecurityContextHolder.getContext().getAuthentication().getName();
             try {
+                String email = SecurityContextHolder.getContext().getAuthentication().getName();
                 return userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
             } catch (IllegalArgumentException e) {
                 return null;
@@ -135,14 +141,14 @@ public class UserDataFetcher {
                             .email(id).password(encoder.encode(password)).name(name).build());
                 }
 
-                return HttpStatus.OK.value();
+                return new DefaultResponse(HttpStatus.OK);
             } catch (IllegalArgumentException e) {
-                return HttpStatus.BAD_REQUEST.value();
+                return new DefaultResponse(HttpStatus.BAD_REQUEST);
             } catch (RuntimeException e) {
-                return HttpStatus.CONFLICT.value();
+                return new DefaultResponse(HttpStatus.CONFLICT);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return HttpStatus.INTERNAL_SERVER_ERROR.value();
+                return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         };
     }
@@ -150,16 +156,19 @@ public class UserDataFetcher {
     @GqlDataFetcher(type = GqlType.MUTATION)
     public DataFetcher<?> updateUserAuthority() {
         return environment -> {
-            long id = environment.getArgument("id");
-            String authority = environment.getArgument("authority");
             try {
-                UserInfo user = userRepo.findById(id).orElseThrow(IllegalArgumentException::new);
-                if (authorities.contains(authority)) {
-                    user.setAuthority(authority);
-                    userRepo.save(user);
-                } else throw new IllegalArgumentException();
+                long id = environment.getArgument("id");
+                String authority = environment.getArgument("authority");
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    UserInfo user = userRepo.findById(id).orElseThrow(IllegalArgumentException::new);
+                    if (authorities.contains(authority)) {
+                        user.setAuthority(authority);
+                        userRepo.save(user);
+                    } else throw new IllegalArgumentException();
 
-                return new DefaultResponse(HttpStatus.OK.value());
+                    return new DefaultResponse(HttpStatus.OK.value());
+                } else return new DefaultResponse(isAuthenticated);
             } catch (IllegalArgumentException e) {
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (Exception e) {
@@ -171,21 +180,24 @@ public class UserDataFetcher {
     @GqlDataFetcher(type = GqlType.MUTATION)
     public DataFetcher<?> deleteUser() {
         return environment -> {
-            long id = environment.getArgument("id");
             try {
-                UserInfo user = userRepo.findById(id).orElseThrow(IllegalArgumentException::new);
-                List<Content> myContents = contentRepo.findAllByRegisterer(user);
+                long id = environment.getArgument("id");
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    UserInfo user = userRepo.findById(id).orElseThrow(IllegalArgumentException::new);
+                    List<Content> myContents = contentRepo.findAllByRegisterer(user);
 
-                // change content's registerer to admin account
-                // if there's no admin account in database, throw exception (unexpected)
-                // later on, report data delete logic needed to add.
-                UserInfo admin = userRepo.getFirstUserOfAuthority("ROLE_ADMIN").orElseThrow(Exception::new);
-                for (Content content : myContents)
-                    content.setRegisterer(admin);
+                    // change content's registerer to admin account
+                    // if there's no admin account in database, throw exception (unexpected)
+                    // later on, report data delete logic needed to add.
+                    UserInfo admin = userRepo.getFirstUserOfAuthority("ROLE_ADMIN").orElseThrow(Exception::new);
+                    for (Content content : myContents)
+                        content.setRegisterer(admin);
 
-                contentRepo.saveAll(myContents);
-                userRepo.delete(user);
-                return new DefaultResponse(HttpStatus.OK.value());
+                    contentRepo.saveAll(myContents);
+                    userRepo.delete(user);
+                    return new DefaultResponse(HttpStatus.OK.value());
+                } else return new DefaultResponse(isAuthenticated);
             } catch (IllegalArgumentException e) {
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (Exception e) {
@@ -197,21 +209,24 @@ public class UserDataFetcher {
     @GqlDataFetcher(type = GqlType.MUTATION)
     public DataFetcher<?> updateUserInfo() {
         return environment -> {
-            LinkedHashMap<String, Object> req = environment.getArgument("input");
-            long id = (long) req.get("id");
-            String password = req.get("password") != null ? req.get("password").toString() : null,
-                    name = req.get("name").toString();
-            Integer fileId = req.get("profile") != null ? Integer.parseInt(req.get("profile").toString()) : null;
             try {
-                UserInfo user = userRepo.findById(id).orElseThrow(IllegalArgumentException::new);
-                if (!name.equals(user.getName()))
-                    user.setName(name);
-                if (password != null)
-                    user.setPassword(encoder.encode(password));
-                if (fileId != null)
-                    user.setProfile(fileRepo.findById((long) fileId).orElseThrow(IllegalArgumentException::new));
-                userRepo.save(user);
-                return new DefaultResponse(HttpStatus.OK.value());
+                LinkedHashMap<String, Object> req = environment.getArgument("input");
+                long id = (long) req.get("id");
+                String password = req.get("password") != null ? req.get("password").toString() : null,
+                        name = req.get("name").toString();
+                Integer fileId = req.get("profile") != null ? Integer.parseInt(req.get("profile").toString()) : null;
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_READONLY", "ROLE_USER"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    UserInfo user = userRepo.findById(id).orElseThrow(IllegalArgumentException::new);
+                    if (!name.equals(user.getName()))
+                        user.setName(name);
+                    if (password != null)
+                        user.setPassword(encoder.encode(password));
+                    if (fileId != null)
+                        user.setProfile(fileRepo.findById((long) fileId).orElseThrow(IllegalArgumentException::new));
+                    userRepo.save(user);
+                    return new DefaultResponse(HttpStatus.OK.value());
+                } else return new DefaultResponse(isAuthenticated);
             } catch (RuntimeException e) {
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
             } catch (Exception e) {

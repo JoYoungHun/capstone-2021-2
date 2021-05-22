@@ -1,49 +1,59 @@
 import React from 'react';
-import { Category, ContentDetails } from "../types";
+import {Bubble, CardContProps, ContentDetails} from "../types";
 import { parseYoutube } from "../../utils/func";
-import { HoverEvtDiv } from "./commonStyled";
+import { Card } from "./commonStyled";
 import Cookies from 'js-cookie';
-import ellipsis from 'text-ellipsis';
 
 type Props = {
-    details: ContentDetails
+    details: ContentDetails | Bubble | CardContProps
     onClick?: () => Promise<any>
+    width?: string,
+    height?: string,
+    denominator?: number,
 }
 
-const SimpleContCard: React.FunctionComponent<Props> = ({ details, onClick }) => {
+const SimpleContCard: React.FunctionComponent<Props> = ({ details, onClick, width, height, denominator }) => {
+    const card: React.MutableRefObject<HTMLDivElement | null> = React.useRef(null);
+    const img: React.MutableRefObject<HTMLImageElement | null> = React.useRef(null);
+
+    // Moving Animation Event
+    const onMouseMoveEventListener = (e) => {
+        let xAxis = (window.innerWidth / 2 - e.pageX) / (denominator ? denominator : 20);
+        let yAxis = (window.innerHeight / 2 - e.pageY) / (denominator ? denominator : 20);
+
+        if (yAxis < -7) yAxis = -yAxis;
+        card.current.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`
+    }
+
+    const onMouseEnterEventListener = () => {
+        card.current.style.transition = 'none';
+        // pop out
+        img.current.style.transform = 'translateZ(30pt)';
+        img.current.style.transition = 'all 0.75s ease';
+        img.current.style.maxWidth = '100%';
+    }
+
+    const onMouseLeaveEventListener = () => {
+        card.current.style.transition = 'all 0.5s ease';
+        card.current.style.transform = `rotateY(0deg) rotateX(0deg)`
+        // pop back
+        img.current.style.transform = 'translateZ(0px)';
+        img.current.style.maxWidth = '80%';
+        img.current.style.transition = 'all 0.75s ease';
+    }
+
     return (
-        <HoverEvtDiv style={{ paddingLeft: '2pt', display: 'flex', alignItems: 'center', width: '320pt', height: '140pt', borderRadius: '12pt', marginRight: '18pt' }}
-                     borderColor={Cookies.get('dove-dark-mode') ? '#FFF' : '#000'}
-                     onClick={() => onClick && onClick()}>
-            <img src={`http://img.youtube.com/vi/${parseYoutube(details.ref)}/0.jpg`}
-                 style={{ objectFit: 'cover' }}
-                 width={'260pt'} height={'147pt'} alt={details.title} />
-            <div style={{ width: '107.5pt', height: '120pt', display: 'flex', flexDirection: 'column',
-                paddingLeft: '8pt', justifyContent: 'space-around' }}>
-                    <span style={{ fontSize: '14.5pt', fontWeight: 'bold', width: '100%', wordBreak: 'break-all', whiteSpace: 'nowrap' }}>
-                        {ellipsis(details.title, 14)}
-                    </span>
-                <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                        <span style={{ fontSize: '10pt', fontWeight: 'normal' }}>
-                            등록자:
-                        </span>
-                    <span style={{ fontSize: '12pt', fontWeight: 'bold', paddingLeft: '4pt' }}>
-                            {ellipsis(details.registerer.name, 12)}
-                        </span>
-                </div>
-                <span style={{ fontSize: '10pt', fontWeight: 'lighter', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                        {(details.category && details.category.length > 0) ?
-                            ellipsis(details.category.map((ctg: Category) => ctg.name.concat(', ')), 10)
-                            : '-'}
-                    </span>
-                <span style={{ display: 'block', fontSize: '10pt', fontWeight: 'lighter', textDecoration: 'none', textOverflow: 'ellipsis', cursor: 'pointer',
-                    color: Cookies.get('dove-dark-mode') === 'true' ? '#b2c2bf' : '#1976d2', whiteSpace: 'nowrap', overflow: 'hidden' }}
-                    onClick={() => window.open(`${details.ref}`)}
-                >
-                    {`ref: ${details.ref}`}
-                </span>
-            </div>
-        </HoverEvtDiv>
+        <Card ref={card} onClick={() => onClick && onClick()}
+              to={Cookies.get('dove-dark-mode') === 'true' ? 'rgba(62, 68, 68, 0.75)' : undefined}
+              right={Cookies.get('dove-dark-mode') === 'true' ? 'rgba(218, 194, 146, 0.75)' : undefined}
+              width={width} height={height}
+              onMouseMove={(e) => onMouseMoveEventListener(e)}
+              onMouseLeave={() => onMouseLeaveEventListener()}
+              onMouseEnter={() => onMouseEnterEventListener()}>
+            <img ref={img} src={`http://img.youtube.com/vi/${parseYoutube(details.ref)}/0.jpg`}
+                     style={{ objectFit: 'cover', maxWidth: '80%', minHeight: '80%', borderRadius: 'inherit' }}
+                 alt={details.title} />
+        </Card>
     )
 };
 

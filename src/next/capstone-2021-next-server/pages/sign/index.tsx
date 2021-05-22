@@ -1,12 +1,14 @@
 import React from 'react';
 import { NextPage } from "next";
-import { useMutation } from "@apollo/client";
+import {ApolloQueryResult, useMutation} from "@apollo/client";
 import { NextRouter, useRouter } from "next/router";
 import { Button, CircularProgress, TextField } from "@material-ui/core";
 import { SignUpType } from "../../src/types";
 import { POST_SIGN } from "../../src/graphQL/quries";
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
+import Image from 'next/image';
+import {routeHttpStatus} from "../../utils/func";
 
 type Props = {
 
@@ -19,7 +21,7 @@ const Sign: NextPage<Props> = ({  }) => {
         name: ''
     })
 
-    const [ register, { loading, data }] = useMutation(POST_SIGN);
+    const [ register, { loading }] = useMutation(POST_SIGN);
     let { email, password, name } = sign;
 
     const CALL_SIGN_API = async () => {
@@ -28,24 +30,29 @@ const Sign: NextPage<Props> = ({  }) => {
             return;
         } else {
             await register({ variables: { id: email, password, name }})
+                .then((res: ApolloQueryResult<any>) => {
+                    if (res && res.data && res.data.sign.status === 200) {
+                        router.push('/login').then();
+                        Notiflix.Notify.Success('Successfully signed up!')
+                    } else if (res && (res.data.sign.status === 400 || res.data.sign.status === 406 || res.data.sign.status === 500)) {
+                        Notiflix.Report.Failure('회원가입에 실패했습니다.', '아이디 / 비밀번호를 확인해주세요.', 'OK!');
+                        return;
+                    } else routeHttpStatus(router, res.data.sign.status, res.data.sign.message);
+                })
         }
     }
-
     const router: NextRouter = useRouter();
-    React.useEffect(() => {
-        if (data && data.sign !== 200) {
-            Notiflix.Report.Failure('회원가입에 실패했습니다.');
-            return;
-        } else if (data && data.sign === 200) {
-            router.push('/login').then();
-            Notiflix.Notify.Success('Successfully signed up!')
-        }
-    }, [ data ])
-
     return (
-        <div style={{ width: '100%', height: '100vh', overflow: 'scroll', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+        <div className={"ovf"}
+             style={{ width: '100%', height: '80vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <div style={{ width: '260pt', border: 0, borderRadius: '30pt', height: '500pt',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+                <Image
+                    src={"/hiing.png"}
+                    alt="Picture of the author"
+                    width={800}
+                    height={500}
+                />
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '12pt' }}>
                     <TextField label={'Email'} value={email} style={{ width: '100%' }}
                                onChange={(e) => setSign({ ...sign, email: e.target.value })}/>

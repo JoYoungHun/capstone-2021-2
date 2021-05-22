@@ -43,6 +43,7 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     // https://mvnrepository.com/artifact/edu.stanford.nlp/stanford-corenlp
     implementation group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.2.0'
+    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.2.0', classifier: 'models'
 
     // AWS
     implementation platform('software.amazon.awssdk:bom:2.5.29')
@@ -58,6 +59,16 @@ dependencies {
     compile group: 'org.apache.poi', name: 'poi', version: '4.1.1'
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.1'
+
+    // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6
+    implementation group: 'com.google.oauth-client', name: 'google-oauth-client-java6', version: '1.31.4'
+    // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty
+    implementation group: 'com.google.oauth-client', name: 'google-oauth-client-jetty', version: '1.31.4'
+    compile 'com.google.apis:google-api-services-youtube:v3-rev20210210-1.31.0'
+
+    // spring data, elastic search
+    // https://mvnrepository.com/artifact/org.springframework.data/spring-data-elasticsearch
+    implementation group: 'org.springframework.data', name: 'spring-data-elasticsearch', version: '4.2.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 

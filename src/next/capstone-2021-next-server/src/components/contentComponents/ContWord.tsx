@@ -109,7 +109,7 @@ const ContWord: React.FunctionComponent<Props> = ({ modifyTab }) => {
     return (
         <React.Fragment>
             <div style={{ width: '100%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                <div style={{ width: '80%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                         <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                              onClick={() => setHiddenExcelOptions(!hiddenExcelOptions)}>
@@ -141,7 +141,7 @@ const ContWord: React.FunctionComponent<Props> = ({ modifyTab }) => {
                         }
                     </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <div style={{ width: '70px' }}/>
@@ -163,7 +163,7 @@ const ContWord: React.FunctionComponent<Props> = ({ modifyTab }) => {
                     </div>
                 </div>
             </div>
-            <div style={{ width: '1000px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '38pt' }}>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem' }}>
                 <div style={{ width: '45px', height: '45px', borderRadius: '23px', display: 'flex', justifyContent: 'center', alignItems: 'center'
                     , background: '#0074C9 0% 0% no-repeat padding-box', border: 0, cursor: 'pointer' }}
                      onClick={() => addTenMoreParagraphs()}>
@@ -173,7 +173,7 @@ const ContWord: React.FunctionComponent<Props> = ({ modifyTab }) => {
                     10칸 더 추가하기
                 </p>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '24pt' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '2rem' }}>
                 <YellowBtn onClick={() => onRouteToSentenceTab()}>
                     <span style={{ fontFamily: 'sans-serif', color: '#000', fontWeight: 'bold', fontSize: '14px' }}>
                         다음으로

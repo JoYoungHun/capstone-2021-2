@@ -10,6 +10,7 @@ import Axios from 'axios';
 import { NextRouter, useRouter } from "next/router";
 import {SERVER_ADDRESS} from "../../src/env";
 import { ArrowBackRounded } from "@material-ui/icons";
+import { routeHttpStatus } from "../../utils/func";
 
 type UpdateUserProps = {
     userProps?: User,
@@ -27,7 +28,7 @@ const MyPage = ({ }) => {
         if (data.updateUserInfo.status === 200) {
             Notiflix.Loading.Remove(1000);
             router.back();
-        }
+        } else routeHttpStatus(router, data.updateUserInfo.status, data.updateUserInfo.message);
     }})
     const onUpdateMyInfo = async () => {
         if (myInfo.userProps) {
@@ -53,6 +54,12 @@ const MyPage = ({ }) => {
                 .then(async (res) => {
                     if (res && res.status === 200 && res.data) {
                         setMyInfo({ ...myInfo, userProps: { ...userProps, profile: { id: res.data.fileId, url: res.data.path }}})
+                    } else if (res.status === 401) {
+                        router.push('/login').then(() => Notiflix.Report.Failure('Session Timeout!', '세션이 만료됐거나, 로그인 된 상태가 아닙니다.', 'OK! I will check.'));
+                    } else if (res.status === 406) {
+                        router.push('/home').then(() => Notiflix.Notify.Failure('접근 권한이 없습니다.'));
+                    } else {
+                        Notiflix.Notify.Failure(res.statusText);
                     }
                 })
         }
@@ -69,7 +76,7 @@ const MyPage = ({ }) => {
         <React.Fragment>
             <ArrowBackRounded style={{ position: 'absolute', top: '35pt', left: '35pt', cursor: 'pointer' }} fontSize={'large'}
                 onClick={() => router.back()} />
-            <div style={{ width: '100%', height: '100vh', overflow: 'scroll', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div className={"ovf"} style={{ width: '100%', height: '80vh', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <div style={{ width: '260pt', height: '500pt', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                      onClick={() => profileRef && profileRef.current.click()}>
                     {

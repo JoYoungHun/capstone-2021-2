@@ -5,7 +5,7 @@ export const Tab = styled.div`
     cursor: pointer;
     width: ${props => props.width ? props.width : "120pt"};
     height: ${props => props.height ? props.height : "40pt"};
-    borderRadius: 20pt;
+    borderRadius: 40rem;
     &: hover {
         background-color: ${props => props.background ? props.background : "#87bdd8"};
         color: #FFF;
@@ -43,4 +43,21 @@ export const HoverEvtDiv = styled.div`
     &: hover {
         border: 2px solid ${props => props.borderColor ? props.borderColor : "#00000029"};
     }   
+`
+
+export const Card = styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    width: ${props => props.width ? props.width : '20rem'}; 
+    height: ${props => props.height ? props.height : '20rem'};
+    margin: 16pt auto;
+    background: linear-gradient(
+        to right,
+        ${props => props.to ? props.to : 'rgba(69, 65, 64, 0.3)'},
+        ${props => props.right ? props.right : 'rgba(8, 83, 156, 0.75)'}
+    ); 
+    border-radius: 50%;
+    transform-style: preserve-3d;
 `

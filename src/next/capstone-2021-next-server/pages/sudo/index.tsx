@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import { SudoNavigation } from "../../src/components";
 import { CategoryManagement, ContentManagement, UserManagement } from "../../src/container";
 import { NextRouter, useRouter } from "next/router";
+import Axios, { AxiosResponse } from "axios";
+import Cookies from 'js-cookie';
+import { SERVER_ADDRESS } from "../../src/env";
+import Notiflix from 'notiflix';
 
 const TabTitle = styled.span`
     font-family: sans-serif;
@@ -12,10 +16,17 @@ const TabTitle = styled.span`
     margin-bottom: 24pt;
 `
 
-const Sudo = () => {
+const Sudo = ({ code }: { code: number }) => {
     const router: NextRouter = useRouter();
-    const current: string | string[] | undefined = router.query?.tb;
+    React.useEffect(() => {
+        if (code === 401) {
+            router.push('/login').then(() => Notiflix.Report.Failure('Session Timeout!', '세션이 만료됐거나, 로그인 된 상태가 아닙니다.', 'OK! I will check.'));
+        } else if (code === 406) {
+            router.push('/home').then(() => Notiflix.Notify.Failure('접근 권한이 없습니다.'));
+        }
+    }, [ ])
 
+    const current: string | string[] | undefined = router.query?.tb;
     const modifyTab = (selected: number) => {
         const current: string | string[] | undefined = router.query?.tb;
         if (current === String(selected)) return;
@@ -24,7 +35,7 @@ const Sudo = () => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-            <SudoNavigation modifyTab={modifyTab} goBack={() => router.push('/')}/>
+            <SudoNavigation modifyTab={modifyTab} goBack={() => router.push('/home')}/>
             <Divider orientation={'vertical'} flexItem />
             <div style={{ width: 'calc(100% - 200pt)', marginTop: '100pt', paddingLeft: '16pt', paddingRight: '16pt' }}>
                 {
@@ -57,6 +68,12 @@ const Sudo = () => {
             </div>
         </div>
     )
+}
+
+Sudo.getInitialProps = async () => {
+    const token: string | string[] | undefined = Cookies.get('dove-token');
+    const res: AxiosResponse = await Axios.get(`${SERVER_ADDRESS}/authorized/check`, { headers: { Authorization: token ? `Bearer ${token}` : ''}})
+    return { code: res.data };
 }
 
 export default Sudo;

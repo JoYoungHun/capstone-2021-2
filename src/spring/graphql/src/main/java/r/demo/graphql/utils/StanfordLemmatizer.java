@@ -32,7 +32,19 @@ public class StanfordLemmatizer {
         } catch (Exception e) {
             return null;
         }
+    }
 
+    public CoreLabel getCoreLabel(@NonNull String word) {
+        CoreDocument coreDocument;
+        try {
+            if ("".equals(word)) return null;
+            coreDocument = new CoreDocument(word);
+            stanfordCoreNLP.annotate(coreDocument);
+
+            return coreDocument.tokens().get(0);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public List<Paragraph> lemmatize(@NonNull String text) {
@@ -51,7 +63,7 @@ public class StanfordLemmatizer {
                 String lemma = label.lemma();
                 if (!duplicated.contains(lemma)) {
                     duplicated.add(lemma);
-                    paragraphs.add(new Paragraph(lemma, wordRepo.findLatestKorMeaning(lemma).map(Word::getKor).orElse("")));
+                    paragraphs.add(new Paragraph(lemma, wordRepo.findLatestKorMeaning(lemma).map(Word::getKor).orElse(""), label.tag()));
                 }
             }
 
@@ -61,28 +73,26 @@ public class StanfordLemmatizer {
         }
     }
 
-    public Document getPartOfSpeechAboutSentence(@org.springframework.lang.NonNull String sentence) {
+    public List<CoreLabel> getPartOfSpeechAboutSentence(@org.springframework.lang.NonNull String sentence) {
         CoreDocument coreDocument;
         if (sentence.equals("") || sentence.length() < 1) return null;
         try {
             coreDocument = stanfordCoreNLP.processToCoreDocument(sentence);
-            return Document.builder()
-                    .split(coreDocument.tokens().stream().map(CoreLabel::originalText).collect(Collectors.toList()))
-                    .pos(coreDocument.tokens().stream().map((token) -> this.partOfSpeech(token.tag())).collect(Collectors.toList())).build();
+            return coreDocument.tokens();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public String partOfSpeech(@org.springframework.lang.NonNull String word) {
-        if (word.startsWith("NNP") || word.startsWith("W") || word.startsWith("P")) return "pron.";
-        else if (word.startsWith("N")) return "n.";
-        else if (word.startsWith("V") || word.startsWith("UH")) return "v.";
-        else if (word.startsWith("D")) return "a.";
-        else if (word.startsWith("R")) return "ad.";
-        else if (word.startsWith("J")) return "conj.";
-        else if (word.startsWith("I")) return "i.";
-        else return word;
+    public String partOfSpeech(@org.springframework.lang.NonNull String pos) {
+        if (pos.startsWith("NNP") || pos.startsWith("W") || pos.startsWith("P")) return "pron.";
+        else if (pos.startsWith("N")) return "n.";
+        else if (pos.startsWith("V") || pos.startsWith("UH")) return "v.";
+        else if (pos.startsWith("D")) return "a.";
+        else if (pos.startsWith("R")) return "ad.";
+        else if (pos.startsWith("J")) return "conj.";
+        else if (pos.startsWith("I")) return "i.";
+        else return "";
     }
 }

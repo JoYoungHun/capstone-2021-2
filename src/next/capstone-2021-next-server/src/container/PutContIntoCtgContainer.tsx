@@ -21,9 +21,13 @@ import {
     PUT_UPDATE_CONTENTS_IN_CATEGORY
 } from "../graphQL/quries";
 import { ContentDetails, Paginate } from "../types";
-import { Loading, SimpleContCard } from "../components";
+import {CardDetails, Loading, SimpleContCard} from "../components";
 import { selectCategory } from "../reducers/CategoryReducer";
 import Notiflix from 'notiflix';
+import { routeHttpStatus } from "../../utils/func";
+import { NextRouter, useRouter } from "next/router";
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 type Props = {
 
@@ -43,6 +47,7 @@ const useStyles = makeStyles({
 
 const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
     const classes = useStyles();
+    const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const { selectedCategory } = useSelector((state: RootState) => state.CategoryReducer);
     const [ hiddenViewState, setHiddenViewState ] = React.useState<PaginateProps>({
@@ -100,13 +105,13 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                     category({ variables: { id: selectedCategory.id }})
                     resolve(true);
                 }).then(() => setHiddenViewState({ pageProps: { ...pageProps, page: 1 }, hidden: true, selected: [] }))
-            }
+            } else routeHttpStatus(router, response.saveContentsToCategory.status, response.saveContentsToCategory.message);
         }});
 
     const [ deleteContentsInCategory, { } ] = useMutation(DELETE_REMOVE_CONTENT_IN_CATEGORY, { onCompleted: async (response) => {
             if (response.deleteContentsInCategory && response.deleteContentsInCategory.status === 200) {
                 category({ variables: { id: selectedCategory.id }})
-            }
+            } else routeHttpStatus(router, response.deleteContentsInCategory.status, response.deleteContentsInCategory.message);
         }})
 
     const [ category, { } ] = useLazyQuery(GET_CATEGORY, { onCompleted: response => {
@@ -126,7 +131,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                             등록된 컨텐츠
                         </span>
                     </div>
-                    <div style={{ border: 0, boxShadow: '0px 3px 6px #0000029', width: '700pt', height: '200pt', overflow: 'scroll', marginTop: '8pt' }}>
+                    <div className={"ovf"} style={{ border: 0, boxShadow: '0px 3px 6px #0000029', width: '700pt', height: '200pt', overflow: 'auto', marginTop: '8pt' }}>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} size="small" aria-label="a dense table">
                                 <TableHead>
@@ -179,8 +184,9 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                     </span>
                                 </Button>
                             </div>
-                            <div style={{ width: '100%', height: '500pt', overflowY: 'scroll', boxShadow: '0p 3px 6px #00000029',
+                            <div className={"ovf"} style={{ width: '100%', height: '500pt', overflowY: 'auto', boxShadow: '0p 3px 6px #00000029',
                                 border: '0.25px solid #00000029', borderRadius: '6pt', marginTop: '8pt' }}>
+                                <PerfectScrollbar>
                                 {
                                     loading &&
                                         <Loading />
@@ -207,7 +213,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                                                     }
                                                                     label=""
                                                                 />
-                                                                <SimpleContCard details={cont} />
+                                                                <CardDetails details={cont} />
                                                                 { index > 0 && index % 3 === 0 && <br />}
                                                             </div>
                                                         ))
@@ -215,7 +221,7 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                                 </div>
                                                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                                     <TablePagination
-                                                        style={{ width: '400pt' }}
+                                                        style={{ width: '100%' }}
                                                         component={"div"}
                                                         count={data.allContents.totalElements ? data.allContents.totalElements : 0}
                                                         page={pageProps.page - 1}
@@ -229,7 +235,8 @@ const PutContIntoCtgContainer: React.FunctionComponent<Props> = ({ }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                }
+                                    }
+                                </PerfectScrollbar>
                             </div>
                         </React.Fragment>
                 }

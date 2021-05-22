@@ -11,21 +11,24 @@ import r.demo.graphql.annotation.GqlType;
 import r.demo.graphql.domain.category.Category;
 import r.demo.graphql.domain.category.CategoryRepo;
 import r.demo.graphql.domain.content.Content;
-import r.demo.graphql.domain.content.ContentRepo;
+import r.demo.graphql.response.DefaultResponse;
+import r.demo.graphql.utils.InternalFilterChains;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Set;
 
 @Gql
 @Service
 public class CategoryDataFetcher {
     private final ContentDataFetcher contentDataFetcher;
+    private final InternalFilterChains chains;
     private final CategoryRepo categoryRepo;
-    private final ContentRepo contentRepo;
 
-    public CategoryDataFetcher(@Lazy ContentDataFetcher contentDataFetcher, CategoryRepo categoryRepo, ContentRepo contentRepo) {
+    public CategoryDataFetcher(@Lazy ContentDataFetcher contentDataFetcher,
+                               InternalFilterChains chains, CategoryRepo categoryRepo) {
         this.contentDataFetcher = contentDataFetcher;
+        this.chains = chains;
         this.categoryRepo = categoryRepo;
-        this.contentRepo = contentRepo;
     }
 
     @GqlDataFetcher(type = GqlType.QUERY)
@@ -36,8 +39,8 @@ public class CategoryDataFetcher {
     @GqlDataFetcher(type = GqlType.QUERY)
     public DataFetcher<?> category() {
         return environment -> {
-            long categoryKey = Long.parseLong(environment.getArgument("id").toString());
             try {
+                long categoryKey = Long.parseLong(environment.getArgument("id").toString());
                 return categoryRepo.findById(categoryKey).orElseThrow(IllegalArgumentException::new);
             } catch (IllegalArgumentException e) {
                 return null;
@@ -50,16 +53,18 @@ public class CategoryDataFetcher {
         return environment -> {
             try {
                 String title = environment.getArgument("title");
-                if (categoryRepo.existsByName(title)) throw new RuntimeException();
-                else {
-                    categoryRepo.save(Category.builder().name(title).build());
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    if (categoryRepo.existsByName(title)) throw new RuntimeException();
+                    else categoryRepo.save(Category.builder().name(title).build());
                 }
-                return HttpStatus.OK.value();
+
+                return new DefaultResponse(isAuthenticated);
             } catch (RuntimeException e) {
-                return HttpStatus.CONFLICT.value();
+                return new DefaultResponse(HttpStatus.CONFLICT);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return HttpStatus.INTERNAL_SERVER_ERROR.value();
+                return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         };
     }
@@ -70,21 +75,22 @@ public class CategoryDataFetcher {
             try {
                 String title = environment.getArgument("title");
                 long id = Long.parseLong(environment.getArgument("id").toString());
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Category category = categoryRepo.findById(id).orElseThrow(IndexOutOfBoundsException::new);
+                    if (!title.equals(category.getName()))
+                        category.setName(title);
+                    categoryRepo.save(category);
+                }
 
-                Category category = categoryRepo.findById(id).orElseThrow(IndexOutOfBoundsException::new);
-                if (!title.equals(category.getName()))
-                    category.setName(title);
-                categoryRepo.save(category);
-
-                return HttpStatus.OK.value();
+                return new DefaultResponse(isAuthenticated);
             } catch (IndexOutOfBoundsException e) {
-                return HttpStatus.NOT_FOUND.value();
+                return new DefaultResponse(HttpStatus.NOT_FOUND);
             } catch (RuntimeException e) {
-                e.printStackTrace();
-                return HttpStatus.CONFLICT.value();
+                return new DefaultResponse(HttpStatus.CONFLICT);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return HttpStatus.INTERNAL_SERVER_ERROR.value();
+                return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         };
     }
@@ -94,23 +100,24 @@ public class CategoryDataFetcher {
         return environment -> {
             try {
                 long id = Long.parseLong(environment.getArgument("id").toString());
-                Category category = categoryRepo.findById(id).orElseThrow(IndexOutOfBoundsException::new);
-
-                Set<Content> contents = category.getContent();
-                // call del function from other service
-                for (Content content : contents) {
-                    if (contentDataFetcher.deleteContentDetails(content.getId()))
-                        throw new RuntimeException();
+                HttpStatus isAuthenticated = chains.doFilter(Collections.singletonList("ROLE_ADMIN"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    Category category = categoryRepo.findById(id).orElseThrow(IndexOutOfBoundsException::new);
+                    Set<Content> contents = category.getContent();
+                    // call del function from other service
+                    for (Content content : contents) {
+                        if (contentDataFetcher.deleteContentDetails(content.getId()))
+                            throw new RuntimeException();
+                    }
+                    categoryRepo.delete(category);
                 }
-                categoryRepo.delete(category);
 
-                return HttpStatus.OK.value();
+                return new DefaultResponse(isAuthenticated);
             } catch (IndexOutOfBoundsException e) {
-                return HttpStatus.NOT_FOUND.value();
+                return new DefaultResponse(HttpStatus.NOT_FOUND);
             } catch (RuntimeException e) {
-                e.printStackTrace();
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return HttpStatus.CONFLICT.value();
+                return new DefaultResponse(HttpStatus.CONFLICT);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return HttpStatus.INTERNAL_SERVER_ERROR.value();

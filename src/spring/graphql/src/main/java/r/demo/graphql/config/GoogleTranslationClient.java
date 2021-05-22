@@ -1,6 +1,5 @@
 package r.demo.graphql.config;
 
-import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.translate.v3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,19 +23,20 @@ public class GoogleTranslationClient {
         this.parent = LocationName.of(project, "global");
     }
 
-    public List<Translation> getTranslatedParagraphs(String paragraph) {
+    public List<Translation> getTranslatedParagraphs(String paragraph, String targetLanguage) {
         try {
             TranslateTextRequest request =
                     TranslateTextRequest.newBuilder()
                             .setParent(parent.toString())
                             .setMimeType("text/plain")
-                            .setTargetLanguageCode("ko")
+                            .setTargetLanguageCode(targetLanguage)
                             .addContents(paragraph)
                             .build();
 
             TranslateTextResponse response = client.translateText(request);
             return response.getTranslationsList();
-        } catch (InvalidArgumentException e) {
+        } catch (RuntimeException e) {
+            e.printStackTrace();
             return Collections.emptyList();
         }
     }

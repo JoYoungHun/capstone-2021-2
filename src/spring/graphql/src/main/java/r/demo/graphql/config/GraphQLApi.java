@@ -8,6 +8,8 @@ import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.*;
 import graphql.schema.idl.RuntimeWiring.Builder;
 import graphql.schema.visibility.DefaultGraphqlFieldVisibility;
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +22,7 @@ import r.demo.graphql.core.GraphUseCase;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -42,7 +45,13 @@ public class GraphQLApi implements GraphUseCase {
 
     @PostConstruct
     public void init() throws IOException {
-        File sdl = resource.getFile();
+        InputStream inputStream = resource.getInputStream();
+        File sdl = File.createTempFile("schema", ".graphqls");
+        try {
+            FileUtils.copyInputStreamToFile(inputStream, sdl);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
         GraphQLSchema graphQLSchema = buildSchema(sdl);
         this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
     }

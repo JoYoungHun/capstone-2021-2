@@ -1,0 +1,7 @@
+.rounded-images {
+    border-radius: 50%;
+}
+
+.rounded-images-smaller {
+    border-radius: 1rem;
+}

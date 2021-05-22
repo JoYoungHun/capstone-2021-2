@@ -1,0 +1,40 @@
+---
+layout: archive
+---
+
+{{ content }}
+
+<div align="center">
+  <div>
+    <a href="http://www.hiing.ml/">
+      <h1 id="page-title" class="page__title">💜 HIING 💜</h1>
+      <img src="/capstone-2021-2/assets/img/team.png" alt="HIING">
+    </a>
+  </div>
+  <br>
+  <div>
+    <h3 id="page-title" class="page__title">☝☝ CLICK here to go our Platform 👆👆</h3>
+  </div>
+</div>
+
+<br>
+<br>
+
+
+<h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: "Recent Posts" }}</h3>
+
+{% if paginator %}
+  {% assign posts = paginator.posts %}
+{% else %}
+  {% assign posts = site.posts %}
+{% endif %}
+
+{% assign entries_layout = page.entries_layout | default: 'list' %}
+<div class="entries-{{ entries_layout }}">
+  {% for post in posts %}
+    {% include archive-single.html type=entries_layout %}
+  {% endfor %}
+</div>
+
+{% include paginator.html %}
+

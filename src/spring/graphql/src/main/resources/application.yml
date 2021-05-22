@@ -12,37 +12,38 @@ spring:
         ddl-auto: none
     open-in-view: off
 
-graphql:
-  playground:
-    mapping: /playground
-    endpoint: /graphql
-    subscriptionEndpoint: /subscriptions
-#    staticPath.base: my-playground-resources-folder
-    pageTitle: Playground
-    cdn:
-      enabled: false
-      version: latest
-#    settings:ts
-#      editor.cursorShape: line
-#      editor.fontFamily: "'Source Code Pro', 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace"
-#      editor.fontSize: 14
-#      editor.reuseHeaders: true
-#      editor.theme: dark
-#      general.betaUpdates: false
-#      prettier.printWidth: 80
-#      prettier.tabWidth: 2
-#      prettier.useTabs: false
-#      request.credentials: omit
-#      schema.polling.enable: true
-#      schema.polling.endpointFilter: "*localhost*"
-#      schema.polling.interval: 2000
-#      schema.disableComments: true
-#      tracing.hideTracingResponse: true
-
+graphql.playground:
+  mapping: /playground
+  endpoint: /graphql
+  subscriptionEndpoint: /subscriptions
+#  staticPath.base: my-playground-resources-folder
+  enabled: true
+  pageTitle: Playground
+  cdn:
+    enabled: false
+    version: latest
+  settings:
+    editor.cursorShape: line
+    editor.fontFamily: "'Source Code Pro', 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace"
+    editor.fontSize: 14
+    editor.reuseHeaders: true
+    editor.theme: dark
+    general.betaUpdates: false
+    prettier.printWidth: 80
+    prettier.tabWidth: 2
+    prettier.useTabs: false
+    request.credentials: omit
+    schema.polling.enable: true
+    schema.polling.endpointFilter: "*localhost*"
+    schema.polling.interval: 2000
+    schema.disableComments: true
+    tracing.hideTracingResponse: true
+  headers:
+    headerFor: AllTabs
 jwt:
   secret: DOVE
 project:
-  name: capstone2021-305109
+  name: capstone-310111
 aws:
   accessKeyId: AKIA2YXQIEZVD2WIHXUW
   secretAccessKey: 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

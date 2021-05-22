@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tab, TabTitleShell, TabTitle } from '../components/commonStyled';
 import {ContFramework, ContSentence, ContWord} from "../components";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 type Props = {
 
@@ -26,26 +27,26 @@ const ContentContainer: React.FunctionComponent<Props> = ({ }) => {
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', paddingLeft: '40pt' }}>
-            <div style={{ display: 'inline', width: '800pt', height: '50pt', overflowX: 'scroll', whiteSpace: 'nowrap', marginBottom: '16pt' }}>
-                {
-                    ContentTabs.map((tabProps: ContentTabProps) => (
-                            <Tab key={tabProps.key} selected={tabProps.key === currentIdx} width={'250pt'} height={'45pt'}>
-                                <TabTitleShell>
-                                    <TabTitle fontSize={'16pt'}>
-                                        {tabProps.title}
-                                    </TabTitle>
-                                </TabTitleShell>
-                            </Tab>
-                        ))
-                }
-            </div>
-            <div style={{ width: '100%', marginBottom: '16pt', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div>
-                    { currentIdx === 0 && <ContFramework modifyTab={modifyTab} /> }
-                    { currentIdx === 1 && <ContWord modifyTab={modifyTab} /> }
-                    { currentIdx === 2 && <ContSentence /> }
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', overflow: 'auto' }}>
+            <PerfectScrollbar>
+                <div className={"ovf"} style={{ display: 'inline', width: '62.5rem', height: '10vh', overflowX: 'auto', whiteSpace: 'nowrap', marginBottom: '16pt' }}>
+                    {
+                        ContentTabs.map((tabProps: ContentTabProps) => (
+                                <Tab key={tabProps.key} selected={tabProps.key === currentIdx} width={'21rem'} height={'10vh'}>
+                                    <TabTitleShell>
+                                        <TabTitle fontSize={'16pt'}>
+                                            {tabProps.title}
+                                        </TabTitle>
+                                    </TabTitleShell>
+                                </Tab>
+                            ))
+                    }
                 </div>
+            </PerfectScrollbar>
+            <div style={{ width: '100%', marginBottom: '2rem', marginTop: '2rem', padding: '1rem' }}>
+                { currentIdx === 0 && <ContFramework modifyTab={modifyTab} /> }
+                { currentIdx === 1 && <ContWord modifyTab={modifyTab} /> }
+                { currentIdx === 2 && <ContSentence /> }
             </div>
         </div>
     )

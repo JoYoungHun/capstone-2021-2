@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import { NextRouter, useRouter } from "next/router";
 import { ApolloQueryResult, useQuery } from "@apollo/client";
 import { useDispatch } from 'react-redux';
@@ -10,6 +10,10 @@ import { Loading, SimpleContCard } from "../components";
 import { ContentDetails } from "../types";
 import useIntersectionObserver from "../hooks/useIntersectionObserver";
 import Notiflix from 'notiflix';
+import { storeFrame } from "../reducers/ContReducer";
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import Image from 'next/image';
 
 type Props = {
 
@@ -34,13 +38,12 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
     });
 
     // instance variable
-    const renderItem: number = 4;
-    const currentPage: React.MutableRefObject<number> = useRef(1);
-    const totalPage: React.MutableRefObject<number> = useRef(0);
-    const rootRef = useRef<HTMLDivElement | undefined>(undefined);
-    const targetRef = useRef<HTMLDivElement | undefined>(undefined);
+    const renderItem: number = 5;
+    const currentPage: React.MutableRefObject<number> = React.useRef(1);
+    const totalPage: React.MutableRefObject<number> = React.useRef(0);
+    const rootRef = React.useRef<HTMLDivElement | undefined>(undefined);
+    const targetRef = React.useRef<HTMLDivElement | undefined>(undefined);
 
-    // const [ page, setPage ] = React.useState<number>(1);
     useIntersectionObserver({
         root: rootRef.current,
         target: targetRef.current,
@@ -68,7 +71,7 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
     });
 
     const onRouteToPreview = (id: number) => {
-        Notiflix.Loading.Dots('Routing...');
+        dispatch(storeFrame({ title: '', ref: '', captions: '', categories: [], id }))
         return router.push(`/preview?ct=${id}`);
     }
 
@@ -86,38 +89,66 @@ const HubContainer: React.FunctionComponent<Props> = ({ }) => {
         }}, fetchPolicy: "network-only" })
 
     return (
-        <div style={{ width: '100%' }}>
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '8pt' }}>
-                <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box'}}
-                        onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
-                            .then(() => router.push('/?tb=3').then()) }}>
-                    <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt' }}>
-                        컨텐츠 만들기
-                    </span>
-                </Button>
+        <PerfectScrollbar style={{ width: '100%', perspective: '1000px' }}>
+            <div style={{ minWidth: '100%' }}>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem', paddingRight: '1rem' }}>
+                    <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box' }}
+                            onClick={async () => { router.push('/search').then() }}>
+                        <Image
+                            src={"/scuba-diving-recreation.png"}
+                            alt="search"
+                            width={28}
+                            height={28}
+                        />
+                        <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt', marginLeft: '4pt' }}>
+                            검색
+                        </span>
+                    </Button>
+                    <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box', marginLeft: '8pt' }}
+                            onClick={async () => { router.push('/deepsea').then() }}>
+                        <Image
+                            src={"/water-wave_1f30a.png"}
+                            alt="deepsea"
+                            width={28}
+                            height={28}
+                        />
+                        <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt', marginLeft: '4pt' }}>
+                            바다
+                        </span>
+                    </Button>
+                    <Button style={{ background: '#FFE94A 0% 0% no-repeat padding-box', marginLeft: '8pt' }}
+                            onClick={async () => { await new Promise((resolve) => { dispatch(modifyAppTabs(3)); resolve(true); })
+                                .then(() => router.push('/home?tb=2').then()) }}>
+                        <span style={{ fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '12pt' }}>
+                            컨텐츠 만들기
+                        </span>
+                    </Button>
+                </div>
+                <div className={"ovf"} ref={rootRef}
+                     style={{ width: '100%', paddingLeft: '16pt', height: '100vh', border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
+                    <PerfectScrollbar style={{ display: 'flex', flexWrap: 'wrap', overflow: 'auto' }}>
+                        {
+                            scrollViewState.contents.map((cont: ContentDetails) => (
+                                <SimpleContCard key={cont.id + Math.random()} details={cont} onClick={() => onRouteToPreview(cont.id).then(() => { })}/>
+                            ))
+                        }
+                        {
+                            scrollViewState.hasMore &&
+                                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                                    <ArrowDownwardRounded />
+                                    <span>
+                                        Scroll Down
+                                    </span>
+                                </div>
+                        }
+                        {
+                            scrollViewState.loading && <Loading />
+                        }
+                        <div ref={targetRef} />
+                    </PerfectScrollbar>
+                </div>
             </div>
-            <div ref={rootRef} style={{ paddingLeft: '16pt', height: '530pt', display: 'flex', flexWrap: 'wrap', overflow: 'scroll',
-                border: 0, boxShadow: '0px 3px 6px #00000029', borderRadius: '12pt' }}>
-                {
-                    scrollViewState.contents.map((cont: ContentDetails) => (
-                        <SimpleContCard key={cont.id + Math.random()} details={cont} onClick={() => onRouteToPreview(cont.id).then(() => Notiflix.Loading.Remove(500))}/>
-                    ))
-                }
-                {
-                    scrollViewState.hasMore &&
-                        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                            <ArrowDownwardRounded />
-                            <span>
-                                Scroll Down
-                            </span>
-                        </div>
-                }
-                {
-                    scrollViewState.loading && <Loading />
-                }
-                <div ref={targetRef} />
-            </div>
-        </div>
+        </PerfectScrollbar>
     )
 }
 

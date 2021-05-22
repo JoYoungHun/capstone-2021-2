@@ -1,7 +1,8 @@
 import React from 'react';
 import { Divider } from "@material-ui/core";
-import { SportsEsportsRounded, GroupRounded, Reddit, CategoryRounded, HomeRounded } from '@material-ui/icons';
+import { SportsEsportsRounded, GroupRounded, CategoryRounded, HomeRounded } from '@material-ui/icons';
 import styled from 'styled-components'
+import Image from 'next/image';
 
 const Menu = styled.div`
     width: 200pt;
@@ -35,10 +36,16 @@ type Props = {
 const SudoNavigation: React.FunctionComponent<Props> = React.memo(({ modifyTab, goBack }) => {
     return (
         <div style={{ width: '220pt' }}>
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginTop: '50pt' }}>
                 <Menu>
-                    <Reddit color={'primary'} style={{ fontSize: '32pt'}} />
-                    로고 들어갈 자리
+                    <MenuShell>
+                        `<Image
+                            src={"/hiing.png"}
+                            alt="Picture of the author"
+                            width={400}
+                            height={200}
+                        />`
+                    </MenuShell>
                 </Menu>
                 <Menu onClick={() => modifyTab(0) }>
                     <MenuShell>

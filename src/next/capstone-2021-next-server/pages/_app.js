@@ -14,9 +14,9 @@ import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import reducer from "../src/modules";
 import Cookies from 'js-cookie';
-import Image from "next/image";
-import dynamic from "next/dynamic";
 import ThemeToggleBtn from "../src/components/ThemeToggleBtn";
+import '../styles/bubble.css';
+import '../styles/manual.css';
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware()))
 
@@ -34,7 +34,7 @@ const App = ({ Component, pageProps, apollo }) => {
         <Provider store={store}>
             <ApolloProvider client={apollo}>
                 <Head>
-                    <title>My App</title>
+                    <title>Hiing</title>
                     <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
                 </Head>
                 <MaterialUiThemeProvider theme={theme}>
@@ -52,6 +52,15 @@ const App = ({ Component, pageProps, apollo }) => {
 export const getServerSideProps = async ({ ctx, Component }) => {
     const pageProps = await Component.getStaticProps?.(ctx);
     return { props: { ...pageProps } }
+}
+
+export const getInitialProps = async ({ Component, router, ctx }) => {
+    let pageProps = { };
+    if (Component.getInitialProps) {
+        pageProps = await Component.getInitialProps(ctx);
+    }
+
+    return { pageProps };
 }
 
 export default withApolloClient(App);

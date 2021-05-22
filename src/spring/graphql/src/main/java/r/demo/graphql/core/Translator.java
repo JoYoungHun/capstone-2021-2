@@ -25,7 +25,8 @@ public class Translator {
         return environment -> {
             String queryTxt = environment.getArgument("q");
             LinkedHashMap<String, Object> lhm = new LinkedHashMap<>();
-            lhm.put("translated", client.getTranslatedParagraphs(queryTxt).stream().map(Translation::getTranslatedText).collect(Collectors.toList()));
+            lhm.put("translated", client.getTranslatedParagraphs(queryTxt, "ko")
+                    .stream().map(Translation::getTranslatedText).collect(Collectors.toList()));
             lhm.put("idx", environment.getArgument("idx"));
 
             return lhm;

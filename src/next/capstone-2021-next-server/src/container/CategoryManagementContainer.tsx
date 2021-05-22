@@ -7,12 +7,15 @@ import { Loading, Error, CategoryTabs } from '../components';
 import { RootState } from "../modules";
 import { CrudCategoriesContainer } from "./belongings";
 import {modifyCategories, selectCategory, storeRefetchApi} from "../reducers/CategoryReducer";
-import {PutContIntoCtgContainer} from "./index";
+import { PutContIntoCtgContainer } from "./index";
+import { NextRouter, useRouter } from "next/router";
+import {routeHttpStatus} from "../../utils/func";
 
 type Props = {
 }
 
 const CategoryManagementContainer = ({  }: Props) => {
+    const router: NextRouter = useRouter();
     const dispatch = useDispatch();
     const { categories } = useSelector((state: RootState) => state.CategoryReducer)
 
@@ -34,13 +37,13 @@ const CategoryManagementContainer = ({  }: Props) => {
             Notiflix.Loading.Hourglass('카테고리 생성중...');
             await createCategory({ variables: { title } })
                 .then((res) => {
-                    if (res?.data.createCategory === 200) {
+                    if (res?.data.createCategory.status === 200) {
                         refetch()
                             .then(refetchResponse => {
                                 if (refetchResponse)
                                     dispatch(modifyCategories(refetchResponse.data.categories));
                             });
-                    }
+                    } else routeHttpStatus(router, res.data.createCategory.status, res.data.createCategory.message);
                 })
                 .finally(() => Notiflix.Loading.Remove(300));
         }

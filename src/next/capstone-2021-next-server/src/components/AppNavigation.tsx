@@ -63,14 +63,13 @@ const AppNavigation: React.FunctionComponent<Props> = React.memo(({ }) => {
                         value={appNav.value}
                         onChange={async (e, newValue: number) => {
                             await new Promise((resolve) => { dispatch(modifyAppTabs(newValue)); resolve(true); })
-                                .then(() => router.push(`/?tb=${newValue}`).then())}}
+                                .then(() => router.push(`/home?tb=${newValue}`).then())}}
                         aria-label="Main tabs"
                         className={classes.tabs}
                     >
                         <Tab style={{ fontWeight: 'bold' }} label="Hub" {...a11yProps(0)} />
                         <Tab style={{ fontWeight: 'bold' }} label="Dashboard" {...a11yProps(1)} />
-                        <Tab style={{ fontWeight: 'bold' }} label="Report" {...a11yProps(2)} />
-                        <Tab style={{ fontWeight: 'bold' }} label="Content" {...a11yProps(3)} />
+                        <Tab style={{ fontWeight: 'bold' }} label="Content" {...a11yProps(2)} />
                     </Tabs>
                 </div>
                 <div style={{ width: '70pt', display: 'flex', justifyContent: 'flex-end' }}>

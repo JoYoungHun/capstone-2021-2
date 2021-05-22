@@ -90,25 +90,37 @@ export const POST_LOGIN = gql`
 
 export const POST_SIGN = gql`
     mutation sign($id: String!, $password: String!, $name: String!) {
-        sign(id: $id, password: $password, name: $name)
+        sign(id: $id, password: $password, name: $name) {
+            status
+            message
+        }
     }
 `
 
 export const POST_CREATE_CATEGORY = gql`
     mutation createCategory($title: String!) {
-        createCategory(title: $title)
+        createCategory(title: $title) {
+            status
+            message
+        }
     }
 `
 
 export const PUT_UPDATE_CATEGORY = gql`
     mutation updateCategory($id: Int!, $title: String!) {
-        updateCategory(id: $id, title: $title)
+        updateCategory(id: $id, title: $title) {
+            status
+            message
+        }
     }   
 `
 
 export const DELETE_REMOVE_CATEGORY = gql`
     mutation deleteCategory($id: Int!) {
-        deleteCategory(id: $id)
+        deleteCategory(id: $id) {
+            status
+            message
+        }
     }   
 `
 
@@ -231,13 +243,238 @@ export const GET_CONTENT_SUMMARY = gql`
                     highlight
                 }
             }
+            totalPages
         }
     }
 `
 
 export const GET_CONTENT = gql`
     query content($id: Long!) {
-        content {
+        content(id: $id) {
+            id
+            title
+            ref
+        }
+    }
+`
+
+export const GET_WORDS = gql`
+    query allWords($id: Long!) {
+        allWords(id: $id) {
+            status
+            problems {
+                id
+                eng
+                kor
+            }
+        }
+    }
+`
+
+export const GET_SENTENCES = gql`
+    query allSentences($id: Long!) {
+        allSentences(id: $id) {
+            status
+            problems {
+                id
+                eng
+                kor
+            }
+        }
+    }
+`
+
+export const GET_CHOICES = gql`
+    query choices($option: Int!, $except: Long!) {
+        choices(option: $option, except: $except) {
+            status
+            problems {
+                id
+                eng
+                kor
+            }
+        }
+    }
+`
+
+export const POST_REWRITE_REPORT = gql`
+    mutation rewrite($input: ReportInput!) {
+        rewrite(input: $input) {
+            status
+            message
+        }
+    }
+`
+
+export const GET_REPORT = gql`
+    query report($report: Long!) {
+        report(report: $report) {
+            id
+            content {
+                id
+                title
+                ref
+            }
+            user {
+                id
+                name
+            }
+            wordLen
+            sentenceLen
+            correctWordsLev1
+            correctWordsLev2
+            correctWordsLev3
+            correctSentencesLev1
+            correctSentencesLev2
+            passWordLev1
+            passWordLev2
+            passWordLev3
+            passSentenceLev1
+            passSentenceLev2
+        }
+    }
+
+`
+
+export const GET_PIE = gql`
+    query pie($report: Long!, $option: Int!) {
+        pie(report: $report, option: $option) {
+            data {
+                id
+                label
+                value
+                color
+            }
+        }
+    }
+`
+
+export const GET_BAR = gql`
+    query bar($report: Long!) {
+        bar(report: $report) {
+            data {
+                country
+                level1
+                level1Color
+                level2
+                level2Color
+                level3
+                level3Color
+                objective
+                objectiveColor
+                subjective
+                subjectiveColor
+            }
+        }
+    }
+`
+
+export const GET_RADAR = gql`
+    query radar($report: Long!) {
+        radar(report: $report) {
+            data {
+                taste
+                total
+                correct
+            }
+        }
+    }
+`
+
+export const GET_RECENT_REPORT = gql`
+    query recent($pr: PaginationInput!) {
+        recent(pr: $pr) {
+            reports {
+                id
+                content {
+                    id
+                    title
+                }
+                created
+                modified    
+            }
+            totalElements
+        }
+    }   
+`
+
+export const GET_TROPHIES = gql`
+    query trophies($content: Long!) {
+        trophies(content: $content) {
+            content
+            wordLev1
+            wordLev2
+            wordLev3
+            sentenceLev1
+            sentenceLev2
+        }
+    }    
+`
+
+export const GET_BUBBLES = gql`
+    query ocean($pr: PaginationInput!, $keyword: String, $dFilter: String) {
+        ocean(pr: $pr, keyword: $keyword, dFilter: $dFilter) {
+            bubbles {
+                id
+                title
+                captions
+                ref
+                created    
+            }
+            totalPages
+        }
+    }
+`
+
+export const GET_BUBBLE = gql`
+    query bubble($id: String!) {
+        bubble {
+            id
+            title
+            captions
+            ref
+        }
+    }
+`
+
+export const POST_REMEMBER = gql`
+    mutation remember($keyword: String!) {
+        remember(keyword: $keyword) {
+            status
+            message   
+        }
+    }
+`
+
+export const GET_SYNAPSES = gql`
+    query synapses($keyword: String!, $renderItem: Int!) {
+        synapses(keyword: $keyword, renderItem: $renderItem) {
+            points {
+                id
+                name
+                val
+            }
+            links {
+                source
+                target
+            }
+        }
+    }
+`
+
+export const GET_MY_CONTENTS = gql`
+    query myContents {
+        myContents {
+            id
+            title
+            ref
+        }
+    }
+`
+
+export const GET_RECENT_VIEWED_CONTENTS = gql`
+    query recentViewed($pr: PaginationInput!) {
+        recentViewed(pr: $pr) {
             id
             title
             ref

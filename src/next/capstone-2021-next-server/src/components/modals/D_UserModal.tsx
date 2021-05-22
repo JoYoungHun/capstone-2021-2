@@ -8,6 +8,8 @@ import { RootState } from "../../modules";
 import { DELETE_REMOVE_USER } from "../../graphQL/quries";
 import { storeUserList } from "../../reducers/UserListReducer";
 import Notiflix from 'notiflix';
+import { routeHttpStatus } from "../../../utils/func";
+import { NextRouter, useRouter } from "next/router";
 
 type Props = {
     hidden: boolean
@@ -17,6 +19,7 @@ type Props = {
 
 const D_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close }) => {
     const dispatch = useDispatch();
+    const router: NextRouter = useRouter();
     const listStates = useSelector((state: RootState) => state.UserListReducer);
 
     const onDeleteUserInfo = async () => {
@@ -31,7 +34,7 @@ const D_UserModal: React.FunctionComponent<Props> = ({ hidden, details, close })
                 .then((response: ApolloQueryResult<any>) => {
                     dispatch(storeUserList({ ...listStates, items: [ ...response.data.allUsers.users ], page: 1 }))
                 })
-        }
+        } else routeHttpStatus(router, data.deleteUser.status, data.deleteUser.message);
         }})
 
     return (
