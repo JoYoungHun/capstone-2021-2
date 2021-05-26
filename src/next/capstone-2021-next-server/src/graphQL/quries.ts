@@ -481,3 +481,13 @@ export const GET_RECENT_VIEWED_CONTENTS = gql`
         }
     }
 `
+
+export const GET_RECOMMENDED_VIDEOS = gql`
+    query recommended($pr: PaginationInput!) {
+        recommended(pr: $pr) {
+            id
+            title
+            ref
+        }
+    }
+`
