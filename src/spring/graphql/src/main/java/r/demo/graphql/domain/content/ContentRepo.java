@@ -22,6 +22,7 @@ public interface ContentRepo extends CrudRepository<Content, Long> {
     Page<Content> findAll(Pageable pageable);
     Page<Content> findAllByCategory(Category category, Pageable pageable);
     Page<Content> findAllByIdIsNotIn(Set<Long> filters, Pageable pageable);
+    Page<Content> findAllByRegisterer(UserInfo user, Pageable pageable);
 
     @Transactional
     @Modifying

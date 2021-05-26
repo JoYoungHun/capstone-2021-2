@@ -16,15 +16,17 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import r.demo.graphql.domain.documents.autocomplete.Neuron;
 import r.demo.graphql.domain.documents.autocomplete.NeuronRepository;
+import r.demo.graphql.domain.documents.video.Video;
+import r.demo.graphql.domain.documents.video.VideoRepository;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootTest
 class GraphqlApplicationTests {
@@ -134,5 +136,21 @@ class GraphqlApplicationTests {
 //        Optional<Neuron> neuron2 = neuronRepository.findById(0L);
 //        System.out.println(neuron2.isPresent() + " // " + neuron.getWord() + " // " + neuron2.map(Neuron::getWord));
 //        System.out.println(neuron.getWord().equals(neuron2.map(Neuron::getWord).orElse("")));
+    }
+
+    @Autowired
+    private VideoRepository videoRepository;
+
+    @Test
+    public void elasticsearch_find_similar_test() {
+        Optional<Video> video = videoRepository.findById("8BlQPORtSsQ");
+        if (video.isPresent()) {
+            System.out.println("우헹헹헹헹");
+            Page<Video> videos = videoRepository.searchSimilar(video.get(), new String[]{"captions", "title"}, PageRequest.of(0, 1));
+            System.out.println(videos.getTotalElements() + " // " + videos.getTotalPages());
+            for (Video v : videos) {
+                System.out.printf("%s : %s\n", v.getTitle(), v.getRef());
+            }
+        }
     }
 }

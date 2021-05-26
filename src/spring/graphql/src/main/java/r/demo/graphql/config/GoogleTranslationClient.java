@@ -36,7 +36,6 @@ public class GoogleTranslationClient {
             TranslateTextResponse response = client.translateText(request);
             return response.getTranslationsList();
         } catch (RuntimeException e) {
-            e.printStackTrace();
             return Collections.emptyList();
         }
     }

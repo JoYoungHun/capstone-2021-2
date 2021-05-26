@@ -19,6 +19,7 @@ type Query {
     allContents(category: Int!, pr: PaginationInput!, option: Int): PaginatedContentResponse!
     content(id: Long!): Content
     summary(content: Long!, level: Int!, page: Int!): SummaryResponse!
+    myContents: [Content!]!
 
     choices(option: Int!, except: Long!): ProblemReponse
     allWords(id: Long!): ProblemReponse
@@ -30,9 +31,11 @@ type Query {
     pie(report: Long!, option: Int!): PieResponse!
     radar(report: Long!): RadarResponse!
     recent(pr: PaginationInput!): PaginatedReportResponse!
+    recentViewed(pr: PaginationInput!): [Content!]!
 
     ocean(pr: PaginationInput!, keyword: String, dFilter: String): BubbleResponse!
     bubble(id: String!): Bubble
+    recommended(pr: PaginationInput!): [Bubble!]!
 
     synapses(keyword: String!, renderItem: Int!): Synapse!
 }
