@@ -21,8 +21,8 @@ type Props = {
 const DashboardContainer: React.FunctionComponent<Props> = ({ }) => {
     const router: NextRouter = useRouter();
     const { data, loading, error } = useQuery(GET_MY_DETAIL, { fetchPolicy: 'network-only' })
-    const myContents = useQuery(GET_MY_CONTENTS)
-    const recentViewed = useQuery(GET_RECENT_VIEWED_CONTENTS, { variables: { pr: { page: 1, renderItem: 8 }}})
+    const myContents = useQuery(GET_MY_CONTENTS, { fetchPolicy: 'network-only' })
+    const recentViewed = useQuery(GET_RECENT_VIEWED_CONTENTS, { fetchPolicy: 'network-only', variables: { pr: { page: 1, renderItem: 8 }}})
     const todayYoutubeVideos = useQuery(GET_BUBBLES, { variables: { pr: { page: 1, renderItem: 8 }, keyword: '', dFilter: moment().format('YYYY-MM-DD') }})
     const recommended = useQuery(GET_RECOMMENDED_VIDEOS, { variables: { pr: { page: 1, renderItem: 8 }}})
 
