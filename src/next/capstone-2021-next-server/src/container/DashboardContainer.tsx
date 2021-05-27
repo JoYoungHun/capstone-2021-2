@@ -23,7 +23,7 @@ const DashboardContainer: React.FunctionComponent<Props> = ({ }) => {
     const { data, loading, error } = useQuery(GET_MY_DETAIL, { fetchPolicy: 'network-only' })
     const myContents = useQuery(GET_MY_CONTENTS)
     const recentViewed = useQuery(GET_RECENT_VIEWED_CONTENTS, { variables: { pr: { page: 1, renderItem: 8 }}})
-    const todayYoutubeVideos = useQuery(GET_BUBBLES, { variables: { pr: { page: 1, renderItem: 8 }, keyword: '', dFilter: '2021-05-18' }})
+    const todayYoutubeVideos = useQuery(GET_BUBBLES, { variables: { pr: { page: 1, renderItem: 8 }, keyword: '', dFilter: moment().format('YYYY-MM-DD') }})
     const recommended = useQuery(GET_RECOMMENDED_VIDEOS, { variables: { pr: { page: 1, renderItem: 8 }}})
 
     if (loading) return <Loading />
