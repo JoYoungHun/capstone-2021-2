@@ -24,7 +24,7 @@ const SliderTitle = styled.span`
 const DashboardSlider: React.FunctionComponent<Props> = ({ title, cards, bubbles }) => {
     const router: NextRouter = useRouter();
     const dispatch = useDispatch();
-    const onRouteToCreateNewContent = (bubble: Bubble) => {
+    const onRouteToCreateNewContent = async (bubble: Bubble) => {
         Notiflix.Loading.Pulse('Pop Bubble...')
         dispatch(storeFrame({ title: bubble.title, ref: bubble.ref, captions: bubble.captions ? bubble.captions : '', categories: [], id: undefined }))
         return router.push('/home?tb=2')
@@ -43,7 +43,7 @@ const DashboardSlider: React.FunctionComponent<Props> = ({ title, cards, bubbles
                 }
                 {
                     bubbles?.map((component, index) => (
-                        <div key={index} style={{ display: 'inline-block', marginRight: '12pt' }} onClick={() => onRouteToCreateNewContent(component)}>
+                        <div key={index} style={{ display: 'inline-block', marginRight: '12pt' }} onClick={() => onRouteToCreateNewContent(component).then(() => Notiflix.Loading.Remove(1000))}>
                             <SimpleContCard details={component} width={'8rem'} height={'8rem'} denominator={100} />
                         </div>
                     ))
