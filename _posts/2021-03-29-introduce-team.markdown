@@ -16,17 +16,26 @@ star: true
 + [HOME](../)
 + [README](../README)
 + [Tutorial](../tutorial)
++ [FINAL](../FINAL)
++ [DOCS](../DOCS)
 
 <br>
 
 ***
+
+## 💜 HIING 💜
+{: .text-center}
+![team](../assets/img/team.png){: width="50%" .align-center}
+
+<br>
 
 ## 조영훈 &#128060;
 {: .text-center}
 
 ![younghoon](../assets/img/younghoon.jpg){: width="50%" .align-center}
 ```jsx
-학번 : 20153223
+학번 : 20153232
+Roll : 프로젝트 매니저(PM), 기획/디자인 총괄
 #팀장 #뭐라써 #일단 #비워놔줘
 ``` 
 {: .text-center}
@@ -40,7 +49,8 @@ star: true
 ![beomsu](../assets/img/beomsu.jpg){: width="50%" .align-center} 
 ```jsx
 학번 : 20153223
-#비둘기
+Roll : 개발 총괄, 웹서비스 구현
+#비둘기 #범내려온다
 ```
 {: .text-center}
 
@@ -53,6 +63,7 @@ star: true
 ![Comma](../assets/img/comma.jpg){: width="50%" .align-center}
 ```jsx
 학번 : 20163081
+Roll : 기획/디자인, GitHub 운영/관리
 #전문바리스타🍹 #Comma #thedotio #thedotiolounge
 ``` 
 {: .text-center}
@@ -66,6 +77,7 @@ star: true
 ![heonjae](../assets/img/heonjae.jpg){: width="50%" .align-center}
 ```jsx
 학번 : 20163148
+Roll : UI/UX 디자인
 #잘먹고잘살자 #펭-하
 ```
 {: .text-center}
@@ -79,6 +91,7 @@ star: true
 ![wooki](../assets/img/wooki.jpg){: width="50%" .align-center}
 ```jsx
 학번 : 20163090
+Roll : 크롤링 서버 구축, Elastic Search DB 구성
 #너랑 #나랑 #슬랑 #제4대 #소프트웨어융합대학 #학생회장 #크크큭
 ```
 {: .text-center}
