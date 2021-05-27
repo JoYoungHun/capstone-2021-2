@@ -12,7 +12,7 @@
 
 # theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "air" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : "aqua" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "en-KR"
@@ -95,7 +95,7 @@ analytics:
 # Site Author
 author:
   name             : "HIING"
-  avatar           : "/assets/img/commade.jpg"
+  avatar           : "/assets/img/HIING.png"
   bio              : "Capstone-2021-2"
   location         : "Kookmin Univ."
   email            :
