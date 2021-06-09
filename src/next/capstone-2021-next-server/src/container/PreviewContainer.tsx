@@ -16,6 +16,7 @@ import useIntersectionObserver from "../hooks/useIntersectionObserver";
 import Loader from "react-loader-spinner";
 import {LevelGuideModal, SentenceChooseLevelModal, WordChooseLevelModal} from "../components/modals";
 import Notiflix from 'notiflix';
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 type Props = {
     ct: number | undefined
@@ -174,44 +175,44 @@ const PreviewContainer: React.FunctionComponent<Props> = ({ ct }) => {
                             </span>
                         </div>
                         <div className={"ovf"} ref={rootRef}
-                             style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'column',
-                            height: '550pt', width: '100%', color: '#FFF', fontWeight: 'bold', minHeight: '550pt',
-                            paddingTop: '12pt', paddingLeft: '8pt', paddingRight: '8pt', paddingBottom: '12pt', overflow: 'auto' }}>
-                            {
-                                summaryView.shells.map((shell: SummaryShell, index: number) => (
-                                        <div key={`shell-${index}`} style={{ width: '100%' }}>
-                                            <div style={{ width: '100%', marginBottom: '4pt', whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
-                                                {
-                                                    language !== 'KOR' &&
-                                                        <React.Fragment>
-                                                            <span>{shell.originalText}</span>
-                                                            <br />
-                                                            <br />
-                                                        </React.Fragment>
-                                                }
-                                                {
-                                                    language !== 'ENG' &&
-                                                        <span>
-                                                            {shell.translatedKor}
-                                                        </span>
-                                                }
+                                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'column',
+                                height: '550pt', width: '100%', color: '#FFF', fontWeight: 'bold', minHeight: '550pt',
+                                paddingTop: '12pt', paddingLeft: '8pt', paddingRight: '8pt', paddingBottom: '12pt', overflow: 'auto' }}>
+                                {
+                                    summaryView.shells.map((shell: SummaryShell, index: number) => (
+                                            <div key={`shell-${index}`} style={{ width: '100%' }}>
+                                                <div style={{ width: '100%', marginBottom: '4pt', whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+                                                    {
+                                                        language !== 'KOR' &&
+                                                            <React.Fragment>
+                                                                <span>{shell.originalText}</span>
+                                                                <br />
+                                                                <br />
+                                                            </React.Fragment>
+                                                    }
+                                                    {
+                                                        language !== 'ENG' &&
+                                                            <span>
+                                                                {shell.translatedKor}
+                                                            </span>
+                                                    }
+                                                </div>
+                                                <br />
+                                                <Divider variant={'inset'} component={'hr'} orientation={'horizontal'} />
                                             </div>
-                                            <br />
-                                            <Divider variant={'inset'} component={'hr'} orientation={'horizontal'} />
-                                        </div>
-                                ))
-                            }
-                            {
-                                summaryView.isFetching && <Loader
-                                    type={"ThreeDots"}
-                                    color={"#00BFFF"}
-                                    height={60}
-                                    width={60}
-                                    timeout={10000} // 10 secs
-                                />
-                            }
-                            <div ref={targetRef} style={{ minHeight: '50pt' }}/>
-                        </div>
+                                    ))
+                                }
+                                {
+                                    summaryView.isFetching && <Loader
+                                        type={"ThreeDots"}
+                                        color={"#00BFFF"}
+                                        height={60}
+                                        width={60}
+                                        timeout={10000} // 10 secs
+                                    />
+                                }
+                                <div ref={targetRef} style={{ minHeight: '50pt' }}/>
+                            </div>
                     </div>
                 </div>
             </div>

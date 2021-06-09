@@ -44,6 +44,19 @@ date:   2021-03-21 06:43:25 +0900
 ***
 
 ## 💕 Sexy guys of TEAM 2 💕 <a name = "team"></a>
+
+<h2>
+  <p align="center">
+    💜HIING💜
+  </p>
+  <p align="center">
+    <a href="http://www.hiing.ml">
+      <img src="assets/img/team.png", width="75%">
+    </a>
+  </p>
+</h2>
+
+
 <h2>
   <p align="center">
     조영훈 &#128060;
@@ -149,6 +162,12 @@ Role : 크롤링 서버 구축, 엘라스틱서치 DB 구성
 
 
 ## 🎥 Ⅱ. Introduction <a name = "intro"></a>
+### 홍보 영상 
+
+[![HIING](https://img.youtube.com/vi/hPgH65H-QeM/hqdefault.jpg)](https://youtu.be/hPgH65H-QeM)
+
+<br>
+
 ### 계획서 영상 
 
 <!-- {% include video.html id="NRNmtivPw1g" %} 
@@ -157,11 +176,15 @@ Role : 크롤링 서버 구축, 엘라스틱서치 DB 구성
 
 <br>
 
+### 최종 발표 영상 
+
+[![HIING](https://img.youtube.com/vi/0bvH96694-c/hqdefault.jpg)](https://youtu.be/0bvH96694-c)
+
+<br>
+
 ## 💭 Ⅲ. Tutorial <a name = "tutorial"></a>
 
-[Tutorial.pdf](https://url.kr/equis2)
-
-추후 Tutorial 동영상 추가 예정
+[![HIING](https://img.youtube.com/vi/2Uaa2gJ1wuo/hqdefault.jpg)](https://youtu.be/2Uaa2gJ1wuo)
 
 <br>
 
@@ -184,6 +207,45 @@ Role : 크롤링 서버 구축, 엘라스틱서치 DB 구성
 > **QUIZ 결과 통계화 및 서비스**
 
 ![function_3](assets/img/function_3.png)
+
+<br>
+<br>
+
+> **컨텐츠 검색**
+
+![search](/assets/img/search.png)
+
+<br>
+<br>
+
+> **자동완성(저장)**
+
+![auto_complete_save](/assets/img/auto_complete_save.png)
+
+<br>
+<br>
+
+> **자동완성(검색)**
+
+![auto_complete_search](/assets/img/auto_complete_search.png)
+
+<br>
+<br>
+
+> **HP gauge bar & Scoring**
+
+문제풀이 결과에 대한 즉각적인 피드백 요소
+
+![hp_score](/assets/img/hp_score.png)
+
+<br>
+<br>
+
+> **Reward**
+
+완료한 문제에 대해 리워드(트로피) 부여
+
+![trophy](/assets/img/trophy.png)
 
 <br>
 <br>

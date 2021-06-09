@@ -22,6 +22,8 @@ import r.demo.graphql.domain.sentence.Sentence;
 import r.demo.graphql.domain.sentence.SentenceRepo;
 import r.demo.graphql.domain.user.UserInfo;
 import r.demo.graphql.domain.user.UserInfoRepo;
+import r.demo.graphql.domain.viewed.Viewed;
+import r.demo.graphql.domain.viewed.ViewedRepo;
 import r.demo.graphql.domain.word.Word;
 import r.demo.graphql.domain.word.WordRepo;
 import r.demo.graphql.response.DefaultResponse;
@@ -49,13 +51,14 @@ public class ContentDataFetcher {
     private final SentenceRepo sentenceRepo;
     private final CategoryRepo categoryRepo;
     private final ReportRepo reportRepo;
+    private final ViewedRepo viewedRepo;
     private final List<String> validPos;
 
     public ContentDataFetcher(@Lazy StanfordLemmatizer lemmatizer,
                               InternalFilterChains chains,
                               UserInfoRepo userRepo, ContentRepo contentRepo,
                               WordRepo wordRepo, SentenceRepo sentenceRepo,
-                              CategoryRepo categoryRepo, ReportRepo reportRepo) {
+                              CategoryRepo categoryRepo, ReportRepo reportRepo, ViewedRepo viewedRepo) {
         this.lemmatizer = lemmatizer;
         this.chains = chains;
         this.userRepo = userRepo;
@@ -64,6 +67,7 @@ public class ContentDataFetcher {
         this.sentenceRepo = sentenceRepo;
         this.categoryRepo = categoryRepo;
         this.reportRepo = reportRepo;
+        this.viewedRepo = viewedRepo;
         this.validPos = Arrays.asList("v.", "conj.", "ad.", "n.");
     }
 
@@ -128,15 +132,16 @@ public class ContentDataFetcher {
                         renderItem = Integer.parseInt(req.get("renderItem").toString());
                 Category category;
                 Page<Content> contents;
+                PageRequest pageRequest = PageRequest.of(page - 1, renderItem, Sort.Direction.DESC, "modified", "id");
                 if (categoryKey != -1) {
                     category = categoryRepo.findById(categoryKey).orElseThrow(IllegalArgumentException::new);
                     if (option != null && option == 1) {
                         Set<Long> filters = contentRepo.findAllByCategory(category).stream().map(Content::getId).collect(Collectors.toSet());
                         if (filters.size() == 0) filters.add(-1L);
-                        contents = contentRepo.findAllByIdIsNotIn(filters, PageRequest.of(page - 1, renderItem));
-                    } else { contents = contentRepo.findAllByCategory(category, PageRequest.of(page - 1, renderItem)); }
+                        contents = contentRepo.findAllByIdIsNotIn(filters, pageRequest);
+                    } else { contents = contentRepo.findAllByCategory(category, pageRequest); }
                 } else {
-                    contents = contentRepo.findAll(PageRequest.of(page - 1, renderItem));
+                    contents = contentRepo.findAll(pageRequest);
                 }
                 lhm.put("contents", contents);
                 lhm.put("totalElements", contents.getTotalElements());
@@ -281,6 +286,18 @@ public class ContentDataFetcher {
                     shells.add(SummaryShell.builder().originalText(sb.toString()).translatedKor(sentence.getKor()).tokens(tokens).build());
                 }
 
+                String email = SecurityContextHolder.getContext().getAuthentication().getName();
+                Optional<UserInfo> user = userRepo.findByEmail(email);
+                if (user.isPresent()) {
+                    Optional<Viewed> viewed = viewedRepo.findByUserAndContent(user.get(), content);
+                    if (!viewed.isPresent()) {
+                        viewedRepo.save(Viewed.builder().user(user.get()).content(content).views(1L).build());
+                    } else {
+                        viewed.get().setViews(viewed.get().getViews() + 1L);
+                        viewedRepo.save(viewed.get());
+                    }
+                }
+
                 return new SummaryResponse(shells, sentences.getTotalPages());
             } catch (IllegalArgumentException e) {
                 return new SummaryResponse(Collections.emptyList(), 0);
@@ -364,6 +381,45 @@ public class ContentDataFetcher {
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ProblemResponse(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> myContents() {
+        return environment -> {
+            try {
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+                    UserInfo user = userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+                    return contentRepo.findAllByRegisterer(user, PageRequest.of(1, 8, Sort.Direction.DESC, "created", "title"));
+                } else return Collections.emptyList();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                return Collections.emptyList();
+            }
+        };
+    }
+
+    @GqlDataFetcher(type = GqlType.QUERY)
+    public DataFetcher<?> recentViewed() {
+        return environment -> {
+            try {
+                final LinkedHashMap<String, Object> req = environment.getArgument("pr");
+                int page = Integer.parseInt(req.get("page").toString()),
+                        renderItem = Integer.parseInt(req.get("renderItem").toString());
+                PageRequest pageRequest = PageRequest.of(page - 1, renderItem, Sort.Direction.DESC, "created");
+                HttpStatus isAuthenticated = chains.doFilter(Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_READONLY"));
+                if (isAuthenticated.equals(HttpStatus.OK)) {
+                    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+                    UserInfo user = userRepo.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+                    Page<Viewed> recentlyViewed = viewedRepo.findAllByUser(user, pageRequest);
+                    return recentlyViewed.stream().map(Viewed::getContent).collect(Collectors.toList());
+                } else return Collections.emptyList();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                return Collections.emptyList();
             }
         };
     }

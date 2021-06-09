@@ -30,7 +30,7 @@ const Manual = () => {
             <div style={{ display: 'flex', alignItems: 'center', height: '100vh', justifyContent: 'space-between', paddingLeft: '20rem', paddingRight: '10rem',
                 background: 'rgb(234,246,255) linear-gradient(180deg, rgba(234,246,255,1) 0%, rgba(200,233,255,1) 50%, rgba(126,201,255,1) 100%)' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
-                    <p style={{ fontWeight: 'bold', fontSize: '28pt', fontFamily: 'sans-serif', textAlign: 'left' }}>
+                    <p style={{ fontWeight: 'bold', fontSize: '28pt', fontFamily: 'sans-serif', textAlign: 'left', color: '#000' }}>
                         원하는 컨텐츠로 학습
                     </p>
                     <span style={{ fontFamily: 'fantasy', textAlign: 'left', color: '#000011' }}>
@@ -75,7 +75,7 @@ const Manual = () => {
                         />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end' }}>
-                    <p style={{ fontWeight: 'bold', fontSize: '28pt', fontFamily: 'sans-serif' }}>
+                    <p style={{ fontWeight: 'bold', fontSize: '28pt', fontFamily: 'sans-serif', color: '#000' }}>
                         나만의 컨텐츠 제작
                     </p>
                     <span style={{ fontFamily: 'fantasy', textAlign: 'right', color: '#000011' }}>
